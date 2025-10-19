@@ -3,6 +3,6 @@
 # group-template
 Template do Repositório de Grupo
 
-* Aluno1: Nome1
-* Aluno2: Nome2
-* Aluno3: Nome3
+* Aluno1: Juliana Silva
+* Aluno2: Sofia Couto
+* Aluno3: Soraia Pereira
