@@ -1,9 +1,10 @@
 # Trabalho Prático – Fase I
 
 ## 1. Introdução
-No âmbito deste trabalho prático, foi prototipada a interface AirbnbStats, que permite visualizar dados da plataforma InsideAirbnb sobre listagens, preços e ocupação, permitindo que investigadores, gestores públicos e ativistas tenham acesso à informação necessária para análise do impacto do Airbnb em diferentes cidades de forma rápida e intuitiva. O protótipo desenvolvido através da plataforma Figma pode ser acedido através do seguinte link: 
+No âmbito deste trabalho prático, foi prototipada a interface AirbnbStats, que permite visualizar dados da plataforma InsideAirbnb sobre listagens, preços e ocupação, permitindo que investigadores, gestores públicos e ativistas tenham acesso à informação necessária para análise do impacto do Airbnb em diferentes cidades de forma rápida e intuitiva. O protótipo desenvolvido através da plataforma Figma pode ser acedido através dos seguintes links: 
 
-- https://www.figma.com/design/n7wOA0VAQSEzCumZla0rty/Airbnb?node-id=0-1&t=pW1aq6Go3Uv8tUXV-1 
+- https://www.figma.com/design/n7wOA0VAQSEzCumZla0rty/Airbnb?node-id=0-1&t=pW1aq6Go3Uv8tUXV-1 (*Design*)
+- https://www.figma.com/proto/n7wOA0VAQSEzCumZla0rty/Airbnb?node-id=0-1&t=o3zMh9IpxWB4gcue-1 (*Apresentação*)
 
 
 ## 2. Avaliação Heurística
