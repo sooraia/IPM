@@ -51,7 +51,7 @@ A interface pode guardar preferências e configurações mais utilizadas, como f
 
 A interface apresenta os elementos e informações mais relevantes para a análise de dados e navegação, deixando como opção para o utilizador que filtros mais específicos pretende utilizar.
 
-### 2.9 Ajuda aos Utilizadores a Reconhecer, Diagnosticar e Recuperar de Erros
+### 2.9 Ajuda aos Utilizadores a Reconhecer, Diagnosticar e Recuperar Erros
 
 As mensagens de erro são visualmente destacadas, com cores mais chamativas e texto em negrito. Além disso, incluem instruções práticas e diretas para correção imediata, indicando exatamente o que está incorreto e como resolver (por exemplo, “Please fill in all fields”, “Please select a city”, “User not found. Please sign up first”).
 
