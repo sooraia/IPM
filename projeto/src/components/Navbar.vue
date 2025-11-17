@@ -6,8 +6,8 @@
         <h1 style="margin-top: 10px;">AirbnbStats</h1>
       </div>
       <ul id="nav-list">
-        <li class="nav-item" style="border-right: #ffffff 2px solid">Explore</li>
-        <li class="nav-item">Dashboard</li>
+        <li class="nav-item1" style="border-right: #ffffff 2px solid">Explore</li>
+        <li class="nav-item2">Dashboard</li>
       </ul>
     </div>
     <div id="user">
@@ -58,7 +58,7 @@
   padding: 0;
 }
 
-.nav-item {
+.nav-item1, .nav-item2 {
   width: 120px;
   display: flex;
   justify-content: center;
@@ -70,8 +70,14 @@
   padding: 5px;
 }
 
-.nav-item:hover {
+.nav-item1:hover {
   background-color: #014055;
+  border-radius: 10px 0px 0px 0px;
+}
+
+.nav-item2:hover {
+  background-color: #014055;
+  border-radius: 0px 10px 0px 0px;
 }
 
 #user {
