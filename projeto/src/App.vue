@@ -1,21 +1,6 @@
 <template>
-  <Navbar/>
-  <Footer/>
+  <RouterView />
 </template>
-
-<script>
-import './assets/main.css'
-import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
-
-export default {
-  name: 'App',
-  components: {
-    Navbar,
-    Footer
-  }
-}
-</script>
 
 <style>
 html, body, #app {
@@ -33,5 +18,4 @@ html, body, #app {
   flex-direction: column;
   justify-content: space-between;
 }
-
 </style>

@@ -6,14 +6,17 @@
         <h1 style="margin-top: 10px;">AirbnbStats</h1>
       </div>
       <ul id="nav-list">
+        <router-link to="/">
         <li class="nav-item1" style="border-right: #ffffff 2px solid">Explore</li>
+        </router-link>
         <li class="nav-item2">Dashboard</li>
       </ul>
     </div>
-    <div id="user">
-      <a href="/login" class="login-link">Login/Register</a>
-      <img alt="User-Avatar" src="../assets/user-avatar.png">
-    </div>
+    
+    <router-link id="user" to="/login">
+          <a href="/login">Login/Register</a>
+          <img alt="User-Avatar" src="../assets/user-avatar.png">
+    </router-link>
   </nav>
 </template>
 
@@ -96,3 +99,4 @@
   font-size: 20px;
 }
 </style>
+
