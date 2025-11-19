@@ -21,6 +21,7 @@
     margin-top: 3vh;
     border-top: #002837 5px solid;
     width: 100%;
+    min-height: 100%;
   }
 
   .body-container {
