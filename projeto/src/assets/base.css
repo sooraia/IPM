@@ -9,25 +9,23 @@
   --accent-hover: rgb(1, 64, 85);
   --gray-color: rgb(83, 83, 83);
   --shadow: rgba(90, 90, 90, 0.25);
-
-
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+}
+
+html, body{
+  height: 100%;
+  margin: 0;
+}
 
 * {
   margin: 0;
   font-family: "Josefin Sans";
-}
-
-main {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* ensure content starts at top, not centered */
-}
-
-body {
-  background-color: var(--bg);
 }
 
 a,
@@ -38,6 +36,18 @@ router-link,
   border-bottom: none;
   outline: none;
 }
+
+body {
+  background-color: var(--bg);
+}
+
+main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+}
+
 
 /* *,
 *::before,

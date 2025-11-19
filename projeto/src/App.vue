@@ -1,11 +1,13 @@
 <template>
-  <Navbar />
+  <div id="app">
+    <Navbar />
 
-  <main>
-    <RouterView />
-  </main>
+    <main>
+      <RouterView />
+    </main>
 
-  <Footer />
+    <Footer />
+  </div>
 </template>
 
 <script setup>
