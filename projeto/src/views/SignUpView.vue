@@ -15,3 +15,17 @@
 <script setup>
 import AuthCard from '@/components/AuthCard.vue';
 </script>
+
+<style scoped>
+.card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: 
+    linear-gradient(0deg, 
+    rgba(112, 168, 189, 0.8) 0%, 
+    rgba(112, 168, 189, 0.8) 100%), 
+    url('@/assets/background.jpg') lightgray -0.234px -239px / 100.024% 142.064% no-repeat;
+}
+</style>

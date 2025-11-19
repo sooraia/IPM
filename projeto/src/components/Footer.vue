@@ -13,7 +13,7 @@
  </footer>
 </template>
 
-<style>
+<style scoped>
 
 #footer {
     display: flex;

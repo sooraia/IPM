@@ -69,7 +69,7 @@ const password = ref('')
 const name = ref('')
 </script>
 
-<style>
+<style scoped>
 .auth-card {
     width: 1148px;
     height: 496px;

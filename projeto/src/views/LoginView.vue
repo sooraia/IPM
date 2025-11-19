@@ -1,15 +1,15 @@
 <template>
   <div class="card">
-      <AuthCard
-      title="Welcome Back"
-      subtitle="Log in to access your personalized dashboard and tools."
-      button-label="Login"
-      noAccount="Don't have an account?"
-      signUp="Sign up"
-      forgot="Forgot password?"
-      optionsLogin
-      @signUp="goSignUp"
-      />
+    <AuthCard
+    title="Welcome Back"
+    subtitle="Log in to access your personalized dashboard and tools."
+    button-label="Login"
+    noAccount="Don't have an account?"
+    signUp="Sign up"
+    forgot="Forgot password?"
+    optionsLogin
+    @signUp="goSignUp"
+    />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ const router = useRouter()
 function goSignUp() {router.push('/signup')}
 </script>
 
-<style>
+<style scoped>
 .card {
   flex: 1;
   display: flex;
