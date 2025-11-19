@@ -20,7 +20,7 @@
   justify-content: center;
   align-items: center;
   padding: 0 12px;
-  filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(4px 4px 4px var(--shadow));
 }
 
 .search-container form {
@@ -51,15 +51,14 @@
   box-sizing: border-box;
   border: 0;
   border-radius: 20px;
-  background-color: #D9D9D9;
-  font-family: "Josefin Sans";
+  background-color: var(--bg);
   padding: 6px 12px;
   font-size: 15px;
-  color: #00000099
+  color: var(--gray-color)
 }
 
 .search-container input:focus{
-    outline: 2px solid #FF7628;
+    outline: 2px solid var(--accent2);
 }
 
 </style>

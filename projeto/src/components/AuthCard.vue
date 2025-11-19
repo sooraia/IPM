@@ -85,12 +85,12 @@ const name = ref('')
 }
 
 .title h1 {
-    color: #ffffff;
+    color: var(--white);
     font-size: 48px;
 }
 
 .title p {
-    color: rgba(225, 118, 40, 0.60);
+    color: var(--accent2-t);
     font-size: 24px;
 }
 
@@ -105,9 +105,9 @@ form {
 }
 
 form div {
-    background-color: #002837;
+    background-color: var(--accent);
     border-radius: 30px;
-    color: #ffffff;
+    color: var(--white);
     font-weight: 600;
     display: flex;
     gap: 10px;
@@ -123,13 +123,16 @@ form div {
     width: 100%;
     height: 30px;
     border-radius:20px;
-    background-color: #D9D9D9;
-    color: #00000099;
+    background-color: var(--bg);
+    color: var(--gray-color);
     font-weight: 400;
     padding-left: 10px;
     margin-right: 20px;
     font-size: 14px;
-    outline: none;
+}
+
+#f-email:focus, #f-pass:focus, #f-name:focus{
+    outline: 2px solid var(--accent2);
 }
 
 .options {
@@ -155,28 +158,28 @@ form div {
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(225, 118, 40, 0.60);
+  border: 2px solid var(--accent2-t);
   border-radius: 5px;
   cursor: pointer;
 }
 
 .options .signopt span {
-    color: rgba(225, 118, 40, 0.60);
+    color: var(--accent2-t);
     margin-top: 1px;
 }
 
 #dont {
-    color:rgba(255,255,255,0.57);
+    color:var(--bg);
 }
 
 #sign-up, #forgot {
-    color: rgba(225, 118, 40, 0.70);
+    color: var(--accent2-t);
     text-decoration: underline;
     cursor: pointer;
 }
 .submit button {
-    color: #ffffff;
-    background-color: #002837;
+    color: var(--white);
+    background-color: var(--accent);
     padding: 10px 40px;
     border-radius: 15px;
     font-weight: 600;
@@ -188,11 +191,12 @@ form div {
 
 .submit button:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 var(--shadow);
+    background-color: var(--accent-hover);
 }
 
 .submit p {
     margin-top: 10px;
-    color: rgba(0, 40, 55)
+    color: var(--accent);
 }
 </style>

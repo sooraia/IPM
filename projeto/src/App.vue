@@ -1,64 +1,14 @@
 <template>
-  <div id="app">
-    <header>
-      <Navbar />
-    </header>
+  <Navbar />
 
-    <main>
-      <RouterView />
-    </main>
+  <main>
+    <RouterView />
+  </main>
 
-    <footer>
-      <Footer />
-    </footer>
-  </div>
+  <Footer />
 </template>
 
-<script>
-import './assets/main.css'
+<script setup>
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
-
-export default {
-  name: 'App',
-  components: {
-    Navbar,
-    Footer
-  }
-}
 </script>
-
-<style>
-html, body, #app {
-  height: 100%;
-  margin: 0;
-}
-
-* {
-  margin: 0;
-}
-
-a,
-router-link,
-.router-link-active,
-.router-link-exact-active {
-  text-decoration: none;
-  border-bottom: none;
-  outline: none;
-}
-
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: "Josefin Sans";
-}
-
-main {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* ensure content starts at top, not centered */
-}
-
-</style>

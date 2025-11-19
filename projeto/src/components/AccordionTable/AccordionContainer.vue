@@ -35,10 +35,10 @@ const countries = [
 
   .accordion-table {
     border-radius: 15pt;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--shadow);
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #002837 #153e4c93;
+    scrollbar-color: var(--accent) rgba(21, 62, 76, 0.58);
     max-height: 55vh;
   }
 

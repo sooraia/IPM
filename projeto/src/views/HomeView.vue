@@ -43,7 +43,6 @@ export default {
 
 <style scoped>
 .body {
-  background-color: #E1E8EA;
   width: 100%;
   padding: 20px 0 20px 0;
   display: flex;
@@ -61,10 +60,10 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 160%;
-  background-color: #0028371A;
+  background-color: var(--bg-secondary);
   padding: 40px 0 40px 0;
-  border-top: 4px solid #002837;
-  border-bottom: 4px solid #002837;
+  border-top: 4px solid var(--accent);
+  border-bottom: 4px solid var(--accent);
 }
 
 #continent-grid {
@@ -81,7 +80,7 @@ export default {
 
 .continent-card img {
   width: 95%;
-  filter: drop-shadow(4px 4px 4px rgba(90, 90, 90, 0.25));
+  filter: drop-shadow(4px 4px 4px var(--shadow));
 }
 
 .continent-card .button {
@@ -90,21 +89,20 @@ export default {
   justify-content: center;
   width: 270px;           /* largura fixa */
   height: 40px;           /* altura fixa para consistência */
-  background-color: #002837;
+  background-color: var(--accent);
   padding: 5px;
   border-radius: 25px;
-  color: #D9D9D9;
-  font-family: "Josefin Sans";
+  color: var(--bg);
   font-size: 25px;
   cursor: pointer;
 }
 
 .continent-card .button:hover {
-  background-color: #295363;
+  background-color: var(--accent-hover);
 }
 
 main h1 {
-  color: #53535399;
+  color: var(--gray-color);
   font-size: 130%;
 }
 </style>

@@ -14,7 +14,7 @@
     </div>
     
     <router-link id="user" to="/login">
-          <a href="/login">Login/Register</a>
+          <a href="/login">Login</a>
           <img alt="User-Avatar" src="../assets/user-avatar.png">
     </router-link>
   </nav>
@@ -24,7 +24,7 @@
 #nav {
   display: flex;
   justify-content: space-between;
-  background-color: #002837;
+  background-color: var(--accent);
   padding: 6px 10px 0 0px;
   width: auto;
   min-height: 90px;
@@ -48,7 +48,7 @@
 }
 
 .logo h1 {
-  color: #ffffff;
+  color: var(--white);
   font-weight: medium;
   font-size: 20px;
   margin-top: 7px;
@@ -56,7 +56,7 @@
 
 #nav-list {
   display: flex;
-  border: #ffffff 2px solid;
+  border: var(--white) 2px solid;
   border-radius: 10px 10px 0px 0px;
   padding: 0;
 }
@@ -66,7 +66,7 @@
   display: flex;
   justify-content: center;
   list-style: none;
-  color: #ffffff;
+  color: var(--white);
   cursor: pointer;
   font-weight: 600;
   font-size: 16px;
@@ -74,12 +74,12 @@
 }
 
 .nav-item1:hover {
-  background-color: #014055;
+  background-color: var(--accent-hover);
   border-radius: 10px 0px 0px 0px;
 }
 
 .nav-item2:hover {
-  background-color: #014055;
+  background-color: var(--accent-hover);
   border-radius: 0px 10px 0px 0px;
 }
 
@@ -94,7 +94,7 @@
 }
 
 #user a {
-  color: #ffffff;
+  color: var(--white);
   font-size: 20px;
 }
 </style>

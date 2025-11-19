@@ -17,9 +17,9 @@
 
 <style scoped>
   .body {
-    background-color: #0028371b;
+    background-color: var(--bg-secondary);
     margin-top: 3vh;
-    border-top: #002837 5px solid;
+    border-top: 5px solid var(--accent);
     width: 100%;
     min-height: 100%;
   }
@@ -32,7 +32,7 @@
 
   h1 {
     font-size: 40px;
-    color: #002837;
+    color: var(--accent);
     text-align: center;
     margin-bottom: 30px;
   }

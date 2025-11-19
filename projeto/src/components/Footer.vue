@@ -18,7 +18,7 @@
 #footer {
     display: flex;
     flex-direction: column;
-    background-color: #002837;
+    background-color: var(--accent);
     width: auto;
     min-height: 90px;
 }
@@ -33,12 +33,12 @@
 }
 
 #top a{
-  color: #ffffff;
+  color: var(--white);
   font-size: 25px;
 }
 
 #bottom {
-    border-top: #ffffff 1px solid;
+    border-top: var(--white) 1px solid;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -51,7 +51,7 @@
 }
 
 #bottom p {
-    color:#ffffff;
+    color:var(--white);
     font-size: 12px;
 }
 </style>

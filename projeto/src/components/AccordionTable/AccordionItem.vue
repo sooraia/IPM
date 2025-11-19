@@ -43,7 +43,7 @@
 <style scoped>
 
     .accordion-item {
-        border-bottom: 1px solid #E1E8EA;
+        border-bottom: 1px solid var(--bg);
         margin-bottom: 0;
         overflow: hidden;
         width: 100%;
@@ -54,7 +54,7 @@
     }
 
     .accordion-header {
-        background-color: #002837;
+        background-color: var(--accent);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -64,14 +64,14 @@
     }
 
     .country-name {
-        color: white;
+        color: var(--white);
         font-size: 18px;
         font-weight: bold;
         margin: auto;
     }
 
     .accordion-header:hover {
-        background-color: #011d27;
+        background-color: rgb(1, 29, 39);
     }
 
     .arrow-icon {
@@ -80,13 +80,13 @@
     }
 
     .accordion-body {
-        background-color: #103644;
+        background-color: rgb(16, 54, 68);
     }
 
     .city-row {
         padding: 15px 20px;
-        border-top: 1px solid #E1E8EA;
-        color: white;
+        border-top: 1px solid var(--bg);
+        color: var(--white);
         font-size: 16px;
     }
 
