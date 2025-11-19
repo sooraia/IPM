@@ -1,5 +1,4 @@
 <template>
-  <Navbar/>
   <main>
     <SearchBar />
     <h1>OR</h1>
@@ -25,7 +24,6 @@
       </div>
     </div>
   </main>
-  <Footer/>
 </template>
 
 <script>
@@ -99,6 +97,10 @@ main {
   font-family: "Josefin Sans";
   font-size: 25px;
   cursor: pointer;
+}
+
+.continent-card .button:hover {
+  background-color: #295363;
 }
 
 main h1 {

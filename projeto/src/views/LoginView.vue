@@ -1,7 +1,6 @@
 <template>
-    <Navbar />
     <div class="center">
-        <LoginCard
+        <AuthCard
         title="Welcome Back"
         subtitle="Log in to access your personalized dashboard and tools."
         button-label="Login"
@@ -12,14 +11,11 @@
         @signUp="goSignUp"
         />
     </div>
-    <Footer />
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router';
-import Navbar from '@/components/Navbar.vue';
-import LoginCard from '@/components/AuthCard.vue';
-import Footer from '@/components/Footer.vue';
+import AuthCard from '@/components/AuthCard.vue';
 
 const router = useRouter()
 function goSignUp() {router.push('/signup')}

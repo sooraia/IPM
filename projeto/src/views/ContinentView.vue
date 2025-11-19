@@ -1,5 +1,4 @@
 <template>
-  <Navbar/>
   <div class="body">
     <div class = "body-container">
       <div class = "accordion-table-container">
@@ -8,15 +7,12 @@
       </div>
       <ContinentMap id="ContinentMap"/>
       </div>
-    <Footer/>
   </div>
 </template>
 
 <script setup>
   import AccordionTable from "@/components/AccordionTable/AccordionContainer.vue";
   import ContinentMap from "@/components/ContinentMap.vue";
-  import Navbar from "@/components/Navbar.vue";
-  import Footer from "@/components/Footer.vue";
 </script>
 
 <style scoped>
@@ -24,6 +20,7 @@
     background-color: #0028371b;
     margin-top: 3vh;
     border-top: #002837 5px solid;
+    width: 100%;
   }
 
   .body-container {

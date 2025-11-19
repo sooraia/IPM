@@ -1,7 +1,6 @@
 <template>
-    <Navbar />
     <div class="center">
-        <LoginCard
+        <AuthCard
         title="Welcome"
         subtitle="Sign Up to access your personalized dashboard and tools."
         button-label="Sign Up"
@@ -11,13 +10,10 @@
         showName
         />
     </div>
-    <Footer />
 </template>
 
 <script setup>
-import Navbar from '@/components/Navbar.vue';
-import LoginCard from '@/components/AuthCard.vue';
-import Footer from '@/components/Footer.vue';
+import AuthCard from '@/components/AuthCard.vue';
 </script>
 
 <style>
