@@ -7,7 +7,7 @@
     </div>
     <div id="bottom">
         <img alt="Vue logo"  src="../assets/uminho.jpg">
-        <p> Data: InsideAirbnb | Developed by Juliana SIlva, Soraia Pereira and Sofia Couto | University of Minho – IPM 25/26 © 2025 AirBnbStats</p>
+        <p> Data: InsideAirbnb | Developed by Juliana Silva, Soraia Pereira and Sofia Couto | University of Minho – IPM 25/26 © 2025 AirBnbStats</p>
         <img alt="Vue logo" src="../assets/logo.png">
     </div>
  </footer>
@@ -18,19 +18,18 @@
 #footer {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     background-color: #002837;
     width: auto;
-    height: 90px;
+    min-height: 90px;
 }
 
 #top {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 50px;
-  padding: 10px 700px 0 700px;
+  gap: 150px;
+  padding: 10px;
 }
 
 #top a{
@@ -45,7 +44,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 10px; 
 }
 
 #bottom img {
