@@ -7,19 +7,19 @@
       <div id="continent-grid">
         <div class="continent-card">
           <img src="../assets/africa.png"/>
-          <a class="button">Africa</a>
+          <router-link to="/exploreContinent" class="button" style="text-decoration: none">Africa</router-link>
         </div>
         <div class="continent-card">
           <img src="../assets/america.png"/>
-          <a class="button">America</a>
+          <router-link to="/exploreContinent" class="button" style="text-decoration: none">America</router-link>
         </div>
         <div class="continent-card">
           <img src="../assets/asiapacific.png"/>
-          <a class="button">Asia-Pacific</a>
+          <router-link to="/exploreContinent" class="button" style="text-decoration: none">Asia-Pacific</router-link>
         </div>
         <div class="continent-card">
           <img src="../assets/europe.png"/>
-          <a class="button">Europe</a>
+          <router-link to="/exploreContinent" class="button" style="text-decoration: none">Europe</router-link>
         </div>
       </div>
     </div>
