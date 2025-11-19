@@ -1,6 +1,3 @@
-<script>
-</script>
-
 <template>
   <div class="search-container">
     <form action="/action_page.php">
@@ -9,6 +6,9 @@
     </form>
   </div>
 </template>
+
+<script>
+</script>
 
 <style>
 .search-container {
@@ -26,6 +26,7 @@
 .search-container form {
   display: flex;
   align-items: center;
+  flex-direction: row;
   width: 100%;
   gap: 5px;
 }

@@ -1,16 +1,5 @@
-<script>
-//import './assets/main.css'
-import SearchBar from '@/components/SearchBar.vue';
-
-export default {
-  name: 'Home',
-  components: {
-    SearchBar
-  }
-}
-</script>
-
 <template>
+  <Navbar/>
   <main>
     <SearchBar />
     <h1>OR</h1>
@@ -36,13 +25,29 @@ export default {
       </div>
     </div>
   </main>
+  <Footer/>
 </template>
+
+<script>
+import SearchBar from '@/components/SearchBar.vue';
+import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
+
+export default {
+  name: 'Home',
+  components: {
+    SearchBar,
+    Navbar,
+    Footer
+  }
+}
+</script>
 
 <style>
 main {
   background-color: #E1E8EA;
   width: 100%;
-  padding: 20px;
+  padding: 20px 0 20px 0;
   display: flex;
   align-items: center;
   gap:20px;
@@ -59,7 +64,7 @@ main {
   align-items: center;
   font-size: 160%;
   background-color: #0028371A;
-  padding: 40px;
+  padding: 40px 0 40px 0;
   border-top: 4px solid #002837;
   border-bottom: 4px solid #002837;
 }
@@ -95,7 +100,6 @@ main {
   font-size: 25px;
   cursor: pointer;
 }
-
 
 main h1 {
   color: #53535399;

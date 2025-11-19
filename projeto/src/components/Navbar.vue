@@ -28,6 +28,7 @@
   padding: 6px 10px 0 0px;
   width: auto;
   height: 90px;
+  min-height: 90px;
   }
 
 .left-nav {
