@@ -18,7 +18,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
-import LoginCard from '@/components/LoginCard.vue';
+import LoginCard from '@/components/AuthCard.vue';
 import Footer from '@/components/Footer.vue';
 
 const router = useRouter()

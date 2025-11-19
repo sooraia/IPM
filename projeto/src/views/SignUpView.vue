@@ -16,7 +16,7 @@
 
 <script setup>
 import Navbar from '@/components/Navbar.vue';
-import LoginCard from '@/components/LoginCard.vue';
+import LoginCard from '@/components/AuthCard.vue';
 import Footer from '@/components/Footer.vue';
 </script>
 
