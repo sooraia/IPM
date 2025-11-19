@@ -96,7 +96,6 @@
 
 #user a {
   color: #ffffff;
-  text-decoration: none;
   font-size: 20px;
 }
 </style>

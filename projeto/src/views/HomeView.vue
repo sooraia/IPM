@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div class="body">
     <SearchBar />
     <h1>OR</h1>
     <div id="continent-selection">
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script>
@@ -41,8 +41,8 @@ export default {
 }
 </script>
 
-<style>
-main {
+<style scoped>
+.body {
   background-color: #E1E8EA;
   width: 100%;
   padding: 20px 0 20px 0;

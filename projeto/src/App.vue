@@ -38,6 +38,15 @@ html, body, #app {
   margin: 0;
 }
 
+a,
+router-link,
+.router-link-active,
+.router-link-exact-active {
+  text-decoration: none;
+  border-bottom: none;
+  outline: none;
+}
+
 #app {
   min-height: 100vh;
   display: flex;

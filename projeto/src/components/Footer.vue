@@ -34,7 +34,6 @@
 
 #top a{
   color: #ffffff;
-  text-decoration: none;
   font-size: 25px;
 }
 
