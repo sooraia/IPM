@@ -1,6 +1,17 @@
 <template>
-  <Navbar/>
-  <Footer/>
+  <div id="app">
+    <header>
+      <Navbar />
+    </header>
+
+    <main>
+      <RouterView />
+    </main>
+
+    <footer>
+      <Footer />
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -28,10 +39,17 @@ html, body, #app {
 }
 
 #app {
-  font-family: "Josefin Sans";
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  font-family: "Josefin Sans";
+}
+
+main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ensure content starts at top, not centered */
 }
 
 </style>
