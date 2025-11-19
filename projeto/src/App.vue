@@ -1,32 +1,6 @@
 <template>
-  <div id="app">
-    <header>
-      <Navbar />
-    </header>
-
-    <main>
-      <RouterView />
-    </main>
-
-    <footer>
-      <Footer />
-    </footer>
-  </div>
+  <RouterView />
 </template>
-
-<script>
-import './assets/main.css'
-import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
-
-export default {
-  name: 'App',
-  components: {
-    Navbar,
-    Footer
-  }
-}
-</script>
 
 <style>
 html, body, #app {
@@ -51,5 +25,4 @@ main {
   flex-direction: column;
   justify-content: flex-start; /* ensure content starts at top, not centered */
 }
-
 </style>
