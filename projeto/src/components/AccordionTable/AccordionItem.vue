@@ -59,6 +59,10 @@ const toggle = () => {
   width: 100%;
 }
 
+.accordion-item:last-child {
+    border-bottom: none;
+}
+
 .accordion-header {
   background-color: var(--accent);
   display: flex;
