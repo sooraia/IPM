@@ -1,11 +1,9 @@
 <template>
-  <div class="accordion-container">
-    <div class = "accordion-table">
-      <AccordionItem
-        v-for="(country, index) in countries"
-        :key="index"
-        :item="country"
-      />
+  <div class="accordion-container" :style="{ width: width, maxHeight: maxHeight }">
+    <div class="accordion-table">
+      <AccordionItem v-for="(item, index) in data" :key="index" :item="item" :header-bg-color="headerBgColor"
+        :body-bg-color="bodyBgColor" :font-weight="fontWeight" :text-align="textAlign"
+        :justify-content="justifyContent" />
     </div>
   </div>
 </template>
@@ -13,33 +11,35 @@
 <script setup>
 import AccordionItem from "./AccordionItem.vue";
 
-const countries = [
-  { country: "Australia", cities: ["Barossa Valley", "Barwon South West, Vic", " Brisbane", "Melbourne", "Mid North Coast", 
-                    "Mornington Peninsula", "Northern Rivers", "Sunshine Coast", "Sydney", "Tasmania", "Western Australia"] },
-  { country: "China", cities: ["Beijing", "Hong Kong", "Shanghai"] },
-  { country: "Japan", cities: ["Tokyo"] },
-  { country: "Singapore", cities: ["Singapore"] },
-  { country: "Taiwan", cities: ["Taipei"] },
-  { country: "Thailand", cities: ["Bangkok"] },
-];
+defineProps({
+  data: {
+    type: Array,
+    required: true,
+    default: () => []
+  },
+  maxHeight: String,
+  width: String,
+  headerBgColor: String,
+  bodyBgColor: String,
+  fontWeight: String,
+  textAlign: String,
+  justifyContent: String,
+});
+
 </script>
 
 <style scoped>
+.accordion-container {
+  margin: 0 auto;
+  overflow-y: auto;
+  border-radius: 15pt;
+}
 
-  .accordion-container {
-    width: 70%; 
-    margin: 0 auto;
-    overflow-y: auto;
-    border-radius: 15pt;
-  }
-
-  .accordion-table {
-    border-radius: 15pt;
-    box-shadow: 0 2px 8px var(--shadow);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) rgba(21, 62, 76, 0.58);
-    max-height: 55vh;
-  }
-
+.accordion-table {
+  border-radius: 15pt;
+  box-shadow: 0 2px 8px var(--shadow);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) rgba(21, 62, 76, 0.58);
+}
 </style>

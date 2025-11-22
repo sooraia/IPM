@@ -9,6 +9,8 @@
   --accent-hover: rgb(1, 64, 85);
   --gray-color: rgb(83, 83, 83);
   --shadow: rgba(90, 90, 90, 0.25);
+  --light-blue: rgba(131, 164, 177, 0.72);
+  --light-blue2: rgb(131, 164, 177);
 }
 
 #app {
