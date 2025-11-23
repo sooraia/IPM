@@ -27,6 +27,11 @@ const router = createRouter({
       path: '/exploreContinent',
       name: 'exploreContinent',
       component: ContinentView
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView
     }
   ],
 })
