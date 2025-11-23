@@ -7,15 +7,15 @@
       </div>
       <ul id="nav-list">
         <router-link to="/">
-        <li class="nav-item1" style="border-right: #ffffff 2px solid">Explore</li>
+          <li class="nav-item1" style="border-right: #ffffff 2px solid">Explore</li>
         </router-link>
         <li class="nav-item2">Dashboard</li>
       </ul>
     </div>
-    
+
     <router-link id="user" to="/login">
-          <a href="/login">Login</a>
-          <img alt="User-Avatar" src="../assets/user-avatar.png">
+      <a href="/login">Login</a>
+      <img alt="User-Avatar" src="../assets/user-avatar.png">
     </router-link>
   </nav>
 </template>
@@ -28,7 +28,7 @@
   padding: 6px 10px 0 0px;
   width: auto;
   min-height: 90px;
-  }
+}
 
 .left-nav {
   display: flex;
@@ -61,7 +61,8 @@
   padding: 0;
 }
 
-.nav-item1, .nav-item2 {
+.nav-item1,
+.nav-item2 {
   width: 120px;
   display: flex;
   justify-content: center;
@@ -98,4 +99,3 @@
   font-size: 20px;
 }
 </style>
-

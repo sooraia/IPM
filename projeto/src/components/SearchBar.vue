@@ -57,8 +57,7 @@
   color: var(--gray-color)
 }
 
-.search-container input:focus{
-    outline: 2px solid var(--accent2);
+.search-container input:focus {
+  outline: 2px solid var(--accent2);
 }
-
 </style>

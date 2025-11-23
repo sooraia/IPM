@@ -6,19 +6,19 @@
       <h2>SELECT CONTINENT</h2>
       <div id="continent-grid">
         <div class="continent-card">
-          <img src="../assets/africa.png"/>
+          <img src="../assets/africa.png" />
           <router-link to="/exploreContinent" class="button" style="text-decoration: none">Africa</router-link>
         </div>
         <div class="continent-card">
-          <img src="../assets/america.png"/>
+          <img src="../assets/america.png" />
           <router-link to="/exploreContinent" class="button" style="text-decoration: none">America</router-link>
         </div>
         <div class="continent-card">
-          <img src="../assets/asiapacific.png"/>
+          <img src="../assets/asiapacific.png" />
           <router-link to="/exploreContinent" class="button" style="text-decoration: none">Asia-Pacific</router-link>
         </div>
         <div class="continent-card">
-          <img src="../assets/europe.png"/>
+          <img src="../assets/europe.png" />
           <router-link to="/exploreContinent" class="button" style="text-decoration: none">Europe</router-link>
         </div>
       </div>
@@ -47,7 +47,7 @@ export default {
   padding: 20px 0 20px 0;
   display: flex;
   align-items: center;
-  gap:20px;
+  gap: 20px;
   box-sizing: border-box;
   flex-direction: column;
 }
@@ -87,8 +87,10 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 270px;           /* largura fixa */
-  height: 40px;           /* altura fixa para consistência */
+  width: 270px;
+  /* largura fixa */
+  height: 40px;
+  /* altura fixa para consistência */
   background-color: var(--accent);
   padding: 5px;
   border-radius: 25px;
