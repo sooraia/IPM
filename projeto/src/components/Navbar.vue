@@ -9,7 +9,9 @@
         <router-link to="/">
           <li class="nav-item1" style="border-right: #ffffff 2px solid">Explore</li>
         </router-link>
-        <li class="nav-item2">Dashboard</li>
+        <router-link to="/dashboard">
+          <li class="nav-item2">Dashboard</li>
+        </router-link>
       </ul>
     </div>
 

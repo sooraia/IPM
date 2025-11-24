@@ -4,6 +4,7 @@ import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import ContinentView from '@/views/ContinentView.vue'
 import DashboardView from '@/views/DashboardView.vue'
+import CompareCitiesView from '@/views/CompareCitiesView.vue'
 
 
 const router = createRouter({
@@ -38,8 +39,12 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView
+    },
+    {
+      path: '/compareCities',
+      name: 'CompareCities',
+      component: CompareCitiesView
     }
-
   ],
 })
 
