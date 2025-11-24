@@ -1,13 +1,15 @@
 <template>
   <div class="search-container">
     <form action="/action_page.php">
-      <input type="text" placeholder="Search City or Country.." name="search">
+      <SearchInput :placeholderText="'Search City or Country..'" />
       <img id="glass" type="submit" src="../assets/glass.png" />
     </form>
   </div>
 </template>
 
 <script>
+  import SearchInput from './SearchInput.vue';
+  export default { components: { SearchInput } };
 </script>
 
 <style scoped>
@@ -35,29 +37,7 @@
   width: 55px;
   height: 55px;
   object-fit: contain;
-}
-
-#glass {
-  width: 55px;
-  height: 55px;
-  object-fit: contain;
   cursor: pointer;
 }
 
-
-.search-container input {
-  flex: 1 1 auto;
-  height: 34px;
-  box-sizing: border-box;
-  border: 0;
-  border-radius: 20px;
-  background-color: var(--bg);
-  padding: 6px 12px;
-  font-size: 15px;
-  color: var(--gray-color)
-}
-
-.search-container input:focus {
-  outline: 2px solid var(--accent2);
-}
 </style>
