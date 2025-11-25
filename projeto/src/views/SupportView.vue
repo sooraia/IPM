@@ -62,7 +62,6 @@ function onSubmit() {
 #inner-card {
   background-color: var(--light-blue2);
   box-sizing: border-box;
-  height: 530px;
   width: 100%;
   margin: 15px 0 20px 0;
   border-radius: 20px;
@@ -125,6 +124,7 @@ form {
   font-size: 25px;
   cursor: pointer; 
   gap: 10px;
+  border: none;
 }
 
 #inner-card button:hover {
