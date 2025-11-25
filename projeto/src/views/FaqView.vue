@@ -9,7 +9,7 @@
                 </div>
                 <AccordionTable :data="faqData" :header-bg-color="'var(--light-blue)'"
                     :body-bg-color="'var(--light-blue2)'" :font-weight="'normal'" :justify-content="'flex-start'"
-                    :text-align="'left'" width="100%" :max-height="'30vh'" />
+                    :text-align="'left'" width="100%" :max-height="'40vh'" />
             </template>
         </BaseCard>
     </div>
@@ -83,6 +83,7 @@ const faqData = [
 input {
     width: 70%;
     height: 60px;
+    border-radius: 30px;
     background-color: var(--light-blue);
     background-image: url('@/assets/glass.png');
     background-repeat: no-repeat;

@@ -33,7 +33,7 @@ defineProps<{
 .base-card {
     width: 1148px;
     height: auto;
-    min-height: 496px;
+    min-height: 636px;
     display: flex;
     flex-direction: column;
     align-items: center;
