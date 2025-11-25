@@ -65,7 +65,7 @@ function onSubmit() {
   width: 100%;
   margin: 15px 0 20px 0;
   border-radius: 20px;
-  padding: 40px 60px 40px 60px;
+  padding: 30px 45px 30px 45px;
 
   display: flex;
   flex-direction: column;
@@ -74,7 +74,7 @@ function onSubmit() {
 form {
   display: flex;
   flex-direction: column;
-  gap: 30px;  
+  gap: 15px;  
   align-items: center;
 }
 
@@ -107,7 +107,7 @@ form {
 }
 
 #message {
-  height: 160px;
+  height: 140px;
   resize: none;
 }
 
@@ -124,7 +124,6 @@ form {
   font-size: 25px;
   cursor: pointer; 
   gap: 10px;
-  border: none;
 }
 
 #inner-card button:hover {

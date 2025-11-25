@@ -31,9 +31,9 @@ defineProps<{
 
 <style scoped>
 .base-card {
-    width: 1148px;
+    width: 60%;
     height: auto;
-    min-height: 636px;
+    min-height: 70%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,7 +55,7 @@ defineProps<{
 }
 
 .card-content {
-    width: var(--card-content-width, 95%);
+    width: 95%;
     flex: 1;
     display: flex;
     flex-direction: column;

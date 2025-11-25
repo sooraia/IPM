@@ -6,6 +6,7 @@ import ContinentView from '@/views/ContinentView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CompareCitiesView from '@/views/CompareCitiesView.vue'
 import SupportView from '@/views/SupportView.vue'
+import FaqView from '@/views/FaqView.vue'
 
 
 const router = createRouter({
@@ -34,7 +35,7 @@ const router = createRouter({
     {
       path: '/faq',
       name: 'faq',
-      component: () => import('@/views/FaqView.vue')
+      component: FaqView
     },
     {
       path: '/dashboard',

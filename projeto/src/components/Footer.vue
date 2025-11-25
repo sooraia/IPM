@@ -1,9 +1,9 @@
 <template>
   <footer id="footer">
     <div id="top">
-      <a href="/support" class="support-link">Support</a>
-      <a href="/terms" class="terms-link">Terms and Conditions</a>
-      <a href="/faq" class="faq-link">FAQ</a>
+      <router-link to="/support">Support</router-link>
+      <a href="/terms">Terms and Conditions</a>
+      <router-link to="/faq">FAQ</router-link>
     </div>
     <div id="bottom">
       <img alt="Vue logo" src="../assets/uminho.jpg">
