@@ -68,7 +68,8 @@ export default {
 
 #continent-grid {
   display: flex;
-  gap: 10px;
+  gap: 5px;
+  padding: 0 30px 0 30px;
 }
 
 .continent-card {

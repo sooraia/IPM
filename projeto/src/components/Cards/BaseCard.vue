@@ -55,7 +55,7 @@ defineProps<{
 }
 
 .card-content {
-    width: 85%;
+    width: var(--card-content-width, 95%);
     flex: 1;
     display: flex;
     flex-direction: column;

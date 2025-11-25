@@ -5,6 +5,7 @@ import SignUpView from '@/views/SignUpView.vue'
 import ContinentView from '@/views/ContinentView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CompareCitiesView from '@/views/CompareCitiesView.vue'
+import SupportView from '@/views/SupportView.vue'
 
 
 const router = createRouter({
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/compareCities',
       name: 'CompareCities',
       component: CompareCitiesView
+    },
+    {
+      path: '/support',
+      name: 'support',
+      component: SupportView
     }
   ],
 })
