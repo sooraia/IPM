@@ -4,7 +4,7 @@
             <template #content>
                 <div class="search-bar">
                     <form>
-                        <input type="text" placeholder="How can we help?" name="search" />
+                        <SearchInput :placeholder="'How can we help?'"/>
                     </form>
                 </div>
                 <AccordionTable :data="faqData" :header-bg-color="'var(--light-blue)'"
@@ -18,6 +18,7 @@
 <script setup>
 import AccordionTable from "@/components/AccordionTable/AccordionContainer.vue";
 import BaseCard from "@/components/Cards/BaseCard.vue";
+import SearchInput from "@/components/SearchInput.vue";
 
 const faqData = [
     {
@@ -75,21 +76,19 @@ const faqData = [
     margin-bottom: 20px;
 }
 
-.search-bar input {
+input {
     width: 70%;
     height: 60px;
-    border-radius: 30px;
     background-color: var(--light-blue);
-    color: var(--white);
-    padding: 0 16px;
-    font-size: 20px;
     background-image: url('@/assets/glass.png');
     background-repeat: no-repeat;
     background-position: right 20px center;
     background-size: 40px;
 }
 
-.search-bar input:focus {
-    outline: 2px solid var(--accent2);
+input::placeholder {
+  color: var(--white);
+  font-weight: 150;
 }
+
 </style>
