@@ -89,6 +89,7 @@ input {
 input::placeholder {
   color: var(--white);
   font-weight: 150;
+  font-size: 20px;
 }
 
 </style>
