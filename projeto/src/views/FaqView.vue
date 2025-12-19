@@ -1,6 +1,6 @@
 <template>
     <div class="faqPage">
-        <BaseCard title="Frequently Asked Questions" background-color="var(--accent)" :style="{ '--card-content-width': '85%' }">
+        <BaseCard title="Frequently Asked Questions" background-color="var(--accent)">
             <template #content>
                 <div class="search-bar">
                     <form>
@@ -73,7 +73,7 @@ const faqData = [
 }
 
 .search-bar {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #faq-content {

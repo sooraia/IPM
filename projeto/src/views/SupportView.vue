@@ -1,4 +1,6 @@
 <template>
+  <Error v-if="submittedmsg === false" errorMessage="Please fill in all required fields" @close="closePopup"/>
+  <Success v-if="submittedmsg === true" success="Support request submitted successfully " @close="closePopup" goTo="Continue Exploring" dest="/"/>
   <div class="card">
     <BaseCard title="Support" background-color="var(--accent)">
      <template #content>
@@ -28,29 +30,37 @@
 
 <script setup>
 import BaseCard from '@/components/Cards/BaseCard.vue';
+import Error from '@/components/Messages/Error.vue';
+import Success from '@/components/Messages/Success.vue';
 import { ref } from 'vue';
 
 const name = ref('');
 const email = ref('');
 const message = ref('');
-const submitmsg = false;
+const submittedmsg = ref(null);
 
 function onSubmit() {
   if (!name.value || !email.value || !message.value) {
-    submitmsg = false;
+    submittedmsg.value = false;
     return;
   }
   console.log({ name: name.value, email: email.value, message: message.value });
 
-  submitmsg = true;
+  submittedmsg.value = true;
   // reset
   name.value = '';
   email.value = '';
   message.value = '';
 }
+
+function closePopup() {
+  submittedmsg.value = null;
+}
+
 </script>
 
 <style scoped>
+
 
 .card {
     min-height: 100%;
@@ -65,7 +75,7 @@ function onSubmit() {
   width: 100%;
   margin: 15px 0 20px 0;
   border-radius: 20px;
-  padding: 40px 60px 40px 60px;
+  padding: 30px 45px 30px 45px;
 
   display: flex;
   flex-direction: column;
@@ -74,7 +84,7 @@ function onSubmit() {
 form {
   display: flex;
   flex-direction: column;
-  gap: 30px;  
+  gap: 15px;  
   align-items: center;
 }
 
@@ -107,7 +117,7 @@ form {
 }
 
 #message {
-  height: 160px;
+  height: 140px;
   resize: none;
 }
 
@@ -124,7 +134,6 @@ form {
   font-size: 25px;
   cursor: pointer; 
   gap: 10px;
-  border: none;
 }
 
 #inner-card button:hover {
