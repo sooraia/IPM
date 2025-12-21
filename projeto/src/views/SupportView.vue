@@ -1,6 +1,6 @@
 <template>
   <Error v-if="submittedmsg === false" errorMessage="Please fill in all required fields" @close="closePopup"/>
-  <Success v-if="submittedmsg === true" success="Support request submitted successfully " @close="closePopup" goTo="Continue Exploring" dest="/"/>
+  <Success v-if="submittedmsg === true" successMessage="Support request submitted successfully " @close="closePopup" goTo="Continue Exploring" dest="/"/>
   <div class="card">
     <BaseCard title="Support" background-color="var(--accent)">
      <template #content>

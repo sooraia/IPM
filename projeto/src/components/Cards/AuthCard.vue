@@ -37,7 +37,7 @@
         </template>
 
         <template #actions>
-            <button class="auth-button">
+            <button @click="handleSubmit" class="auth-button">
                 {{ buttonLabel }}
             </button>
         </template>
@@ -75,6 +75,16 @@ const password = ref('')
 const username = ref('')
 const receiveUpdates = ref(false)
 
+const handleSubmit = () => {
+    const payload = {
+        email: email.value,
+        password: password.value,
+        username: props.showName ? username.value : undefined,
+        receiveUpdates: props.isSignup ? receiveUpdates.value : undefined,
+    }
+    emit('submit', payload)
+}
+
 const handleSignUp = () => {
     emit('signUp')
 }
@@ -107,14 +117,14 @@ const handleSignUp = () => {
 #auth-password,
 #auth-username {
     width: 100%;
-    height: 30px;
+    height: 35px;
     border-radius: 20px;
+    border: none;
     background-color: var(--bg);
     color: var(--gray-color);
-    font-weight: 400;
-    padding-left: 10px;
+    padding-left: 15px;
     margin-right: 20px;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 #auth-email:focus,
