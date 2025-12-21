@@ -6,11 +6,8 @@ import ContinentView from '@/views/ContinentView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CompareCitiesView from '@/views/CompareCitiesView.vue'
 import SupportView from '@/views/SupportView.vue'
-<<<<<<< HEAD
 import CreateGraphView from '@/views/CreateGraphView.vue'
-=======
 import FaqView from '@/views/FaqView.vue'
->>>>>>> fe66aeeedf06f7ff8de4ca3ecbfd31ea789f6b08
 
 
 const router = createRouter({
