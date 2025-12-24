@@ -2,9 +2,9 @@
   <div class="login-page">
     <Error v-if="fieldsFilled === false" errorMessage="Email and password required." @close="fieldsFilled = null" />
     <Error v-if="emailExists === false" errorMessage="User not found. Please sign up first." @close="emailExists = null" />
-    <Error v-if="loginSuccess === false" errorMessage="Invalid password. Please try again." @close="loginsuccess = null" />
+    <Error v-if="loginSuccess === false" errorMessage="Invalid password. Please try again." @close="loginSuccess = null" />
     <Success v-if="loginSuccess === true" successMessage="Logged in successfully" @close="loginSuccess = null" 
-        goTo="Go to profile" dest="/login"/>
+        goTo="Go to profile" dest="/profile"/>
     <AuthCard title="Welcome Back" subtitle="Log in to access your personalized dashboard and tools."
       button-label="Login" :no-account-text="'Don\'t have an account?'" :sign-up-text="'Sign up'"
       :forgot-text="'Forgot password?'" @sign-up="goSignUp" @submit="handleLogin" />

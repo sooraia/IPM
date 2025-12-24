@@ -8,6 +8,7 @@ import CompareCitiesView from '@/views/CompareCitiesView.vue'
 import SupportView from '@/views/SupportView.vue'
 import CreateGraphView from '@/views/CreateGraphView.vue'
 import FaqView from '@/views/FaqView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 
 const router = createRouter({
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SignUpView,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
     },
     {
       path: '/explore',

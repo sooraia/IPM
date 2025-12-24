@@ -1,7 +1,7 @@
 <template>
   <div class="signup-page">
     <Error v-if="emailExists === true" errorMessage="This email address is already in use." @close="emailExists = null" />
-    <Error v-if="fieldsFilled === false" errorMessage="Email, password and username required." @close="fieldsFilled = null" />
+    <Error v-if="fieldsFilled === false" errorMessage="Email, password and name required." @close="fieldsFilled = null" />
     <Success v-if="registerSuccess === true" successMessage="Your account has been successfully created!" @close="registerSuccess = null" 
         goTo="Log in" dest="/login"/>
     <AuthCard title="Welcome" subtitle="Sign Up to access your personalized dashboard and tools." button-label="Sign Up"
@@ -21,14 +21,7 @@ const emailExists =  ref(null);
 const fieldsFilled =  ref(null);
 const registerSuccess =  ref(null);
 
-
-async function handleSignUp(payload) {
-  const { email, password, username, receiveUpdates } = payload;
-  if (!email || !password || (username === undefined || username === '')) {
-    fieldsFilled = false;
-    return;
-  }
-
+async function validateEmail(email) {
   try {
     const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(email)}`);
     const data = await response.json();
@@ -43,12 +36,24 @@ async function handleSignUp(payload) {
   } finally {
     console.log("Verificação de email terminada");
   }
+}
+
+async function handleSignUp(payload) {
+  const { email, password, name, receiveUpdates } = payload;
+  if (!email || !password || (name === undefined || name === '')) {
+    fieldsFilled = false;
+    return;
+  }
+
+  await validateEmail(email);
+  if (emailExists.value === true) {
+    return;
+  }
 
   const data = {
-    id: username,
     email: email,
     password: password,
-    username: username,
+    name: name,
     receive_updates: receiveUpdates,
   };
   try {
