@@ -1,25 +1,10 @@
 {
   "profiles.users": [
     {
-      "id": "user_0",
-      "name": "Jose Silva",
+      "id": "a66e",
       "email": "josesilva.arquitetura@gmail.com",
-      "password": "senha123",
-      "area_interest": "Arquitetura",
-      "profile_picture": "https://example.com/jose_silva.jpg"
-    },
-    {
-      "id": "mariana_arq",
-      "email": "mariana1arquitetura@gmail.com",
-      "password": "mypassword",
-      "username": "mariana_arq",
-      "receive_updates": true
-    },
-    {
-      "id": "paulo_123",
-      "email": "pauloworkjob@gmail.com",
-      "password": "paulinho",
-      "username": "paulo_123",
+      "password": "silva123",
+      "name": "José Silva",
       "receive_updates": false
     }
   ],

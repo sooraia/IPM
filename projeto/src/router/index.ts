@@ -9,6 +9,7 @@ import SupportView from '@/views/SupportView.vue'
 import CreateGraphView from '@/views/CreateGraphView.vue'
 import FaqView from '@/views/FaqView.vue'
 import AlojamentosView from '@/views/AlojamentosView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 
 const router = createRouter({
@@ -30,9 +31,13 @@ const router = createRouter({
       component: SignUpView,
     },
     {
-      path: '/exploreContinent',
-      name: 'exploreContinent',
-      component: ContinentView
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
+    },
+    {
+      path: '/explore',
+      name: 'explore',
     },
     {
       path: '/faq',

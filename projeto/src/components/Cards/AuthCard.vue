@@ -13,8 +13,8 @@
                 </div>
 
                 <div v-if="showName" class="input-group">
-                    <label for="auth-username">Username:</label>
-                    <input type="text" id="auth-username" v-model="username" placeholder="Insert your username" />
+                    <label for="auth-name">Name:</label>
+                    <input type="text" id="auth-name" v-model="name" placeholder="Insert your name" />
                 </div>
             </div>
 
@@ -67,19 +67,19 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     signUp: []
-    submit: [{ email: string; password: string; username?: string; receiveUpdates?: boolean }]
+    submit: [{ email: string; password: string; name?: string; receiveUpdates?: boolean }]
 }>()
 
 const email = ref('')
 const password = ref('')
-const username = ref('')
+const name = ref('')
 const receiveUpdates = ref(false)
 
 const handleSubmit = () => {
     const payload = {
         email: email.value,
         password: password.value,
-        username: props.showName ? username.value : undefined,
+        name: props.showName ? name.value : undefined,
         receiveUpdates: props.isSignup ? receiveUpdates.value : undefined,
     }
     emit('submit', payload)
@@ -115,7 +115,7 @@ const handleSignUp = () => {
 
 #auth-email,
 #auth-password,
-#auth-username {
+#auth-name {
     width: 100%;
     height: 35px;
     border-radius: 20px;
@@ -129,7 +129,7 @@ const handleSignUp = () => {
 
 #auth-email:focus,
 #auth-password:focus,
-#auth-username:focus {
+#auth-name:focus {
     outline: 2px solid var(--accent2);
 }
 
