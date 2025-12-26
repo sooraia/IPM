@@ -36,8 +36,9 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/explore',
-      name: 'explore',
+      path: '/exploreContinent',
+      name: 'exploreContinent',
+      component: ContinentView
     },
     {
       path: '/faq',
