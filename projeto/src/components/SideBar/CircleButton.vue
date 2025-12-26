@@ -1,5 +1,5 @@
 <template>
-  <div class="checkbox" @click="toggleSelection">
+  <div class="button" @click="toggleSelection">
     
     <div 
     class="circle" 
@@ -24,7 +24,7 @@ import { ref } from 'vue';
 </script>
 
 <style scoped>
-.checkbox{
+.button{
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -38,11 +38,22 @@ import { ref } from 'vue';
   border: 2px solid var(--accent); 
   background-color: transparent;
   cursor: pointer;
-  transition: all 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.active {
+.circle::after {
+  content: '';
+  width: 12px;
+  height: 12px;
   background-color: var(--accent);
+  border-radius: 50%;
+  transform: scale(0);
+}
+
+.circle.active::after {
+  transform: scale(1);
 }
 
 .texto {
