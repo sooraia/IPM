@@ -29,8 +29,6 @@ const countriesData =
 
 </script>
 
-
-
 <style scoped>
 .body {
   background-color: var(--bg-secondary);

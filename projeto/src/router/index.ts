@@ -8,6 +8,7 @@ import CompareCitiesView from '@/views/CompareCitiesView.vue'
 import SupportView from '@/views/SupportView.vue'
 import CreateGraphView from '@/views/CreateGraphView.vue'
 import FaqView from '@/views/FaqView.vue'
+import AlojamentosView from '@/views/AlojamentosView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
 
@@ -37,7 +38,6 @@ const router = createRouter({
     {
       path: '/explore',
       name: 'explore',
-      component: ContinentView
     },
     {
       path: '/faq',
@@ -63,6 +63,11 @@ const router = createRouter({
       path: '/graph',
       name: 'graph',
       component: CreateGraphView
+    },
+    {
+      path: '/alojamentos',
+      name: 'alojamentos',
+      component: AlojamentosView
     }
   ],
 })
