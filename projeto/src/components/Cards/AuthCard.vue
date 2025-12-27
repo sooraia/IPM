@@ -13,8 +13,8 @@
                 </div>
 
                 <div v-if="showName" class="input-group">
-                    <label for="auth-username">Username:</label>
-                    <input type="text" id="auth-username" v-model="username" placeholder="Insert your username" />
+                    <label for="auth-name">Name:</label>
+                    <input type="text" id="auth-name" v-model="name" placeholder="Insert your name" />
                 </div>
             </div>
 
@@ -37,7 +37,7 @@
         </template>
 
         <template #actions>
-            <button class="auth-button">
+            <button @click="handleSubmit" class="auth-button">
                 {{ buttonLabel }}
             </button>
         </template>
@@ -67,13 +67,23 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     signUp: []
-    submit: [{ email: string; password: string; username?: string; receiveUpdates?: boolean }]
+    submit: [{ email: string; password: string; name?: string; receiveUpdates?: boolean }]
 }>()
 
 const email = ref('')
 const password = ref('')
-const username = ref('')
+const name = ref('')
 const receiveUpdates = ref(false)
+
+const handleSubmit = () => {
+    const payload = {
+        email: email.value,
+        password: password.value,
+        name: props.showName ? name.value : undefined,
+        receiveUpdates: props.isSignup ? receiveUpdates.value : undefined,
+    }
+    emit('submit', payload)
+}
 
 const handleSignUp = () => {
     emit('signUp')
@@ -105,21 +115,21 @@ const handleSignUp = () => {
 
 #auth-email,
 #auth-password,
-#auth-username {
+#auth-name {
     width: 100%;
-    height: 30px;
+    height: 35px;
     border-radius: 20px;
+    border: none;
     background-color: var(--bg);
     color: var(--gray-color);
-    font-weight: 400;
-    padding-left: 10px;
+    padding-left: 15px;
     margin-right: 20px;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 #auth-email:focus,
 #auth-password:focus,
-#auth-username:focus {
+#auth-name:focus {
     outline: 2px solid var(--accent2);
 }
 

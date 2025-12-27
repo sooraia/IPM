@@ -14,6 +14,10 @@
   --light-blue2: rgb(131, 164, 177);
   --light-accent2: rgba(242, 144, 47, 1);
   --metrics-text: rgba(118, 118, 118, 1);
+  --accent2-opacity2: rgba(171, 135, 109, 0.2);
+  --accent2-opacity5: rgba(218, 170, 136, 0.5);
+  --label-bg-blue: rgba(77, 143, 168, 0.3);
+  --label-text-blue: rgb(77, 143, 168);
 }
 
 #app {

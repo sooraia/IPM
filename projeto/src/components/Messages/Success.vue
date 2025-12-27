@@ -2,7 +2,7 @@
     <div id="screen" @click="close">
         <div id="success-overlay" @click.stop>
             <img src="../../assets/tick.png" alt="Success"/>
-            <div id="message" >{{ success }}</div>
+            <div id="message" >{{ successMessage }}</div>
             <router-link :to="dest">
                 <button id="continue-button">{{ goTo }} &#10140</button>
             </router-link>
@@ -13,7 +13,7 @@
 <script setup>
 
 defineProps({
-    success: {
+    successMessage: {
         type: String,
         required: true
     },

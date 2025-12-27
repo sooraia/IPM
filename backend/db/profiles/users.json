@@ -1,0 +1,10 @@
+[
+  {
+    "id": "user_0",
+    "name": "Jose Silva",
+    "email": "josesilva.arquitetura@gmail.com",
+    "password": "senha123",
+    "area_interest": "Arquitetura",
+    "profile_picture": "https://example.com/jose_silva.jpg"
+  }
+]

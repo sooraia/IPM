@@ -15,12 +15,30 @@
       </ul>
     </div>
 
-    <router-link id="user" to="/login">
-      <a href="/login">Login</a>
+    <router-link v-if="loggedIn === false" id="user" to="/login">
+      <p>Login</p>
+      <img alt="User-Avatar" src="../assets/user-avatar.png">
+    </router-link>
+
+    <router-link v-if="loggedIn === true" id="user" to="/profile">
+      <p>{{ name }}</p>
       <img alt="User-Avatar" src="../assets/user-avatar.png">
     </router-link>
   </nav>
 </template>
+
+<script setup>
+import { useAuthStore } from '@/stores/auth';
+import { computed } from 'vue'
+
+const auth = useAuthStore()
+const loggedIn = computed(() => auth.user!=null)
+const name = computed(() => {
+  if (auth.user!=null) return auth.user.name;
+  else return '';})
+
+
+</script>
 
 <style scoped>
 #nav {
@@ -96,7 +114,7 @@
   height: 40px;
 }
 
-#user a {
+#user p {
   color: var(--white);
   font-size: 20px;
 }

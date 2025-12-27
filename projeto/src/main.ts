@@ -1,5 +1,5 @@
-import './assets/main.css'
 import './assets/base.css'
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -11,5 +11,9 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+
+const { useAuthStore } = await import('./stores/auth')
+const auth = useAuthStore()
+auth.restoreFromStorage()
 
 app.mount('#app')
