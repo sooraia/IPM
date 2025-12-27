@@ -36,9 +36,9 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
-import RankingFilters from '@/components/filters/RankingFilters.vue'
-import TrendsFilters from '@/components/filters/TrendsFilters.vue'
-import PieChartFilters from '@/components/filters/PieChartFilters.vue'
+import RankingFilters from '@/components/ChartFilters/RankingFilters.vue'
+import TrendsFilters from '@/components/ChartFilters/TrendsFilters.vue'
+import PieChartFilters from '@/components/ChartFilters/PieChartFilters.vue'
 const chartType = ref('Ranking')
 const selectedMetric = ref('Property Type')
 const sizeRes = ref('Entire City')
