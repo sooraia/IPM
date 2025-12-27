@@ -31,11 +31,12 @@
   flex-direction: row;
   width: 100%;
   gap: 5px;
+  height: 90%;
 }
 
 #glass {
-  width: 55px;
-  height: 55px;
+  height: 120%;
+  margin: 10px;
   object-fit: contain;
   cursor: pointer;
 }

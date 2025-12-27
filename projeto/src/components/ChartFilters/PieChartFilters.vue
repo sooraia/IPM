@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="category-container">
-        <p class="subtitle">Price (per night):</p>
+        <p class="subtitle">Price (per night): {{ maxPrice }}</p>
         <div class="price-slider-container">
         <span class="price-label">0€</span>
         
@@ -55,14 +55,24 @@
     import TitleContainer from '../TitleFilters.vue';
     import SearchInput from '../SearchInput.vue';
 
+    const maxPrice = computed({
+        get: () => props.maxPriceValue,
+        set: (val) => emit('update:maxPriceValue', Number(val))
+    })
+
     //forma como um componente pai envia dados para um componente filho
     const props = defineProps({ 
         metricsValue: { type: String, default: 'Property Type' },
-        sizeRes: { type: String, default: 'Entire City'}
+        sizeRes: { type: String, default: 'Entire City'},
+        maxPriceValue: { type: Number, default: 1500 }
     })
 
     //forma do filho responder ao pai ou pedir que ele mude alguma coisa
-    const emit = defineEmits(['update:metricsValue', 'update:sizeRes'])
+    const emit = defineEmits([
+        'update:metricsValue', 
+        'update:sizeRes',
+        'update:maxPriceValue'
+    ])
 
     const metrics = ["Property Type", "Reviews", "Host Type", "License Status"]
     const metricSelected = computed({
@@ -124,9 +134,31 @@
     }
 
     .input-neighbourhood:disabled {
-        opacity: 0.6;
+        opacity: 0.5;
         cursor: not-allowed;
     }
 
-    
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 2px;
+        background: var(--accent2);
+        border-radius: 5px;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background: #d9d9d9;
+        border: 2px solid #f47933;
+        border-radius: 50%;
+    }
+
+    .price-slider-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 0 15px;
+    }
 </style>

@@ -7,7 +7,8 @@
                 <PieChartFilters 
                     v-else-if="chartType === 'PieChart'" 
                     v-model:metricsValue="selectedMetric" 
-                    v-model:sizeRes="sizeRes" 
+                    v-model:sizeRes="sizeRes"a
+                    v-model:maxPriceValue="priceLimit" 
                 />
             </div>
         </div>
@@ -41,6 +42,7 @@ import PieChartFilters from '@/components/filters/PieChartFilters.vue'
 const chartType = ref('Ranking')
 const selectedMetric = ref('Property Type')
 const sizeRes = ref('Entire City')
+const priceLimit = ref(1500)
 
 const metrics = ["Ranking", "Trends", "PieChart"]
 
@@ -101,7 +103,7 @@ const shareText = computed(() => {
 
     .filter-column{
         width: 20%;
-        padding: 30px 15px;
+        padding: 30px 35px;
         overflow-y: scroll;
     }
 
