@@ -17,7 +17,7 @@
         </div>
         <h4 style="text-align: center;">or</h4>
         <h4>Select a preset range:</h4>
-        <div style="gap: 16px; display: flex; justify-content: center;">
+        <div style="gap: 10px; display: flex; justify-content: center; font-size: 15px;">
             <label>3 months</label>
             <label>6 months</label>
             <label>1 year</label>

@@ -6,10 +6,10 @@ import ContinentView from '@/views/ContinentView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CompareCitiesView from '@/views/CompareCitiesView.vue'
 import SupportView from '@/views/SupportView.vue'
-import CreateGraphView from '@/views/CreateGraphView.vue'
 import FaqView from '@/views/FaqView.vue'
 import AlojamentosView from '@/views/AlojamentosView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import CreateGraphView from '@/views/CreateGraphView.vue'
 
 
 const router = createRouter({
@@ -61,14 +61,14 @@ const router = createRouter({
       component: SupportView
     },
     {
-      path: '/graph',
-      name: 'graph',
-      component: CreateGraphView
-    },
-    {
       path: '/alojamentos',
       name: 'alojamentos',
       component: AlojamentosView
+    },
+    {
+      path: '/createGraph',
+      name: 'createGraph',
+      component: CreateGraphView
     }
   ],
 })

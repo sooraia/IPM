@@ -2,7 +2,7 @@
   <div id="app">
     <Navbar />
 
-    <main>
+    <main class = "main-content">
       <RouterView />
     </main>
 
@@ -14,3 +14,17 @@
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
 </script>
+
+<style>
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+.main-content {
+    flex: 1;
+    height: calc(100vh - 180px);
+}
+</style>

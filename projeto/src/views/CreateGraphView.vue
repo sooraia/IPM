@@ -2,12 +2,22 @@
     <div class = "grid-container">
         <div class="filter-column">
             <div class="Filters">
-                <RankingFilters v-if="chartType === 'Ranking'" v-model:metricsValue="selectedMetric" v-model:sizeRes="sizeRes"/>
-                <TrendsFilters v-else-if="chartType === 'Trends'" v-model="selectedMetric"/>
+                <RankingFilters 
+                    v-if="chartType === 'Ranking'" 
+                    v-model:metricsValue="selectedMetric" 
+                    v-model:sizeRes="sizeRes"
+                />
+                
+                <TrendsFilters 
+                    v-else-if="chartType === 'Trends'" 
+                    v-model:metricsValue="selectedMetric" 
+                    v-model:sizeRes="sizeRes"
+                />
+                
                 <PieChartFilters 
                     v-else-if="chartType === 'PieChart'" 
                     v-model:metricsValue="selectedMetric" 
-                    v-model:sizeRes="sizeRes"a
+                    v-model:sizeRes="sizeRes"
                     v-model:maxPriceValue="priceLimit" 
                 />
             </div>
@@ -34,7 +44,7 @@
 
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
 import RankingFilters from '@/components/ChartFilters/RankingFilters.vue'
 import TrendsFilters from '@/components/ChartFilters/TrendsFilters.vue'
@@ -72,9 +82,17 @@ const shareText = computed(() => {
 
 
 <style scoped>
+    .Filters{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
     .grid-container{
         display: flex;
         width: 99%;
+        max-height: 78vh;
     }
 
     .searchbar{
@@ -85,11 +103,6 @@ const shareText = computed(() => {
         margin-bottom: 30px;
     }
 
-    #titleContainer{
-        margin-bottom: 12px;
-        font-size: 20px;
-    }
-
     .subtitle{
         font-size: 18px;
         color: var(--accent);
@@ -97,14 +110,12 @@ const shareText = computed(() => {
         margin-bottom: 10px;
     }
 
-    .category{
-        margin-bottom: 20px;
-    }
-
     .filter-column{
         width: 20%;
-        padding: 30px 35px;
-        overflow-y: scroll;
+        padding: 25px 7px;
+        overflow-y: auto;
+        max-height: 100%;
+        box-sizing: border-box;
     }
 
     .main-column{
@@ -120,16 +131,6 @@ const shareText = computed(() => {
     .charts-container{
         display: flex;
         flex-direction: column;
-    }
-
-    label{
-        margin: 3px 15px;
-        color: var(--metrics-text);
-        font-weight: 500;
-    }
-
-    .select-metric{
-        accent-color: var(--accent);
     }
 
     .share-title{
