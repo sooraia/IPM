@@ -4,7 +4,8 @@
         <p class="subtitle">Show Metrics:</p>
         <CategoryMetrics 
             :metrics="metrics" 
-            :metricSelected="metricSelected"/>
+            v-model:metricSelected="metricSelectedT"
+        />
     </div>
     
     <LabelMenu title="Advanced Filters" id="labelMenu"/>
@@ -64,9 +65,11 @@ const emit = defineEmits([
     'update:propertyTypeSelected'
 ])
 
-const metricSelected = computed({
+const metricSelectedT = computed({
     get: () => props.metricsValue,
-    set: (val) => emit('update:metricsValue', val)
+    set: (val) => 
+        emit('update:metricsValue', val)
+    
 })
 
 const sizeResSelected = computed({
@@ -83,7 +86,7 @@ const aggregationType = ref('Monthly');
 const priceRange = ref([0, 1500]);
 
 function resetFilters() {
-    metricSelected.value = 'Average Price Per Night'
+    selectedMetricT.value = 'Average Price Per Night'
     sizeResSelected.value = 'Entire City'
     propertyTypeComputed.value = 'Entire Home'
     aggregationType.value = 'Monthly'

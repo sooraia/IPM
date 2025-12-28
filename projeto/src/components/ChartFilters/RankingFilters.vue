@@ -4,7 +4,7 @@
         <p class="subtitle">Show Metrics:</p>
         <CategoryMetrics 
             :metrics="metrics" 
-            :metricSelected="metricSelected"/>
+            v-model:metricSelected="metricSelectedR"/>
     </div>
     
     <LabelMenu title="Advanced Filters" id="labelMenu"/>
@@ -49,6 +49,12 @@
     import CategoryMetrics from '../SideBar/CategoryMetrics.vue';
     import ResetButton from '../SideBar/ResetButton.vue';
 
+    const priceRange = ref([0, 1500]);
+    const source = [1,2,3,4,5,6,7,8,9,10];
+    const metrics = ["Number of Listings", "Average Price per Night", "Occupancy Rate", 
+                     "Average Review Score", "License Status"];
+    const property_type = ["Entire Home", "Private Room", "Shared Room", "Hotel Room"];
+
     const props = defineProps({ 
         metricsValue: { type: String, default: 'Number of Listings' },
         n_rowsValue: { type: Number, default: 1 },
@@ -61,7 +67,7 @@
         'update:propertyTypeSelected'
     ])
 
-    const metricSelected = computed({
+    const metricSelectedR = computed({
         get: () => props.metricsValue,
         set: (val) => emit('update:metricsValue', val)
     })
@@ -76,19 +82,9 @@
         set: (val) => emit('update:propertyTypeSelected', val)
     })
 
-    const sizeResSelected = computed({
-        get: () => props.sizeRes,
-        set: (val) => emit('update:sizeRes', val)
-    })
-
-    const priceRange = ref([0, 1500]);
-    const source = [1,2,3,4,5,6,7,8,9,10];
-    const metrics = ["Number of Listings", "Average Price per Night", "Occupancy Rate", 
-                     "Average Review Score", "License Status"];
-    const property_type = ["Entire Home", "Private Room", "Shared Room", "Hotel Room"];
 
     function resetFilters() {
-        metricSelected.value = 'Number of Listings'
+        metricSelectedR.value = 'Number of Listings'
         propertyTypeComputed.value = 'Entire Home'
         nRowsSelected.value = 1
         priceRange.value = [0, 1500]

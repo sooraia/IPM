@@ -4,21 +4,22 @@
             <div class="Filters">
                 <RankingFilters 
                     v-if="chartType === 'Ranking'" 
-                    v-model:metricsValue="selectedMetric" 
+                    v-model:metricsValue="metricSelectedR" 
                     v-model:sizeRes="sizeRes"
+                    v-model:propertyTypeSelected="propertyType"
+                    v-model:n_rowsValue="n_rows"
                 />
                 
                 <TrendsFilters 
                     v-else-if="chartType === 'Trends'" 
-                    v-model:metricsValue="selectedMetric" 
+                    v-model:metricsValue="metricSelectedT" 
                     v-model:sizeRes="sizeRes"
                 />
                 
                 <PieChartFilters 
                     v-else-if="chartType === 'PieChart'" 
-                    v-model:metricsValue="selectedMetric" 
+                    v-model:metricsValue="metricSelectedP" 
                     v-model:sizeRes="sizeRes"
-                    v-model:maxPriceValue="priceLimit" 
                 />
             </div>
         </div>
@@ -30,6 +31,11 @@
                     <input type="radio" name="chartType" :value="t" v-model="chartType" />
                     {{ t }}
                 </label>
+
+
+                <p>Size Results: {{ sizeRes }} </p>
+                <p>propertyType: {{ propertyType }}</p>
+                <p>rows: {{ n_rows }}</p>
             </div>
         </div>
         
@@ -49,10 +55,14 @@ import SearchBar from '@/components/SearchBar.vue'
 import RankingFilters from '@/components/ChartFilters/RankingFilters.vue'
 import TrendsFilters from '@/components/ChartFilters/TrendsFilters.vue'
 import PieChartFilters from '@/components/ChartFilters/PieChartFilters.vue'
+
 const chartType = ref('Ranking')
-const selectedMetric = ref('Property Type')
+const metricSelectedP = ref('Property Type')
+const metricSelectedT = ref('Average Price Per Night')
+const metricSelectedR = ref('Number of Listings')
 const sizeRes = ref('Entire City')
-const priceLimit = ref(1500)
+const propertyType = ref('Entire Home')
+const n_rows = ref(1)
 
 const metrics = ["Ranking", "Trends", "PieChart"]
 
@@ -63,20 +73,18 @@ const shareDescriptions = {
 }
 
 const shareTitle = computed(() => {
-    if (!selectedMetric.value) return chartType.value
     switch (chartType.value) {
         case 'Ranking':
-            return `Top Neighbour hoods by ${selectedMetric.value}`
+            return `Top Neighbour hoods by ${metricSelectedR.value}`
         case 'Trends':
-            return `${selectedMetric.value} Over Time`
+            return `${metricSelectedT.value} Over Time`
         case 'PieChart':
-            return `City ${selectedMetric.value} Distribution`
+            return `City ${metricSelectedP.value} Distribution`
     }
 })
 
 const shareText = computed(() => {
-    const base = shareDescriptions[chartType.value] ?? ''
-    return selectedMetric.value ? `${base} Métrica selecionada: ${selectedMetric.value}.` : base
+    return shareDescriptions[chartType.value] || ""
 })
 </script>
 

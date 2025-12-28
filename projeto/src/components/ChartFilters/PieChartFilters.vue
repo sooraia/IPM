@@ -3,7 +3,7 @@
     <div class="category-container">  
         <p class="subtitle">Show Proportions by:</p>
         <CategoryMetrics 
-            v-model:metricSelected="metricSelected" 
+            v-model:metricSelected="metricSelectedP" 
             :metrics = "metricsList" 
         />
     </div>
@@ -54,7 +54,8 @@ import ResetButton from '../SideBar/ResetButton.vue';
     ])
 
     const metricsList = ["Property Type", "Reviews", "Host Type", "License Status"]
-    const metricSelected = computed({
+
+    const metricSelectedP = computed({
         get: () => props.metricsValue,
         set: (val) => emit('update:metricsValue', val)
     })
@@ -65,7 +66,7 @@ import ResetButton from '../SideBar/ResetButton.vue';
     })
 
     function resetFilters(){
-        metricSelected.value = 'Property Type'
+        metricSelectedP.value = 'Property Type'
         sizeResSelected.value = 'Entire City'
         priceRange.value = [0, 1500]
     }
