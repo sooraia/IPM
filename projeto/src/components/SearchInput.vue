@@ -1,15 +1,28 @@
 <template>
-  <input type="text" :placeholder="placeholderText" name="search" :disabled="disabled"/>
+  <input type="text" v-model="current" :placeholder="placeholderText" name="search" :disabled="disabled" />
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 const props = defineProps({
     placeholderText: {
         type: String,
         required: true
     },
-    disabled: Boolean
+    value: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    disabled:{
+        type: Boolean,
+        required: false,
+        default: false
+    }
 });
+
+const current = ref(props.value);
 </script>
 
 <style scoped>
