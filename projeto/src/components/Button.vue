@@ -1,7 +1,8 @@
 <template>
-    <button type = submit>
-        {{ buttonLabel }}
-      </button> 
+    <button class="custom-button">
+        <img v-if="icon" :src="icon" class="btn-icon "/>
+        <span>{{ buttonLabel }}</span>
+    </button>
 </template>
 
 <script setup>
@@ -9,19 +10,30 @@ defineProps({
     buttonLabel: {
         type: String,
         required: true
+    },
+    icon: {
+        type: String,
+        required: false
     }
 })
 </script>
 
 <style scoped>
-    button {
-        padding: 15px 30px;
-        height: 48px;
-        flex-shrink: 0;
-        margin: 1.5rem;
-        border: 0;
-        border-radius: 25px;
-        font-size: large;
-    }
+.custom-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 30px;
+    height: 48px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 25px;
+    font-size: large;
+}
+
+.btn-icon {
+    object-fit: contain;
+}
 
 </style>

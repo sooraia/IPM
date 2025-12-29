@@ -7,7 +7,7 @@
         <div class="filtros">
             <DateRange />
             <div>
-                <h4>Price per night:</h4>
+                <p class="subtitle">Price per night:</p>
                 <RangeBar v-model="rangebar.priceRange" 
                         :min="0" 
                         :max="1500"
@@ -17,15 +17,15 @@
             <CircleButton text="No License"/>
             <CircleButton text="Host is a SuperHost"/>
             <div>
-                <h4>Property Type:</h4>
+                <p class="subtitle">Property Type:</p>
                 <Dropdown />
             </div>
             <div>
-                <h4>Rating Score:</h4>
+                <p class="subtitle">Rating Score:</p>
                 <StarRating v-model="ratingNumber"/>
             </div>
             <div>
-                <h4>Annual Occupancy:</h4>
+                <p class="subtitle">Annual Occupancy:</p>
                 <RangeBar v-model="rangebar.annualOccupancy" 
                         :min="0" 
                         :max="365"
@@ -33,13 +33,13 @@
                         :currency="false"/>
             </div>
             <div>
-                <h4>Rooms and beds:</h4>
+                <p class="subtitle">Rooms and beds:</p>
                 <Add texto="Rooms" v-model="roomsData.rooms" :min="0" :max="10"/>
                 <Add texto="Beds" v-model="roomsData.beds" :min="0" :max="10"/>
                 <Add texto="Bathrooms" v-model="roomsData.bathrooms" :min="0" :max="10"/>
             </div>
             <div>
-                <h4>Amenities:</h4>
+                <p class="subtitle">Amenities:</p>
                 <div class="amenities-list">
                     
                     <Checkbox 
@@ -60,14 +60,16 @@
                 </div>
             </div>
             <div>
-                <h4>Show Results for:</h4>
-                <div style="display: flex; flex-direction: column; gap: 4px; padding-left: 8px;">
-                    <CircleButton text="Entire City"/>
-                    <CircleButton text="Neighborhood"/>
-                </div>
+                <p class="subtitle">Show Results for:</p>
+                <SizeResults v-model:sizeRes="sizeResSelected"/>
             </div>
         </div>
+        <div class="buttons">
+            <Button buttonLabel="Reset Filters" @click="resetFilters" id="button1" :icon="resetIcon"/>
+            <Button buttonLabel="Save Filters" id="button2" :icon="saveIcon"/>
+        </div>
     </section>
+    
 </template>
 
 <script setup>
@@ -80,12 +82,17 @@ import RangeBar from './SideBar/RangeBar.vue';
 import DateRange from './SideBar/DateRange.vue';
 import Add from './SideBar/Add.vue';
 import Checkbox from './SideBar/Checkbox.vue';
+import Button from './Button.vue';
+import SizeResults from './SideBar/SizeResults.vue';
+import resetIcon from '../assets/ResetFilters.png';
+import saveIcon from '../assets/SaveFilters.png';
 
 const ratingNumber = ref(0);
 const rangebar = ref({
     priceRange: [0, 1500],
     annualOccupancy: [0, 365]
 });
+
 const roomsData = ref({
     rooms: 0,
     beds: 0,
@@ -110,6 +117,20 @@ const displayedAmenities = computed(() => {
     }
     return amenities.value.slice(0, 5);
 });
+
+const sizeResSelected = ref('Entire City');
+
+function resetFilters(){
+    ratingNumber.value = 0;
+    rangebar.value.priceRange = [0, 1500];
+    rangebar.value.annualOccupancy = [0, 365];
+    roomsData.value.rooms = 0;
+    roomsData.value.beds = 0;
+    roomsData.value.bathrooms = 0;
+    amenities.value.forEach(item => item.value = false);
+    sizeResSelected.value = 'Entire City';
+}
+
 </script>
 
 <style scoped>
@@ -119,6 +140,13 @@ const displayedAmenities = computed(() => {
     flex-direction: column;
     justify-content: center;
     gap: 20px;
+    margin: 10px 15px 10px 10px; 
+}
+
+.subtitle{
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 5px;
 }
 
 .title-menu {
@@ -158,4 +186,43 @@ const displayedAmenities = computed(() => {
 .show-more-btn:hover {
     color: var(--accent2);
 }
+
+.select-metric{
+        accent-color: var(--accent);
+        margin-top: 5px;
+}
+.search-wrapper {
+        width: 85%;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: 35px;
+    }
+.input-neighbourhood{
+        background-color: rgba(217, 217, 217, 1);
+        margin-top: 10px;
+        align-self: center;
+    }
+
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+#button1 {
+    border: 2px solid var(--accent);
+    cursor: pointer;
+    width: 200px;
+}
+
+#button2 {
+    background: var(--light-accent2);
+    color: white;
+    cursor: pointer;
+    width: 200px;
+}
+    
 </style>
