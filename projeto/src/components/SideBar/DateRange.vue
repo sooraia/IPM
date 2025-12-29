@@ -1,22 +1,22 @@
 <template>
     <div class="data">
-        <h4>Select date range:</h4>           
+        <p class="subtitle">Select date range:</p>           
         <div style="display: flex; flex-direction: row; padding-left: 8px; align-items: center;">
-            <span for="date-from" style="padding-right: 8px">From:</span>
+            <span for="date-from" style="padding-right: 8px; font-weight: 350;">From:</span>
             <input 
             id="date-from"
             type="date"
             />
         </div>
         <div style="display: flex; flex-direction: row; padding-left: 8px; align-items: center;">
-            <span for="date-to" style="padding-right: 8px">To:</span>
+            <span for="date-to" style="padding-right: 8px; font-weight: 350;">To:</span>
             <input 
             id="date-to"
             type="date" 
             />
         </div>
-        <h4 style="text-align: center;">or</h4>
-        <h4>Select a preset range:</h4>
+        <p class="subtitle" style="text-align: center;">or</p>
+        <p class="subtitle">Select a preset range:</p>
         <div style="gap: 10px; display: flex; justify-content: center; font-size: 15px;">
             <label>3 months</label>
             <label>6 months</label>
@@ -48,6 +48,12 @@ label {
     color: var(--label-text-blue); 
     border-radius: 8px; 
     padding: 0 8px;
+}
+
+.subtitle{
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 5px;
 }
 
 </style>

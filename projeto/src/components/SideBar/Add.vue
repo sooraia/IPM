@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     
-    <span>{{ texto }}</span>
+    <span style="font-weight: 350;">{{ texto }}</span>
 
     <div class="buttons">
       <button 
