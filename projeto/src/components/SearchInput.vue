@@ -1,14 +1,23 @@
 <template>
-  <input type="text" :placeholder="placeholderText" name="search" />
+  <input type="text" v-model="current" :placeholder="placeholderText" name="search" />
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 const props = defineProps({
     placeholderText: {
         type: String,
         required: true
+    },
+    value: {
+        type: String,
+        required: false,
+        default: ''
     }
 });
+
+const current = ref(props.value);
 </script>
 
 <style scoped>

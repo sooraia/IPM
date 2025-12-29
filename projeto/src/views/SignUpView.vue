@@ -41,7 +41,7 @@ async function validateEmail(email) {
 async function handleSignUp(payload) {
   const { email, password, name, receiveUpdates } = payload;
   if (!email || !password || (name === undefined || name === '')) {
-    fieldsFilled = false;
+    fieldsFilled.value = false;
     return;
   }
 

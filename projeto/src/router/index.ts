@@ -9,6 +9,7 @@ import SupportView from '@/views/SupportView.vue'
 import CreateGraphView from '@/views/CreateGraphView.vue'
 import FaqView from '@/views/FaqView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import DashboardCityView from '@/views/DashboardCityView.vue'
 
 
 const router = createRouter({
@@ -35,8 +36,8 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/explore',
-      name: 'explore',
+      path: '/exploreContinent',
+      name: 'exploreContinent',
       component: ContinentView
     },
     {
@@ -63,6 +64,11 @@ const router = createRouter({
       path: '/graph',
       name: 'graph',
       component: CreateGraphView
+    },
+    {
+      path: '/dashboardCity',
+      name: 'dashboardCity',
+      component: DashboardCityView
     }
   ],
 })

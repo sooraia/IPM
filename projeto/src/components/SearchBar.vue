@@ -1,15 +1,34 @@
 <template>
   <div class="search-container">
     <form action="/action_page.php">
-      <SearchInput :placeholderText="'Search City or Country..'" />
+      <SearchInput :value="current" :placeholderText="'Search City or Country..'" />
       <img id="glass" type="submit" src="../assets/glass.png" />
     </form>
   </div>
 </template>
 
-<script>
+<script setup>
   import SearchInput from './SearchInput.vue';
-  export default { components: { SearchInput } };
+  import { ref } from 'vue';
+  const props = defineProps({
+    value: {
+      type: String,
+      required: false,
+      default: ''
+    }
+  });
+
+  const current = ref(props.value);
+//const emit = defineEmits(['update:value', 'search'])
+
+// // keep local value in sync with parent prop
+// watch(() => props.value, v => current.value = v)
+// // propagate changes to parent (v-model compatibility)
+// watch(current, v => emit('update:value', v))
+
+// function onSubmit() {
+//   emit('search', current.value)
+// }
 </script>
 
 <style scoped>
