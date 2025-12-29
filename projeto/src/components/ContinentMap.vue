@@ -8,7 +8,7 @@ import MapaExemplo from '../assets/mapaExemplo.png';
 
 <style scoped>
 .MapImage {
-    height: 70vh;
+    max-height: 70vh;
     box-shadow: 0 2px 8px var(--shadow);
 }
 </style>
