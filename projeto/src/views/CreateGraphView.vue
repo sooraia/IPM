@@ -99,8 +99,8 @@ const shareText = computed(() => {
 
     .grid-container{
         display: flex;
-        width: 99%;
-        max-height: 78vh;
+        width: 100%;
+        max-height: calc(100vh - 190px);
     }
 
     .searchbar{
@@ -134,6 +134,7 @@ const shareText = computed(() => {
     .share-column{
         width: 20%;
         padding: 30px 15px;
+        overflow-y: scroll;
     }
 
     .charts-container{
