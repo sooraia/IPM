@@ -11,6 +11,7 @@ import AlojamentosView from '@/views/AlojamentosView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import DashboardCityView from '@/views/DashboardCityView.vue'
 import CreateGraphView from '@/views/CreateGraphView.vue'
+import CompareCitiesDataView from '@/views/CompareCitiesDataView.vue'
 
 
 const router = createRouter({
@@ -37,7 +38,7 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/explore',
+      path: '/exploreContinent',
       name: 'explore',
       component: ContinentView
     },
@@ -52,7 +53,7 @@ const router = createRouter({
       component: DashboardView
     },
     {
-      path: '/compareCities',
+      path: '/dashboard/compare',
       name: 'CompareCities',
       component: CompareCitiesView
     },
@@ -72,9 +73,14 @@ const router = createRouter({
       component: CreateGraphView
     },
     {
-      path: '/dashboardCity',
+      path: '/dashboard/city',
       name: 'dashboardCity',
       component: DashboardCityView
+    },
+    {
+      path: '/dashboard/compare/cities',
+      name: 'compareCitiesData',
+      component: CompareCitiesDataView
     }
   ],
 })
