@@ -32,7 +32,7 @@
             </div>
         </section>
         <section class="map">
-
+            <MapAlojamentos />
         </section>
     </main>
 </template>
@@ -42,6 +42,7 @@ import CardAlojamento from '@/components/CardAlojamento.vue';
 import MenuFilters from '@/components/MenuFilters.vue';
 import SaveIcon from '@/assets/Export.png';
 import Button from '@/components/Button.vue';
+import MapAlojamentos from '@/components/MapAlojamentos.vue';
 </script>
 
 <style scoped>
@@ -86,6 +87,5 @@ import Button from '@/components/Button.vue';
 
 .map {
     width: 42%;
-    background-color: rgb(201, 117, 117);
 }
 </style>

@@ -34,6 +34,7 @@
             </div>
             <div>
                 <p class="subtitle">Rooms and beds:</p>
+                <Add texto="Accomodates" v-model="roomsData.accomodates" :min="0" :max="10"/>
                 <Add texto="Rooms" v-model="roomsData.rooms" :min="0" :max="10"/>
                 <Add texto="Beds" v-model="roomsData.beds" :min="0" :max="10"/>
                 <Add texto="Bathrooms" v-model="roomsData.bathrooms" :min="0" :max="10"/>
@@ -94,6 +95,7 @@ const rangebar = ref({
 });
 
 const roomsData = ref({
+    accomodates: 0,
     rooms: 0,
     beds: 0,
     bathrooms: 0
@@ -124,6 +126,7 @@ function resetFilters(){
     ratingNumber.value = 0;
     rangebar.value.priceRange = [0, 1500];
     rangebar.value.annualOccupancy = [0, 365];
+    roomsData.value.accomodates = 0;
     roomsData.value.rooms = 0;
     roomsData.value.beds = 0;
     roomsData.value.bathrooms = 0;
