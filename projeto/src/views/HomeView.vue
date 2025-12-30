@@ -7,42 +7,56 @@
       <div id="continent-grid">
         <div class="continent-card">
           <img src="../assets/africa.png" />
-          <router-link to="/exploreContinent" class="button" style="text-decoration: none">Africa</router-link>
+          <div @click="selectContinent('Africa')" class="button">Africa</div>
         </div>
+
         <div class="continent-card">
           <img src="../assets/america.png" />
-          <router-link to="/exploreContinent" class="button" style="text-decoration: none">America</router-link>
+          <div @click="selectContinent('America')" class="button">America</div>
         </div>
+
         <div class="continent-card">
           <img src="../assets/asiapacific.png" />
-          <router-link to="/exploreContinent" class="button" style="text-decoration: none">Asia-Pacific</router-link>
+          <div @click="selectContinent('Asia-Pacific')" class="button">Asia-Pacific</div>
         </div>
+
         <div class="continent-card">
           <img src="../assets/europe.png" />
-          <router-link to="/exploreContinent" class="button" style="text-decoration: none">Europe</router-link>
+          <div @click="selectContinent('Europe')" class="button">Europe</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import SearchBar from '@/components/SearchBar.vue';
-import Navbar from '@/components/Navbar.vue';
-import Footer from '@/components/Footer.vue';
+import { useRouter } from 'vue-router';
+import { useCityStore } from '@/stores/city';
 
-export default {
-  name: 'Home',
-  components: {
-    SearchBar,
-    Navbar,
-    Footer
+const router = useRouter();
+const cityStore = useCityStore();
+
+const defaultCities = {
+  'Africa': 'CapeTown',
+  'America': 'Hawaii',
+  'Asia-Pacific': 'Tokyo',
+  'Europe': 'Porto'
+};
+
+function selectContinent(continentName) {
+  const city = defaultCities[continentName];
+
+  if (city) {
+    cityStore.setCity(city);
+    router.push('/exploreContinent');
   }
 }
 </script>
 
 <style scoped>
 .body {
+  height: calc(100vh - 190px);
   width: 100%;
   padding: 20px 0 20px 0;
   display: flex;

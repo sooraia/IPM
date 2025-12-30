@@ -39,7 +39,7 @@ const router = createRouter({
     },
     {
       path: '/exploreContinent',
-      name: 'explore',
+      name: 'exploreContinent',
       component: ContinentView
     },
     {
@@ -63,7 +63,7 @@ const router = createRouter({
       component: SupportView
     },
     {
-      path: '/alojamentos',
+      path: '/alojamentos/:city',
       name: 'alojamentos',
       component: AlojamentosView
     },
