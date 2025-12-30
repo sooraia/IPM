@@ -21,7 +21,6 @@
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
-                <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
                 </div>
                 <div class="paginas">
                     <p>1</p>
