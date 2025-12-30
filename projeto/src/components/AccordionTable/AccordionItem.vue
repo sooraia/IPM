@@ -16,12 +16,18 @@
 
     <transition name="slide">
       <div v-if="isOpen" class="accordion-body" :style="{ backgroundColor: bodyBgColor }">
-        <div v-for="(subcategory, index) in item.subcategories" :key="index" class="subcategory-row" :style="{
-          fontWeight: fontWeight || defaultFontWeight,
-          justifyContent: justifyContent || 'flex-start',
-        }">
+        <router-link 
+          v-for="(subcategory, index) in item.subcategories" 
+          :key="index" 
+          :to="{ name: 'alojamentos', params: { city: subcategory.trim() } }"
+          class="subcategory-row" 
+          :style="{
+            fontWeight: fontWeight || defaultFontWeight,
+            justifyContent: justifyContent || 'flex-start',
+          }"
+        >
           {{ subcategory }}
-        </div>
+        </router-link>
       </div>
     </transition>
   </div>
@@ -97,5 +103,11 @@ const toggle = () => {
   color: var(--white);
   font-size: 16px;
   text-align: left;
+  display: block;
+}
+
+.subcategory-row:hover {
+  background-color: var(--label-bg-blue);
+  color: var(--accent);
 }
 </style>
