@@ -18,6 +18,10 @@
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
+                <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
+                <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
+                <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
+                <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
                 </div>
                 <div class="paginas">
                     <p>1</p>
@@ -45,7 +49,7 @@ import Button from '@/components/Button.vue';
 .layout {
     display: flex;
     flex-direction: row;
-    max-height: 100%;
+    max-height: calc(100vh - 190px);
 }
 
 .left-menu {
@@ -59,7 +63,7 @@ import Button from '@/components/Button.vue';
 }
 
 .container {
-    width: 70%;
+    width: 90%;
     margin: 10px auto 0 auto;
     display: flex;
     flex-direction: column;
