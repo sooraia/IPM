@@ -24,8 +24,8 @@ import ContinentMap from "@/components/ContinentMap.vue";
 
 const cityStore = useCityStore();
 
-const contentByCity = {
-    'Tokyo': {
+const contentByContinent = {
+    'Asia-Pacific': {
         title: 'ASIA-PACIFIC',
         data: [
             { category: "Australia", subcategories: ["Barossa Valley", "Barwon South West, Vic", "Brisbane",
@@ -38,7 +38,7 @@ const contentByCity = {
             { category: "Thailand", subcategories: ["Bangkok"] }
         ]
     },
-    'Porto': {
+    'Europe': {
         title: 'EUROPE',
         data: [
             { category: "Austria", subcategories: ["Vienna"] },
@@ -62,28 +62,35 @@ const contentByCity = {
             { category: "United Kingdom", subcategories: ["Bristol", "Edinburgh", "Greater Manchester", "London"] }
         ]
     },
-    'Hawaii': {
+    'America': {
         title: 'AMERICA',
         data: [
-            { category: "USA", subcategories: ["Hawaii", "New York", "San Francisco"] },
-            { category: "Brazil", subcategories: ["Rio de Janeiro", "São Paulo"] },
-            { category: "Canada", subcategories: ["Toronto", "Vancouver"] }
+            { category: "Canada", subcategories: ["Montreal", "New Brunswick", "Ottawa", "Quebec City", "Toronto", "Vancouver", "Victoria", "Winnipeg"] },
+            { category: "United States", subcategories: ["Albany", "Asheville", "Austin", "Boston", "Bozeman", "Broward County", "Cambridge",
+                                                         "Chicago", "Clark COunty, NV", "Columbus", "Dallas", "Denver", "Fort Worth", "Hawaii",
+                                                         "Jersey City", "Los Angeles", "Nashville", "New Orleans", "New York City", "Newark", "Oakland",
+                                                         "Pacific Grove", "Portland", "Rhode Island", "Rochester", "Salem, OR", "San Diego",
+                                                         "San Francisco", "San Mateo County", "Santa Clara County", "Santa Cruz County", "Seattle",
+                                                         "Twin Cities MSA", "Washington, D.C."] },
+            { category: "Argentina", subcategories: ["Buenos Aires"] },
+            { category: "Belize", subcategories: ["Belize"] },
+            { category: "Brazil", subcategories: ["Rio de Janeiro"] },
+            { category: "Chile", subcategories: ["Santiago"] },
+            { category: "Mexico", subcategories: ["Mexico City"] }
         ]
     },
-    'CapeTown': {
+    'Africa': {
         title: 'AFRICA',
         data: [
-            { category: "South Africa", subcategories: ["Cape Town", "Johannesburg"] },
-            { category: "Egypt", subcategories: ["Cairo"] },
-            { category: "Morocco", subcategories: ["Marrakech"] }
+            { category: "South Africa", subcategories: ["Cape Town"] }
         ]
     }
 };
 
 const currentContent = computed(() => {
-    const city = cityStore.currentCity;
-    if (city && contentByCity[city]) {
-        return contentByCity[city];
+    const continent = cityStore.currentContinent;
+    if (continent && contentByContinent[continent]) {
+        return contentByContinent[continent];
     }
 });
 

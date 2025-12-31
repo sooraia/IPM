@@ -5,7 +5,7 @@
         </section>
         <section class="alojamentos-wrapper">
             <div class="container">
-                <h1>Barrossa Valley</h1>
+                <h1>{{ cityStore.currentCity }}</h1>
                 <p style="align-self: flex-start;">Results(14)</p>
                 <div style="width: 100%;">
                 <CardAlojamento nomeAlojamento="Quinta da Barrosinha" avaliacaoAlojamento="4.8" />
@@ -42,6 +42,8 @@ import MenuFilters from '@/components/MenuFilters.vue';
 import SaveIcon from '@/assets/Export.png';
 import Button from '@/components/Button.vue';
 import MapAlojamentos from '@/components/MapAlojamentos.vue';
+import { useCityStore } from '@/stores/city';
+const cityStore = useCityStore();
 </script>
 
 <style scoped>

@@ -16,10 +16,10 @@
 
     <transition name="slide">
       <div v-if="isOpen" class="accordion-body" :style="{ backgroundColor: bodyBgColor }">
-        <router-link 
+        <div
           v-for="(subcategory, index) in item.subcategories" 
           :key="index" 
-          :to="{ name: 'alojamentos', params: { city: subcategory.trim() } }"
+          @click="selectCity(subcategory.trim())"
           class="subcategory-row" 
           :style="{
             fontWeight: fontWeight || defaultFontWeight,
@@ -27,7 +27,7 @@
           }"
         >
           {{ subcategory }}
-        </router-link>
+        </div>
       </div>
     </transition>
   </div>
@@ -36,7 +36,9 @@
 <script setup>
 
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import arrowIcon from '../../assets/arrowVIcon.png';
+import { useCityStore } from "@/stores/city";
 
 const props = defineProps({
   item: {
@@ -54,6 +56,15 @@ const isOpen = ref(false);
 const toggle = () => {
   isOpen.value = !isOpen.value;
 };
+
+const router = useRouter();
+const cityStore = useCityStore();
+
+function selectCity(cityName) {
+  cityStore.setCity(cityName);
+  console.log("Selected city:", cityName);
+  router.push({ name: 'alojamentos', params: { city: cityName } });
+}
 
 </script>
 
