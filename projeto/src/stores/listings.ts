@@ -14,7 +14,7 @@ export const useListingsStore = defineStore('listings', () => {
 
     try {
       const cityName = cityStore.currentCity.trim().replace(/\s+/g, '') // Remove espaços
-      const resourceKey = `${cityName}.listings${cityName}`
+      const resourceKey = `${cityName}.listings`
       
       const response = await fetch(`http://localhost:3000/${resourceKey}`)
       

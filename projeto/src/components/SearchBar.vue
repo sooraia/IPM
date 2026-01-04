@@ -19,6 +19,7 @@
   });
 
   const current = ref(props.value);
+  
 //const emit = defineEmits(['update:value', 'search'])
 
 // // keep local value in sync with parent prop

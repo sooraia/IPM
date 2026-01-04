@@ -9,7 +9,10 @@
         <router-link to="/">
           <li class="nav-item1" style="border-right: #ffffff 2px solid">Explore</li>
         </router-link>
-        <router-link to="/dashboard">
+        <router-link v-if="city" :to="`/dashboard/${city}`">
+          <li class="nav-item2">Dashboard</li>
+        </router-link>
+        <router-link v-else  to="/dashboard">
           <li class="nav-item2">Dashboard</li>
         </router-link>
       </ul>
@@ -29,7 +32,11 @@
 
 <script setup>
 import { useAuthStore } from '@/stores/auth';
+import { useCityStore } from '@/stores/city';
 import { computed } from 'vue'
+
+const cityStore = useCityStore()
+const city = computed(() => cityStore.currentCity)
 
 const auth = useAuthStore()
 const loggedIn = computed(() => auth.user!=null)
