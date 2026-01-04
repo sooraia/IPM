@@ -47,7 +47,9 @@
 <script setup>
 
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import arrowIcon from '../../assets/arrowVIcon.png';
+import { useCityStore } from "@/stores/city";
 
 const props = defineProps({
   item: {
@@ -66,6 +68,14 @@ const toggle = () => {
   isOpen.value = !isOpen.value;
 };
 
+// const router = useRouter();
+// const cityStore = useCityStore();
+
+// function selectCity(cityName) {
+//   cityStore.setCity(cityName);
+//   console.log("Selected city:", cityName);
+//   router.push({ name: 'alojamentos', params: { city: cityName } });
+// }
 
 </script>
 
@@ -116,6 +126,7 @@ const toggle = () => {
   font-size: 16px;
   text-align: left;
   display: block;
+  cursor: pointer;
 }
 
 .subcategory-row:hover {

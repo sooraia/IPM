@@ -37,6 +37,11 @@ import { useCityStore } from '@/stores/city';
 const router = useRouter();
 const cityStore = useCityStore();
 
+// function selectContinent(continentName) {
+//   cityStore.setContinent(continentName);
+//   cityStore.setCity(null);
+//   router.push({ name: 'exploreContinent', params: { continent: continentName } });
+// }
 </script>
 
 <style scoped>
