@@ -115,6 +115,7 @@ function selectCity(cityName) {
   font-size: 16px;
   text-align: left;
   display: block;
+  cursor: pointer;
 }
 
 .subcategory-row:hover {
