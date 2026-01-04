@@ -37,20 +37,10 @@ import { useCityStore } from '@/stores/city';
 const router = useRouter();
 const cityStore = useCityStore();
 
-const defaultCities = {
-  'Africa': 'CapeTown',
-  'America': 'Hawaii',
-  'Asia-Pacific': 'Tokyo',
-  'Europe': 'Porto'
-};
-
 function selectContinent(continentName) {
-  const city = defaultCities[continentName];
-
-  if (city) {
-    cityStore.setCity(city);
-    router.push('/exploreContinent');
-  }
+  cityStore.setContinent(continentName);
+  cityStore.setCity(null);
+  router.push({ name: 'exploreContinent', params: { continent: continentName } });
 }
 </script>
 
