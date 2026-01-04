@@ -17,75 +17,61 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useCityStore } from '@/stores/city';
 import AccordionTable from "@/components/AccordionTable/AccordionContainer.vue";
 import ContinentMap from "@/components/ContinentMap.vue";
+import { useRoute } from 'vue-router';
+import { ref } from 'vue';
+const route = useRoute();
+
+onMounted(() => {
+  try {
+    if (currentContinent.value) {
+      getCitiesbyCountry(currentContinent.value);
+      loadContent();
+    }
+  } catch (error) {
+    console.error("Erro ao carregar cidades por continente:", error);
+  }
+});
+
+const currentContinent = computed(() => {
+  const p = route.params.continent ?? route.query.continent;
+  if (!p) return null;
+  return Array.isArray(p) ? p[0] : p;
+});
 
 const cityStore = useCityStore();
+const currentContent = ref({ title: '', data: [] });
 
-const contentByCity = {
-    'Tokyo': {
-        title: 'ASIA-PACIFIC',
-        data: [
-            { category: "Australia", subcategories: ["Barossa Valley", "Barwon South West, Vic", "Brisbane",
-                                                     "Melbourne", "Mid North Coast", "Mornington Peninsula",
-                                                      "Northern Rivers New South Wales", "Sydney", "Tasmania","Western Australia"] },
-            { category: "China", subcategories: ["Beijing", "Hong Kong", "Shanghai"] },
-            { category: "Japan", subcategories: ["Tokyo"] },
-            { category: "Singapore", subcategories: ["Singapore"] },
-            { category: "Taiwan", subcategories: ["Taipei"] },
-            { category: "Thailand", subcategories: ["Bangkok"] }
-        ]
-    },
-    'Porto': {
-        title: 'EUROPE',
-        data: [
-            { category: "Austria", subcategories: ["Vienna"] },
-            { category: "Belgium", subcategories: ["Antwerp", "Brussels", "Ghent"] },
-            { category: "Czech Republic", subcategories: ["Prague"] },
-            { category: "Denmark", subcategories: ["Copenhagen"] },
-            { category: "France", subcategories: ["Bordeaux", "Lyon", "Paris", "Pays Basque"] },
-            { category: "Germany", subcategories: ["Berlin", "Munich"] },
-            { category: "Greece", subcategories: ["Athens", "Crete", "South Aegean", "Thessaloniki"] },
-            { category: "Hungary", subcategories: ["Budapest"] },
-            { category: "Ireland", subcategories: ["Dublin"] },
-            { category: "Italy", subcategories: ["Bergamo", "Bologna", "Florence", "Milan", "Naples", "Puglia", "Rome", "Sicily", "Trentino", "Venice"] },
-            { category: "Latvia", subcategories: ["Riga"] },
-            { category: "Norway", subcategories: ["Oslo"] },
-            { category: "Portugal", subcategories: ["Lisbon", "Porto"] },
-            { category: "Spain", subcategories: ["Barcelona", "Euskadi", "Girona", "Madrid", "Malaga", "Mallorca", "Menorca", "Sevilla", "Valencia"] },
-            { category: "Sweden", subcategories: ["Stockholm"] },
-            { category: "Switzerland", subcategories: ["Geneva", "Vlaud", "Zurich"] },
-            { category: "The Netherlands", subcategories: ["Amsterdam", "Rotterdam", "The Hague"] },
-            { category: "Turkey", subcategories: ["Istanbul"] },
-            { category: "United Kingdom", subcategories: ["Bristol", "Edinburgh", "Greater Manchester", "London"] }
-        ]
-    },
-    'Hawaii': {
-        title: 'AMERICA',
-        data: [
-            { category: "USA", subcategories: ["Hawaii", "New York", "San Francisco"] },
-            { category: "Brazil", subcategories: ["Rio de Janeiro", "São Paulo"] },
-            { category: "Canada", subcategories: ["Toronto", "Vancouver"] }
-        ]
-    },
-    'CapeTown': {
-        title: 'AFRICA',
-        data: [
-            { category: "South Africa", subcategories: ["Cape Town", "Johannesburg"] },
-            { category: "Egypt", subcategories: ["Cairo"] },
-            { category: "Morocco", subcategories: ["Marrakech"] }
-        ]
+async function loadContent() {
+  if (!currentContinent.value)
+    currentContent.value = { title: '', data: [] };
+  else {
+    const citiesbycountry = await getCitiesbyCountry(currentContinent.value);
+    const tableData = { title: '', data: [] };
+    tableData.title = currentContinent.value.toUpperCase();
+    for (let i = 0; i < citiesbycountry.length; i++) {
+      const element = citiesbycountry[i];
+      tableData.data.push({category: element.name, subcategories: element.cities, available: element.available });
     }
-};
+    console.log("Table Data:", citiesbycountry);
+    currentContent.value = tableData;
+  }
+}
 
-const currentContent = computed(() => {
-    const city = cityStore.currentCity;
-    if (city && contentByCity[city]) {
-        return contentByCity[city];
+async function getCitiesbyCountry(currentContinent) {
+    try {
+        const response = await fetch(`http://localhost:3000/cities.cities?continent=${encodeURIComponent(currentContinent)}`);
+        const data = await response.json();
+        const { continent, countries} = data[0];
+        return countries;
+      } catch (error) {
+          console.error("Erro a obter cidades", error);
+          return [];
     }
-});
+}
 
 </script>
 

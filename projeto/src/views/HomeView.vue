@@ -7,22 +7,22 @@
       <div id="continent-grid">
         <div class="continent-card">
           <img src="../assets/africa.png" />
-          <div @click="selectContinent('Africa')" class="button">Africa</div>
+          <router-link to="/explore/continent/Africa" class="button">Africa</router-link>
         </div>
 
         <div class="continent-card">
           <img src="../assets/america.png" />
-          <div @click="selectContinent('America')" class="button">America</div>
+          <router-link to="/explore/continent/America" class="button">America</router-link>
         </div>
 
         <div class="continent-card">
           <img src="../assets/asiapacific.png" />
-          <div @click="selectContinent('Asia-Pacific')" class="button">Asia-Pacific</div>
+          <router-link to="/explore/continent/Asia-Pacific" class="button">Asia-Pacific</router-link>
         </div>
 
         <div class="continent-card">
           <img src="../assets/europe.png" />
-          <div @click="selectContinent('Europe')" class="button">Europe</div>
+          <router-link to="/explore/continent/Europe" class="button">Europe</router-link>
         </div>
       </div>
     </div>
@@ -37,21 +37,6 @@ import { useCityStore } from '@/stores/city';
 const router = useRouter();
 const cityStore = useCityStore();
 
-const defaultCities = {
-  'Africa': 'CapeTown',
-  'America': 'Hawaii',
-  'Asia-Pacific': 'Tokyo',
-  'Europe': 'Porto'
-};
-
-function selectContinent(continentName) {
-  const city = defaultCities[continentName];
-
-  if (city) {
-    cityStore.setCity(city);
-    router.push('/exploreContinent');
-  }
-}
 </script>
 
 <style scoped>

@@ -16,18 +16,29 @@
 
     <transition name="slide">
       <div v-if="isOpen" class="accordion-body" :style="{ backgroundColor: bodyBgColor }">
-        <router-link 
+        <div 
           v-for="(subcategory, index) in item.subcategories" 
           :key="index" 
-          :to="{ name: 'alojamentos', params: { city: subcategory.trim() } }"
-          class="subcategory-row" 
-          :style="{
-            fontWeight: fontWeight || defaultFontWeight,
-            justifyContent: justifyContent || 'flex-start',
-          }"
-        >
-          {{ subcategory }}
-        </router-link>
+          >
+          <router-link v-if="item.available.includes(subcategory)"
+            class ="subcategory-row"
+            :to="{ name: 'alojamentos', params: { city: subcategory.trim().replace(' ', '') } }"
+            :style="{
+              fontWeight: fontWeight || defaultFontWeight,
+              justifyContent: justifyContent || 'flex-start',
+            }" > 
+            {{ subcategory }}
+            </router-link>
+          <div v-else
+            id="unavailable"
+            class="subcategory-row"
+            :style="{
+              fontWeight: fontWeight || defaultFontWeight,
+              justifyContent: justifyContent || 'flex-start',
+            }" > 
+            {{ subcategory }} (unavailable)
+          </div>
+        </div>
       </div>
     </transition>
   </div>
@@ -54,6 +65,7 @@ const isOpen = ref(false);
 const toggle = () => {
   isOpen.value = !isOpen.value;
 };
+
 
 </script>
 
@@ -109,5 +121,10 @@ const toggle = () => {
 .subcategory-row:hover {
   background-color: var(--label-bg-blue);
   color: var(--accent);
+}
+
+#unavailable {
+  color: rgb(154, 161, 160);
+  pointer-events: none;
 }
 </style>

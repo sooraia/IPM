@@ -4,7 +4,9 @@
       <h1>SELECT CITY</h1>
       <SearchBar></SearchBar>
       <h2>OR</h2>
-      <Button buttonLabel="Compare 2 Cities" id="button"/>
+      <router-link to="/dashboard/compare">
+        <Button buttonLabel="Compare 2 Cities" id="button"/>
+      </router-link>
     </div>
   </div>
 </template>
@@ -45,9 +47,15 @@ h2{
 }
 
 #button{
-  background: rgba(242, 144, 47, 0.87);
+  margin-top: 1.5rem;
+  background: var( --light-accent2);
   font-weight: bold;
   color: white;
+}
+
+#button:hover{
+  background: var(--accent);
+  background: var(--accent2);
 }
 
 .main-container{

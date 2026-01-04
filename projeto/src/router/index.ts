@@ -38,7 +38,7 @@ const router = createRouter({
       component: ProfileView,
     },
     {
-      path: '/exploreContinent',
+      path: '/explore/continent/:continent',
       name: 'exploreContinent',
       component: ContinentView
     },
@@ -73,7 +73,7 @@ const router = createRouter({
       component: CreateGraphView
     },
     {
-      path: '/dashboard/city',
+      path: '/dashboard/:city',
       name: 'dashboardCity',
       component: DashboardCityView
     },
