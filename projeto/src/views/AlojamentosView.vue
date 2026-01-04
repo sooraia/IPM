@@ -31,14 +31,16 @@
         </section>
 
         <section class="map" v-if="alojamentos.length > 0">
-            <MapAlojamentos  :markers="markers" :center="mapCenter" />
+            <MapAlojamentos  :markers="markers" />
         </section>
     </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useCityStore } from '@/stores/city';
+import { useListingsStore } from '@/stores/listings';
 import CardAlojamento from '@/components/CardAlojamento.vue';
 import MenuFilters from '@/components/MenuFilters.vue';
 import MapAlojamentos from '@/components/MapAlojamentos.vue';
@@ -47,8 +49,9 @@ import Pagination from '@/components/Pagination.vue';
 import SaveIcon from '@/assets/Export.png';
 
 const cityStore = useCityStore();
-const alojamentos = ref([]);
-const loading = ref(false);
+const listingsStore = useListingsStore();
+const { listings: alojamentos, loading } = storeToRefs(listingsStore);
+
 const currentPage = ref(1);
 const itemsPerPage = 13;
 
@@ -62,38 +65,9 @@ const paginatedAlojamentos = computed(() => {
     return alojamentos.value.slice(start, end);
 });
 
-async function fetchAlojamentos() {
-    // Se não houver cidade
-    if (!cityStore.currentCity) return;
-
-    loading.value = true;
-
-    try {
-        const cityName = cityStore.currentCity.trim().replace(/\s+/g, ''); // Remove espaços
-    
-        const resourceKey = `${cityName}.listings${cityName}`;
-
-        console.log("A tentar buscar a chave:", resourceKey);
-        const response = await fetch(`http://localhost:3000/${resourceKey}`);
-        
-        if (!response.ok) {
-            throw new Error(`Erro: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        alojamentos.value = data;
-        currentPage.value = 1;
-        
-    } catch (error) {
-        console.error("Erro ao carregar:", error);
-        alojamentos.value = [];
-    } finally {
-        loading.value = false;
-    }
-}
-
 onMounted(() => {
-    fetchAlojamentos();
+    listingsStore.fetchListings();
+    currentPage.value = 1;
 });
 
 const markers = computed(() => {
@@ -115,14 +89,6 @@ const markers = computed(() => {
         };
     });
 });
-
-const mapCenter = computed(() => {
-    const avgLat = alojamentos.value.reduce((sum, a) => sum + a.latitude, 0) / alojamentos.value.length;
-    const avgLng = alojamentos.value.reduce((sum, a) => sum + a.longitude, 0) / alojamentos.value.length;
-    
-    return { lat: avgLat, lng: avgLng };
-});
-
 </script>
 
 <style scoped>
