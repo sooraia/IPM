@@ -8,6 +8,7 @@ export const useListingsStore = defineStore('listings', () => {
   const cityStore = useCityStore()
 
   async function fetchListings() {
+    console.log("Fetching listings for city:", cityStore.currentCity);
     if (!cityStore.currentCity) return
 
     loading.value = true
@@ -24,7 +25,6 @@ export const useListingsStore = defineStore('listings', () => {
 
       const data = await response.json()
       listings.value = data
-      
     } catch (err) {
       console.error("Erro ao carregar:", err)
       listings.value = []

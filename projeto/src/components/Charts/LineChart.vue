@@ -7,6 +7,7 @@
 
 <script>
 import { color } from 'chart.js/helpers';
+import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 
 export default {
@@ -42,59 +43,35 @@ export default {
   components: {
     Line
   },
-  data() {
-    return {
-      lineData: {
-        labels: this.labels,
-        datasets: [
-          {
-            label: this.label,
-            data: this.data,
-            borderColor: this.color,
-            backgroundColor: 'rgba(105, 145, 153, 0.2)',
-            tension: 0.3,
-          },
-        ],
-      },
-      lineOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                grid: {color: this.gridcolor},
-                ticks: {color: this.legendcolor}
-            },
-            y: {
-                grid: {color: this.gridcolor},
-                ticks: {color: this.legendcolor}
-            }
+  setup(props) {
+    const lineData = computed(() => ({
+      labels: props.labels,
+      datasets: [
+        {
+          label: props.label,
+          data: props.data,
+          borderColor: props.color,
+          backgroundColor: 'rgba(105, 145, 153, 0.2)',
+          tension: 0.3,
         },
-        color: 'rgba(105, 145, 153, 1)',
-    },
-    }
+      ],
+    }));
+    const lineOptions = computed(() => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+          x: {
+              grid: {color: props.gridcolor},
+              ticks: {color: props.legendcolor}
+          },
+          y: {
+              grid: {color: props.gridcolor},
+              ticks: {color: props.legendcolor}
+          }
+      },
+      color: 'rgba(105, 145, 153, 1)',
+    }));
+    return { lineData, lineOptions };
   },
-  watch: {
-    labels(newlabels) {
-      this.lineData.labels = newlabels;
-      this.update();
-    },
-    data(newdata) {
-      this.lineData.datasets[0].data = newdata;
-      this.update();
-    },
-    label(newlabel) {
-      this.lineData.datasets[0].label = newlabel;
-      this.update();
-    },
-    color(newcolor) {
-      this.lineData.datasets[0].borderColor = newcolor;
-      this.update();
-    }
-  },
-  methods: {
-    update() {
-      console.log("updating pie chart");
-    }
-  }
 }
 </script>

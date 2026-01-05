@@ -11,7 +11,7 @@
 
       <h1 class="title" style="color:#D9D9D9;font-size: 65px;">OVERVIEW</h1>
       <div id="overview-grid">
-        <StatsCard id="listings" :title="'Listings'" :stat="listings" />
+        <StatsCard id="listings" :title="'Listings'" :stat="numberListings" />
         <StatsCard id="hosts" :title="'Active Hosts'" :stat="hosts" />
         <StatsCard id="occupancy" :title="'Occupancy Rate'" :stat="occupancy" />
         <StatsCard id="rating" :title="'Average Review Rating'" :stat="rating" :score="true" />
@@ -19,7 +19,7 @@
         <div class="overview-card" id="price-line">
           <h1>Prices over the last year</h1>
           <LineChart style="width:97%;height: 85%;"
-              :labels="labelsLC"
+              :labels="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
               :label="'Average Price Per Night'"
               :data="dataLC"
               :color="'rgba(105, 145, 153, 1)'"
@@ -49,7 +49,7 @@
           <h1 style="color: var(--bg);">License Status</h1>
           <PieChart style="width:97%;height: 85%;"
             :labels="['Licensed', 'Unlicensed']"
-            :label="'License Statu'"
+            :label="'License Status'"
             :data="dataLicensePC"
             :colors="['rgb(225, 232, 234)', 'rgba(105, 145, 153, 1)']"
             :borderWidth="0"
@@ -58,7 +58,7 @@
         </div>
         <div id="top-hosts-bar-chart">
           <h1>Top 5 Hosts by Number of Listings Published</h1>
-          <BarChart style="width:85%;height: 80%;"
+          <BarChart style="width:100%;height: 80%;"
             :labels="labelsTopHosts"
             :label="'Number of Listings'"
             :data="dataTopHosts"
@@ -109,73 +109,109 @@ import StatsCard from '@/components/Cards/StatsCard.vue';
 import { useRoute } from 'vue-router';
 import { useCityStore } from '@/stores/city';
 import { storeToRefs } from 'pinia';
+import { useListingsStore } from '@/stores/listings';
+import { useCalendarStore } from '@/stores/calendar';
 
 // overview data
 const route = useRoute();
 const cityStore = useCityStore();
-const listings = ref(12000);
+const numberListings = ref(12000);
 const hosts = ref(1800);
 const occupancy = ref('75%');
 const rating = ref(4.5);
 const price = ref('150');
 const currency = ref('AUD');
-const labelsLC= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const dataLC = [210, 215, 226, 230, 220, 230, 228, 215, 211, 210, 209, 210]
-const labelsBC= ['Neighborhood A', 'Neighborhood B', 'Neighborhood C', 'Neighborhood D', 'Neighborhood E','Neighborhood F', 'Neighborhood G', 'Neighborhood H', 'Neighborhood I', 'Neighborhood J'];
-const dataBC = [300, 250, 200, 150, 100, 90, 80, 70, 60, 50];
+const dataLC = ref([]);
+const labelsBC= ref([]);
+const dataBC = ref([]);
 // executive data
 const percentageFivePlusProperties = ref(35);
 const propertiesOver300Nights = ref(350);
-const dataLicensePC = [95,5];
-const labelsTopHosts = ['Host A', 'Host B', 'Host C', 'Host D', 'Host E'];
-const dataTopHosts = [50, 45, 40, 35, 30];
+const dataLicensePC = ref([]);
+const labelsTopHosts = ref([]);
+const dataTopHosts = ref([]);
 
 const currentCity = storeToRefs(cityStore).currentCity;
+const listingsStore = useListingsStore();
+const { listings, loading } = storeToRefs(listingsStore);
+const calendarStore = useCalendarStore();
+const { calendarData } = storeToRefs(calendarStore);
 
-function updateCityFromRoute() {
+async function updateCityFromRoute() {
   const p = route.params.city ?? route.query.city;
   if (p) {
     const city = Array.isArray(p) ? p[0] : p;
-    cityStore.setCity(city);
+    if (city !== cityStore.currentCity) {
+      cityStore.setCity(city);
+      await listingsStore.fetchListings();
+      await calendarStore.fetchCalendar();
+
+    } else if (!listings.value || listings.value.length === 0) {
+      await listingsStore.fetchListings();
+      await calendarStore.fetchCalendar();
+    }
   }
 }
 
-onMounted(() => {
-  updateCityFromRoute();
-  currentCity.value = cityStore.currentCity;
+function updateInfo() {
+  if (!listings.value || listings.value.length === 0) {
+    console.log("No listings data available.");
+    return;
+  }
+  if (!calendarData.value || calendarData.value.length === 0) {
+    console.log("No calendar data available.");
+    return;
+  }
+  updateListingsValues(listings.value);
+  updateCalendarValues(calendarData.value);
+}
+
+onMounted(async () => {
   console.log('Current City in View:', currentCity.value);
+  await updateCityFromRoute();
   updateInfo();
 });
 
-function updateInfo() {
-  // const listingsData = cityStore.getListingsData(currentCity.value);
-  // const calendarData = cityStore.getCalendarData(currentCity.value);
-  // if (listingsData) {
-  //   updateListingsValues(listingsData);
-  // }
-  // if (calendarData) {
-  //   updateCalendarValues(calendarData);
-  // }     
-}
+// // Watcher para reagir quando listings são carregados
+// watch(listings, (newListings) => {
+//   if (newListings && newListings.length > 0) {
+//     console.log('Listings updated, recalculating...');
+//     updateInfo();
+//   }
+// }, { immediate: true }); // immediate: true para executar imediatamente com valor inicial
 
+// // Watcher para mudanças na cidade
+// watch(currentCity, async (newCity) => {
+//   if (newCity) {
+//     console.log('City changed to:', newCity);
+//     await listingsStore.fetchListings();
+//   }
+// });
+
+// // Watcher para mudanças na rota
+// watch(() => route.params.city ?? route.query.city, async (newCityParam) => {
+//   if (newCityParam) {
+//     await updateCityFromRoute();
+//   }
+// });
 function updateListingsValues(listingsData) {
-  listings.value = Object.keys(listingsData).length;
+  numberListings.value = Object.keys(listingsData).length;
   const hostSet = new Set();
   const hostMap = new Map();
+  const updatedCurrency = false;
   // use let for totals since we mutate them
-  let totalRating = 0, totalOccupancy = 0, totalPrice = 0, propert300 = 0, hostOver5 = 0;
+  let totalRating = 0, totalOccupancy = 0, totalPrice = 0, propert300 = 0, hostOver5 = 0, licensedCount = 0;
   const neighborhoodMap = new Map();
   for (let element of Object.values(listingsData)) {
-    const { id, url, host_id, host_name, superhost, host_listings_count, neighborhood, 
-      latitude, longitude, property_type, room_type, accommodates, bathrooms, bedrooms, 
-      beds, amenities, price, occupancy, rating, license, c, r } = element;
+    const {host_id, host_name, host_listings_count, neighbourhood_cleansed: neighborhood, price, estimated_occupancy_l365d: occupancy, review_scores_rating: rating, license } = element;
     if (!hostSet.has(host_id)) {
       hostSet.add(host_id);
       if (host_listings_count >= 5) hostOver5 += 1;
     }
     totalOccupancy += (occupancy * 100) / 365;
     totalRating += (rating || 0);
-    totalPrice += (price || 0);
+    if (!updatedCurrency) currency.value = price.substring(0,3);
+    totalPrice += (parseFloat(price.substring(3)) || 0);
     if (occupancy >= 300) propert300 += 1;
 
     if (neighborhoodMap.has(neighborhood)) {
@@ -189,12 +225,16 @@ function updateListingsValues(listingsData) {
     } else {
       hostMap.set(host_id, { name: host_name, count: 1 });
     }
+    if (license && license.trim()== "t") {
+      licensedCount += 1;
+    }
+
   }
   // overview
   hosts.value = hostSet.size;
-  occupancy.value = listings.value ? (totalOccupancy / listings.value).toFixed(2) + '%' : '0%';
-  rating.value = listings.value ? (totalRating / listings.value).toFixed(2) : '0';
-  price.value = listings.value ? (totalPrice / listings.value).toFixed(2) : '0';
+  occupancy.value = numberListings.value ? (totalOccupancy / numberListings.value).toFixed(0) + '%' : '0%';
+  rating.value = numberListings.value ? (totalRating / numberListings.value).toFixed(1) : '0';
+  price.value = numberListings.value ? (totalPrice / numberListings.value).toFixed(0) : '0';
   // top 10 neighborhoods
   const neighborhoodMapSorted = new Map([...neighborhoodMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10));
   labelsBC.value = [];
@@ -204,6 +244,9 @@ function updateListingsValues(listingsData) {
     dataBC.value.push(count);
   }
   // executive 
+  dataLicensePC.value = [];
+  dataLicensePC.value.push(licensedCount);
+  dataLicensePC.value.push(numberListings.value - licensedCount);
   propertiesOver300Nights.value = propert300;
   percentageFivePlusProperties.value = hostSet.size ? ((hostOver5 / hostSet.size) * 100).toFixed(2) : '0';
   // top 5 hosts
@@ -220,22 +263,20 @@ function updateCalendarValues(calendarData) {
   const priceMap = new Map();
   for (let element of Object.values(calendarData)) {
     const { listing_id, date, available, price, id } = element;
-    const month = date.split('-')[1];
+    const month = parseInt(date.split('-')[1]);
+    const priceValue = (parseFloat(price.substring(3)) || 0);
     if (priceMap.has(month)) {
       const m = priceMap.get(month);
-      m.totalPrice += price;
+      m.totalPrice += priceValue;
       m.count += 1;
     } else {
-      priceMap.set(month, { totalPrice: price, count: 1 });
+      priceMap.set(month, { totalPrice: priceValue, count: 1 });
     }
   }
-  labelsLC.value = [];
   dataLC.value = [];
   for (let month = 1; month <= 12; month++) {
-    const monthStr = month.toString().padStart(2, '0');
-    labelsLC.value.push(monthStr);
-    if (priceMap.has(monthStr)) {
-      const monthData = priceMap.get(monthStr);
+    if (priceMap.has(month)) {
+      const monthData = priceMap.get(month);
       dataLC.value.push((monthData.totalPrice / monthData.count).toFixed(2));
     } else {
       dataLC.value.push(0);

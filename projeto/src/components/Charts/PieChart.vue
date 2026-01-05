@@ -6,6 +6,7 @@
 
 <script>
 import {Pie } from 'vue-chartjs';
+import { computed } from 'vue';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { color } from 'chart.js/helpers';
 import { sys } from 'typescript';
@@ -43,54 +44,34 @@ export default {
   components: {
     Pie
   },
-  data() {
-    return {
-      pieData: {
-        labels: this.labels,
-        datasets: [
-          {
-            label: this.label,
-            data: this.data,
-            backgroundColor: this.colors,
-            borderWidth: this.borderWidth,
-          },
-        ],
-      },
-      pieOptions: {
+  setup(props) {
+    const pieData= computed(() => ({
+      labels: props.labels,
+      datasets: [
+        {
+          label: props.label,
+          data: props.data,
+          backgroundColor: props.colors,
+          borderWidth: props.borderWidth,
+        }
+      ],
+    }));
+    const pieOptions = computed(() => ({
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
             labels: {
-              color: this.legendcolor,
+              color: props.legendcolor,
             }
           },
-          datalabels: {               // use "datalabels" key
-            color: this.legendcolor,
+          datalabels: {
+            color: props.legendcolor,
             display: true
           }
-        }
-      }
-    }
-  },
-    watch: {
-        data(newdata) {
-        this.pieData.datasets[0].data = newdata;
-            this.update();
         },
-        labels(newlabels) {
-        this.pieData.labels = newlabels;
-            this.update();
-        },
-        colors(newcolors) {
-        this.pieData.datasets[0].backgroundColor = newcolors;
-            this.update();
-        }
-    },
-    methods: {
-      update() {
-        console.log("updating pie chart");
-      }
-    }
+    }));
+    return { pieData, pieOptions };
+  }
 }
 </script>
