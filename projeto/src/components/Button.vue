@@ -30,6 +30,7 @@ defineProps({
     border: 0;
     border-radius: 25px;
     font-size: large;
+    cursor: pointer;
 }
 
 .btn-icon {

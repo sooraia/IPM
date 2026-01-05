@@ -40,6 +40,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useCityStore } from '@/stores/city';
+import { useRoute } from 'vue-router';
 import { useListingsStore } from '@/stores/listings';
 import CardAlojamento from '@/components/CardAlojamento.vue';
 import MenuFilters from '@/components/MenuFilters.vue';
@@ -49,6 +50,17 @@ import Pagination from '@/components/Pagination.vue';
 import SaveIcon from '@/assets/Export.png';
 
 const cityStore = useCityStore();
+const route = useRoute();
+
+function updateCityFromRoute() {
+  const p = route.params.city ?? route.query.city;
+  if (p) {
+    const city = Array.isArray(p) ? p[0] : p;
+    cityStore.setCity(city);
+    console.log('Route city:', city);
+  }
+}
+
 const listingsStore = useListingsStore();
 const { listings: alojamentos, loading } = storeToRefs(listingsStore);
 
@@ -66,6 +78,7 @@ const paginatedAlojamentos = computed(() => {
 });
 
 onMounted(() => {
+    updateCityFromRoute();
     listingsStore.fetchListings();
     currentPage.value = 1;
 });

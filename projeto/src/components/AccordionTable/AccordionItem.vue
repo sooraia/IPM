@@ -16,17 +16,28 @@
 
     <transition name="slide">
       <div v-if="isOpen" class="accordion-body" :style="{ backgroundColor: bodyBgColor }">
-        <div
+        <div 
           v-for="(subcategory, index) in item.subcategories" 
           :key="index" 
-          @click="selectCity(subcategory.trim())"
-          class="subcategory-row" 
-          :style="{
-            fontWeight: fontWeight || defaultFontWeight,
-            justifyContent: justifyContent || 'flex-start',
-          }"
-        >
-          {{ subcategory }}
+          >
+          <router-link v-if="item.available.includes(subcategory)"
+            class ="subcategory-row"
+            :to="{ name: 'alojamentos', params: { city: subcategory.trim().replace(' ', '') } }"
+            :style="{
+              fontWeight: fontWeight || defaultFontWeight,
+              justifyContent: justifyContent || 'flex-start',
+            }" > 
+            {{ subcategory }}
+            </router-link>
+          <div v-else
+            id="unavailable"
+            class="subcategory-row"
+            :style="{
+              fontWeight: fontWeight || defaultFontWeight,
+              justifyContent: justifyContent || 'flex-start',
+            }" > 
+            {{ subcategory }} (unavailable)
+          </div>
         </div>
       </div>
     </transition>
@@ -57,14 +68,14 @@ const toggle = () => {
   isOpen.value = !isOpen.value;
 };
 
-const router = useRouter();
-const cityStore = useCityStore();
+// const router = useRouter();
+// const cityStore = useCityStore();
 
-function selectCity(cityName) {
-  cityStore.setCity(cityName);
-  console.log("Selected city:", cityName);
-  router.push({ name: 'alojamentos', params: { city: cityName } });
-}
+// function selectCity(cityName) {
+//   cityStore.setCity(cityName);
+//   console.log("Selected city:", cityName);
+//   router.push({ name: 'alojamentos', params: { city: cityName } });
+// }
 
 </script>
 
@@ -121,5 +132,10 @@ function selectCity(cityName) {
 .subcategory-row:hover {
   background-color: var(--label-bg-blue);
   color: var(--accent);
+}
+
+#unavailable {
+  color: rgb(154, 161, 160);
+  pointer-events: none;
 }
 </style>

@@ -11,32 +11,11 @@
 
       <h1 class="title" style="color:#D9D9D9;font-size: 65px;">OVERVIEW</h1>
       <div id="overview-grid">
-        <div class="overview-card" id="listings">
-          <h1>Listings</h1>
-          <p>{{ listings }}</p>
-        </div>
-        <div class="overview-card" id="hosts">
-          <h1>Active Hosts</h1>
-          <p>{{ hosts }}</p>
-        </div>
-        <div class="overview-card" id="occupancy">
-          <h1>Occupancy Rate</h1>
-          <p>{{ occupancy }}</p>
-        </div> 
-        <div class="overview-card" id="rating">
-          <h1>Average Review Rating</h1>
-          <div class="overview-card-content">
-            <p>{{ rating }}</p>
-            <svg width="40%" xmlns="http://www.w3.org/2000/svg" viewBox="0 10 640 640"><path fill="#699199" d="M341.5 45.1C337.4 37.1 329.1 32 320.1 32C311.1 32 302.8 37.1 298.7 45.1L225.1 189.3L65.2 214.7C56.3 216.1 48.9 222.4 46.1 231C43.3 239.6 45.6 249 51.9 255.4L166.3 369.9L141.1 529.8C139.7 538.7 143.4 547.7 150.7 553C158 558.3 167.6 559.1 175.7 555L320.1 481.6L464.4 555C472.4 559.1 482.1 558.3 489.4 553C496.7 547.7 500.4 538.8 499 529.8L473.7 369.9L588.1 255.4C594.5 249 596.7 239.6 593.9 231C591.1 222.4 583.8 216.1 574.8 214.7L415 189.3L341.5 45.1z"/></svg>
-          </div>
-        </div>
-        <div class="overview-card" id="price">
-          <h1>Average Price per Night</h1>
-          <div class="overview-card-content">
-            <p>{{ price }}</p>
-            <p style="font-size: 20px;">{{ currency }}</p>
-          </div>
-        </div>
+        <StatsCard id="listings" :title="'Listings'" :stat="listings" />
+        <StatsCard id="hosts" :title="'Active Hosts'" :stat="hosts" />
+        <StatsCard id="occupancy" :title="'Occupancy Rate'" :stat="occupancy" />
+        <StatsCard id="rating" :title="'Average Review Rating'" :stat="rating" :score="true" />
+        <StatsCard id="price" :title="'Average Price per Night'" :stat="price" :currency="currency" />
         <div class="overview-card" id="price-line">
           <h1>Prices over the last year</h1>
           <LineChart style="width:97%;height: 85%;"
@@ -124,29 +103,146 @@ import LineChart from '@/components/Charts/LineChart.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
 import PieChart from '@/components/Charts/PieChart.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ChartCard from '@/components/Cards/ChartCard.vue';
-const currentCity = ref('Melbourne, Australia');
+import StatsCard from '@/components/Cards/StatsCard.vue';
+import { useRoute } from 'vue-router';
+import { useCityStore } from '@/stores/city';
+import { storeToRefs } from 'pinia';
 
+// overview data
+const route = useRoute();
+const cityStore = useCityStore();
 const listings = ref(12000);
 const hosts = ref(1800);
 const occupancy = ref('75%');
 const rating = ref(4.5);
 const price = ref('150');
 const currency = ref('AUD');
-
 const labelsLC= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dataLC = [210, 215, 226, 230, 220, 230, 228, 215, 211, 210, 209, 210]
-
 const labelsBC= ['Neighborhood A', 'Neighborhood B', 'Neighborhood C', 'Neighborhood D', 'Neighborhood E','Neighborhood F', 'Neighborhood G', 'Neighborhood H', 'Neighborhood I', 'Neighborhood J'];
 const dataBC = [300, 250, 200, 150, 100, 90, 80, 70, 60, 50];
-
+// executive data
 const percentageFivePlusProperties = ref(35);
 const propertiesOver300Nights = ref(350);
-
 const dataLicensePC = [95,5];
 const labelsTopHosts = ['Host A', 'Host B', 'Host C', 'Host D', 'Host E'];
 const dataTopHosts = [50, 45, 40, 35, 30];
+
+const currentCity = storeToRefs(cityStore).currentCity;
+
+function updateCityFromRoute() {
+  const p = route.params.city ?? route.query.city;
+  if (p) {
+    const city = Array.isArray(p) ? p[0] : p;
+    cityStore.setCity(city);
+  }
+}
+
+onMounted(() => {
+  updateCityFromRoute();
+  currentCity.value = cityStore.currentCity;
+  console.log('Current City in View:', currentCity.value);
+  updateInfo();
+});
+
+function updateInfo() {
+  // const listingsData = cityStore.getListingsData(currentCity.value);
+  // const calendarData = cityStore.getCalendarData(currentCity.value);
+  // if (listingsData) {
+  //   updateListingsValues(listingsData);
+  // }
+  // if (calendarData) {
+  //   updateCalendarValues(calendarData);
+  // }     
+}
+
+function updateListingsValues(listingsData) {
+  listings.value = Object.keys(listingsData).length;
+  const hostSet = new Set();
+  const hostMap = new Map();
+  // use let for totals since we mutate them
+  let totalRating = 0, totalOccupancy = 0, totalPrice = 0, propert300 = 0, hostOver5 = 0;
+  const neighborhoodMap = new Map();
+  for (let element of Object.values(listingsData)) {
+    const { id, url, host_id, host_name, superhost, host_listings_count, neighborhood, 
+      latitude, longitude, property_type, room_type, accommodates, bathrooms, bedrooms, 
+      beds, amenities, price, occupancy, rating, license, c, r } = element;
+    if (!hostSet.has(host_id)) {
+      hostSet.add(host_id);
+      if (host_listings_count >= 5) hostOver5 += 1;
+    }
+    totalOccupancy += (occupancy * 100) / 365;
+    totalRating += (rating || 0);
+    totalPrice += (price || 0);
+    if (occupancy >= 300) propert300 += 1;
+
+    if (neighborhoodMap.has(neighborhood)) {
+      neighborhoodMap.set(neighborhood, neighborhoodMap.get(neighborhood) + 1);
+    } else {
+      neighborhoodMap.set(neighborhood, 1);
+    }
+
+    if (hostMap.has(host_id)) {
+      hostMap.get(host_id).count += 1;
+    } else {
+      hostMap.set(host_id, { name: host_name, count: 1 });
+    }
+  }
+  // overview
+  hosts.value = hostSet.size;
+  occupancy.value = listings.value ? (totalOccupancy / listings.value).toFixed(2) + '%' : '0%';
+  rating.value = listings.value ? (totalRating / listings.value).toFixed(2) : '0';
+  price.value = listings.value ? (totalPrice / listings.value).toFixed(2) : '0';
+  // top 10 neighborhoods
+  const neighborhoodMapSorted = new Map([...neighborhoodMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10));
+  labelsBC.value = [];
+  dataBC.value = [];
+  for (let [neighborhood, count] of neighborhoodMapSorted) {
+    labelsBC.value.push(neighborhood);
+    dataBC.value.push(count);
+  }
+  // executive 
+  propertiesOver300Nights.value = propert300;
+  percentageFivePlusProperties.value = hostSet.size ? ((hostOver5 / hostSet.size) * 100).toFixed(2) : '0';
+  // top 5 hosts
+  labelsTopHosts.value = [];
+  dataTopHosts.value = [];
+  const sortedHosts = Array.from(hostMap.values()).sort((a, b) => b.count - a.count).slice(0, 5);
+  for (let host of sortedHosts) {
+    labelsTopHosts.value.push(host.name);
+    dataTopHosts.value.push(host.count);
+  }
+}
+
+function updateCalendarValues(calendarData) {
+  const priceMap = new Map();
+  for (let element of Object.values(calendarData)) {
+    const { listing_id, date, available, price, id } = element;
+    const month = date.split('-')[1];
+    if (priceMap.has(month)) {
+      const m = priceMap.get(month);
+      m.totalPrice += price;
+      m.count += 1;
+    } else {
+      priceMap.set(month, { totalPrice: price, count: 1 });
+    }
+  }
+  labelsLC.value = [];
+  dataLC.value = [];
+  for (let month = 1; month <= 12; month++) {
+    const monthStr = month.toString().padStart(2, '0');
+    labelsLC.value.push(monthStr);
+    if (priceMap.has(monthStr)) {
+      const monthData = priceMap.get(monthStr);
+      dataLC.value.push((monthData.totalPrice / monthData.count).toFixed(2));
+    } else {
+      dataLC.value.push(0);
+    }
+  }
+}
+
 </script>
 
 
@@ -267,25 +363,11 @@ const dataTopHosts = [50, 45, 40, 35, 30];
   background-color: rgb(0, 48, 65);
   border: 3px solid rgb(0, 48, 65);
 }
-
-.overview-card p {
-  color: #699199;
-  text-align: center;
-  font-size: 96px;
-  font-weight: 500;
-}
-
 .overview-card h1 {
   color: #699199;
   font-size: 20px;
   font-weight: 500;
   text-align: center;
-}
-
-.overview-card-content {
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
 #occupancy { grid-area: 2 / 1 / 3 / 3; }

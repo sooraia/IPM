@@ -1,0 +1,60 @@
+[
+  {
+    "continent": "Asia-Pacific",
+    "countries": [
+        { "name": "Australia","cities": ["Barossa Valley", "Barwon South West, Vic", "Brisbane",
+                    "Melbourne", "Mid North Coast", "Mornington Peninsula",
+                    "Northern Rivers New South Wales", "Sydney", "Tasmania","Western Australia"]
+        ,"available": []},
+        { "name": "China", "cities": ["Beijing", "Hong Kong", "Shanghai"],"available": []},
+        { "name": "Japan", "cities": ["Tokyo"] ,"available": ["Tokyo"]},
+        {"name": "Singapore","cities":  ["Singapore"],"available": []},
+        {"name": "Taiwan","cities":  ["Taipei"],"available": []},
+        {"name": "Thailand","cities":  ["Bangkok"], "available": []}
+    ],
+    "available": [ {"country": "Japan", "city": "Tokyo"} ]
+  },
+    {
+        "continent": "Europe",
+        "countries": [
+            { "name": "Austria", "cities": ["Vienna"] , "available": []},
+            { "name": "Belgium", "cities": ["Antwerp", "Brussels", "Ghent"] ,"available": []},
+            { "name": "Czech Republic", "cities": ["Prague"] ,"available": []},
+            { "name": "Denmark", "cities": ["Copenhagen"] ,"available": []},
+            { "name": "France", "cities": ["Bordeaux", "Lyon", "Paris", "Pays Basque"] ,"available": []},
+            { "name": "Germany", "cities": ["Berlin", "Munich"] ,"available": []},
+            { "name": "Greece", "cities": ["Athens", "Crete", "South Aegean", "Thessaloniki"] ,"available": []},
+            { "name": "Hungary", "cities": ["Budapest"] ,"available": []},
+            { "name": "Ireland", "cities": ["Dublin"] ,"available": []},
+            { "name": "Italy", "cities": ["Bergamo", "Bologna", "Florence", "Milan", "Naples", "Puglia", "Rome", "Sicily", "Trentino", "Venice"] ,"available": []},
+            { "name": "Latvia", "cities": ["Riga"] ,"available": []},
+            { "name": "Norway", "cities": ["Oslo"] ,"available": []},
+            { "name": "Portugal", "cities": ["Lisbon", "Porto"] ,"available": ["Porto"]},
+            { "name": "Spain", "cities": ["Barcelona", "Euskadi", "Girona", "Madrid", "Malaga", "Mallorca", "Menorca", "Sevilla", "Valencia"] ,"available": []},
+            { "name": "Sweden", "cities": ["Stockholm"] ,"available": []},
+            { "name": "Switzerland", "cities": ["Geneva", "Vlaud", "Zurich"] ,"available": []},
+            { "name": "The Netherlands", "cities": ["Amsterdam", "Rotterdam", "The Hague"] ,"available": []},
+            { "name": "Turkey", "cities": ["Istanbul"] ,"available": []},
+            { "name": "United Kingdom", "cities": ["Bristol", "Edinburgh", "Greater Manchester", "London"] , "available": []}
+        ],
+        "available": [ {"country": "Portugal", "city": "Lisbon"} ]
+    },
+    {
+        "continent": "America",
+        "countries": [          
+            { "name": "USA", "cities": ["Hawaii", "New York", "San Francisco"] ,"available": ["Hawaii"]},
+            { "name": "Brazil", "cities": ["Rio de Janeiro", "São Paulo"] ,"available": []},
+            { "name": "Canada", "cities": ["Toronto", "Vancouver"] , "available": []}
+        ],
+        "available": [ {"country": "USA", "city": "Hawaii"} ]
+    },
+    {
+        "continent": "Africa",
+        "countries": [
+            { "name": "South Africa", "cities": ["Cape Town", "Johannesburg"] ,"available": ["Cape Town"]},
+            { "name": "Egypt", "cities": ["Cairo"] ,"available": []},
+            { "name": "Morocco", "cities": ["Marrakech"] , "available": []}
+        ],
+        "available": [ {"country": "South Africa", "city": "Cape Town"} ]
+    }
+]
