@@ -68,9 +68,10 @@ const router = createRouter({
       component: AlojamentosView
     },
     {
-      path: '/createGraph',
-      name: 'createGraph',
-      component: CreateGraphView
+      path: '/createGraph/:chartType',
+      name: 'GraphView',
+      component: CreateGraphView,
+      props: true 
     },
     {
       path: '/dashboard/:city',
