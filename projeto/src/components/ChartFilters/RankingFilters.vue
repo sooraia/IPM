@@ -4,14 +4,14 @@
         <p class="subtitle">Show Metrics:</p>
         <CategoryMetrics 
             :metrics="metrics" 
-            v-model:metricSelected="metricSelectedR"/>
+            v-model="metricSelectedComputed" />
     </div>
     
     <LabelMenu title="Advanced Filters" id="labelMenu"/>
     <div class="category-container">  
         <div class="rows_number">
             <div class="rows-label">Show</div>
-            <select v-model="nRowsSelected" class="select_row">
+            <select v-model="RowsSelectedComputed" id="select_row" class="select_menu">
                 <option v-for="value in source" :key="value" :value="value">{{ value }}</option>
             </select>
             <div class="rows-label">Rows</div>
@@ -20,7 +20,7 @@
     
     <div class="category-container"> 
         <p class="subtitle">Price (per night):</p>
-        <RangeBar v-model="priceRange" 
+        <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
                         :max="1500"
                         :gap="100"
@@ -29,50 +29,54 @@
 
     <div class="category-container">  
         <p class="subtitle">Property Type:</p>
-        <select v-model="propertyTypeComputed" class="property-type-selected" >
+        <select v-model="propertyTypeComputed" id="property-type-selected" class="select_menu">
             <option v-for="p in property_type" :key="p" :value="p">{{ p }}</option>
         </select>
     </div>
 
     <div class="category-container">
-        <DateRange/>
+        <DateRange v-model="dateComputed"/>
     </div>
 
-    <ResetButton @click="resetFilters" />
+    <Button buttonLabel="Reset Filters" @click="resetFilters" class="button"/>
 </template>
 
 <script setup>
-    import { computed, ref } from 'vue';
+    import { computed } from 'vue';
     import DateRange from '../SideBar/DateRange.vue';
     import RangeBar from '../SideBar/RangeBar.vue';
     import LabelMenu from '../SideBar/LabelMenu.vue';
     import CategoryMetrics from '../SideBar/CategoryMetrics.vue';
-    import ResetButton from '../SideBar/ResetButton.vue';
+    import Button from '../Button.vue';
 
-    const priceRange = ref([0, 1500]);
-    const source = [1,2,3,4,5,6,7,8,9,10];
+    const source = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
     const metrics = ["Number of Listings", "Average Price per Night", "Occupancy Rate", 
                      "Average Review Score", "License Status"];
     const property_type = ["Entire Home", "Private Room", "Shared Room", "Hotel Room"];
 
     const props = defineProps({ 
-        metricsValue: { type: String, default: 'Number of Listings' },
-        n_rowsValue: { type: Number, default: 1 },
-        propertyTypeSelected: { type: String, default: 'Entire Home' }
+        metricsValue: String,
+        n_rowsValue: Number,
+        priceValue: Array,
+        propertyTypeSelected: String,
+        sizeRes: String,
+        dateRange: Array
     })
 
     const emit = defineEmits([
         'update:metricsValue', 
         'update:n_rowsValue',
-        'update:propertyTypeSelected'
+        'update:propertyTypeSelected',
+        'update:priceValue',
+        'update:dateRange'
     ])
 
-    const metricSelectedR = computed({
+    const metricSelectedComputed = computed({
         get: () => props.metricsValue,
         set: (val) => emit('update:metricsValue', val)
     })
 
-    const nRowsSelected = computed({
+    const RowsSelectedComputed = computed({
         get: () => props.n_rowsValue,
         set: (val) => emit('update:n_rowsValue', val)
     })
@@ -82,12 +86,21 @@
         set: (val) => emit('update:propertyTypeSelected', val)
     })
 
+    const priceRangeComputed = computed({
+        get: () => props.priceValue || [0, 1500],
+        set: (val) => emit('update:priceValue', val)
+    })
+
+    const dateComputed = computed({
+        get: () => props.dateRange || ['2023-01-01', '2023-12-31'],
+        set: (val) => emit('update:dateRange', val)
+    })
 
     function resetFilters() {
         metricSelectedR.value = 'Number of Listings'
         propertyTypeComputed.value = 'Entire Home'
-        nRowsSelected.value = 1
-        priceRange.value = [0, 1500]
+        nRowsSelected.value = 10
+        priceRangeComputed.value = [0, 1500]
     }
 </script>
 
@@ -136,29 +149,34 @@
         margin-top: 10px;
     }
 
-    .property-type-selected{
-        width: 95%;
+    .select_menu{
+        font-size: 16px;
+        color: var(--metrics-text);
+        background-color: rgba(198, 196, 196, 0.425);
+        border: 1px solid rgba(118, 118, 118, 1);
+        border-radius: 15px;
+        padding-left: 10px;
         height: 25px;
+    }
+
+    #property-type-selected{
+        width: 95%;
         display: block;
         margin-left: auto;
         margin-right: auto;
         margin-top: 8px;
-        font-size: 16px;
-        color: var(--metrics-text);
-        background-color: rgba(198, 196, 196, 0.425);
-        border: 1px solid rgba(118, 118, 118, 1);
-        border-radius: 15px;
-        padding-left: 10px;
     }
 
-    .select_row{
+    #select_row{
         width: 20%;
-        height: 25px;
-        font-size: 16px;
-        color: var(--metrics-text);
-        background-color: rgba(198, 196, 196, 0.425);
-        border: 1px solid rgba(118, 118, 118, 1);
-        border-radius: 15px;
-        padding-left: 10px;
+    }
+
+    .button{
+        background-color: var(--bg);
+        color: var(--accent);
+        border: 3px solid var(--accent);
+        cursor: pointer;
+        font-size: 15px;
+        height: 30px;
     }
 </style>

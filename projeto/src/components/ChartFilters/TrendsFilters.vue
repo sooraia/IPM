@@ -4,30 +4,30 @@
         <p class="subtitle">Show Metrics:</p>
         <CategoryMetrics 
             :metrics="metrics" 
-            v-model:metricSelected="metricSelectedT"
+            v-model:metricSelected="metricSelectedComputed"
         />
     </div>
     
     <LabelMenu title="Advanced Filters" id="labelMenu"/>
     <div class="category-container"> 
         <div class="subtitle">Aggregation:</div>
-        <select v-model="aggregationType" class="selection">
+        <select v-model="aggregationTypeComputed" class="selection">
             <option v-for="value in aggregation_types" :key="value" :value="value">{{ value }}</option>
         </select>
     </div>
     
     <div class="category-container"> 
         <p class="subtitle">Price (per night):</p>
-        <RangeBar v-model="priceRange" 
+        <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
-                        :max="1500"
+                        :max="props.maxLimit"
                         :gap="100"
                         :currency="true"/>
     </div>
 
     <div class="category-container">
         <p class="subtitle">Show Results for:</p>
-            <SizeResults v-model:sizeRes="sizeResSelected"/>
+            <SizeResults v-model:sizeRes="sizeResComputed"/>
     </div>
 
 
@@ -38,41 +38,44 @@
         </select>
     </div>
 
-    <ResetButton @click="resetFilters" />
+    <Button buttonLabel="Reset Filters" @click="resetFilters" class="button"/>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import RangeBar from '../SideBar/RangeBar.vue'
 import LabelMenu from '../SideBar/LabelMenu.vue'
 import CategoryMetrics from '../SideBar/CategoryMetrics.vue'
-import ResetButton from '../SideBar/ResetButton.vue'
 import SizeResults from '../SideBar/SizeResults.vue'
+import Button from '../Button.vue'
 
 const metrics = ["Average Price Per Night", "Number of Reservations", "Occupancy Rate", "Average Review Score"]
 const aggregation_types = ["Weekly", "Monthly", "Quarterly"]
-const property_type = ["Entire Home", "Private Room", "Shared Room", "Hotel Room"]
+const property_type = ["All", "Entire Home", "Private Room", "Shared Room", "Hotel Room", "Other"]
 
 const props = defineProps({ 
     metricsValue: { type: String, default: 'Average Price Per Night' },
     sizeRes: { type: String, default: 'Entire City'},
-    propertyTypeSelected: { type: String, default: 'Entire Home' }
+    propertyTypeSelected: { type: String, default: 'Entire Home' },
+    priceValue: { type: Array, default: () => [0, 1500] },
+    aggregationValue: { type: String, default: 'Monthly' },
+    maxLimit: { type: Number, default: 1500}
 })
 
 const emit = defineEmits([
     'update:metricsValue', 
+    'update:aggregationValue',
     'update:sizeRes',
+    'update:priceValue',
     'update:propertyTypeSelected'
 ])
 
-const metricSelectedT = computed({
+const metricSelectedComputed = computed({
     get: () => props.metricsValue,
-    set: (val) => 
-        emit('update:metricsValue', val)
-    
+    set: (val) => emit('update:metricsValue', val)
 })
 
-const sizeResSelected = computed({
+const sizeResComputed = computed({
     get: () => props.sizeRes,
     set: (val) => emit('update:sizeRes', val)
 })
@@ -82,15 +85,24 @@ const propertyTypeComputed = computed({
     set: (val) => emit('update:propertyTypeSelected', val)
 })
 
-const aggregationType = ref('Monthly');
-const priceRange = ref([0, 1500]);
+const aggregationTypeComputed = computed({
+    get: () => props.aggregationValue,
+    set: (val) => emit('update:aggregationValue', val)
+})
+
+const priceRangeComputed = computed({
+    get: () => props.priceValue,
+    set: (val) => emit('update:priceValue', val)
+})
+
 
 function resetFilters() {
-    selectedMetricT.value = 'Average Price Per Night'
-    sizeResSelected.value = 'Entire City'
+    metricSelectedComputed.value = metrics[0]
+    sizeResComputed.value = 'Entire City'
     propertyTypeComputed.value = 'Entire Home'
-    aggregationType.value = 'Monthly'
-    priceRange.value = [0, 1500]
+    aggregationTypeComputed.value = 'Monthly'
+    priceRangeComputed.value = [0, 1500]
+    priceRangeComputed.value = [0, props.maxLimit]
 }
 </script>
 
@@ -129,5 +141,14 @@ function resetFilters() {
         font-size: 18px;
         width: 90%;
         margin-top: 10px;
+    }
+
+    .button{
+        background-color: var(--bg);
+        color: var(--accent);
+        border: 3px solid var(--accent);
+        cursor: pointer;
+        font-size: 15px;
+        height: 30px;
     }
 </style>
