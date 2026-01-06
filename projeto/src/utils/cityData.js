@@ -1,4 +1,4 @@
-import { getPropertyTypeCategory } from '@/utils/GroupByCategory.js';
+import { propertyTypeGrouped } from '@/utils/GroupByCategory.js';
 
 export async function fetchListingsForCity(cityName) {
   if (!cityName) return []
@@ -71,7 +71,7 @@ export function processListingsData(listingsData) {
     if (license && license.trim()== "t") {
       licensedCount += 1;
     }
-    let propertyType = getPropertyTypeCategory(element.property_type);
+    let propertyType = propertyTypeGrouped(element.property_type);
     if (propertyTypeMap.has(propertyType)) {
       propertyTypeMap.set(propertyType, propertyTypeMap.get(propertyType) + 1);
     } else {
