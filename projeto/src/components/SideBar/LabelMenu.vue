@@ -22,5 +22,6 @@ defineProps({
         align-items: center;
         color: var(--white);
         font-size: 24px;
+        padding: 3px;
     }
 </style>

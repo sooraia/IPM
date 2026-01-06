@@ -30,6 +30,12 @@ import Button from '../Button.vue';
         cursor: pointer;
     }
 
+    .share-buttons :deep(.btn-icon) {
+        height: 30px;
+        vertical-align: middle;
+        width: auto;
+    }
+
     #button-save{
         background-color: var(--accent);
         width: 90%;

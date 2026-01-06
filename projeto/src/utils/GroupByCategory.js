@@ -1,17 +1,3 @@
-export function getPropertyTypeCategory(category) {
-    const categoria_str = category.split(" ");
-    if (categoria_str[0] === "Hotel" || categoria_str[2] === "hotel"){
-        return 'Hotel Room';
-    } else if (categoria_str[0] === "Entire" || categoria_str[0] === "Home" || categoria_str[1] === "home"){
-        return 'Entire Home';
-    } else if ((categoria_str[0] === "Private" && categoria_str[1] === "room") || (categoria_str[0] === "Room")){
-        return 'Private Room';
-    } else if (categoria_str[0] === "Shared" && categoria_str[1] === "room"){
-        return 'Shared Room';
-    } 
-    return 'Other';
-}
-
 export const groupDataByPopertyType = (dataCleaned, priceRange) => {
     const counts = {};
     const min = priceRange[0];
@@ -21,8 +7,7 @@ export const groupDataByPopertyType = (dataCleaned, priceRange) => {
         const price = dataCleaned[id][1];
         if (price <= max && price >= min) {
             const categoria = dataCleaned[id][0];
-            const categoria_str = categoria.split(" ");
-            let category = getPropertyTypeCategory(categoria);
+            const category = propertyTypeGrouped(categoria);
             counts[category] = (counts[category] || 0) + 1;
         }
     };
@@ -31,6 +16,21 @@ export const groupDataByPopertyType = (dataCleaned, priceRange) => {
         data: Object.values(counts)
     }
 };
+
+export const propertyTypeGrouped = (propertyTypeStr) => {
+    const propertyType = propertyTypeStr.split(" ");
+    let category = 'Other';
+    if (propertyType[0] === "Hotel" || propertyType[2] === "hotel"){
+        category = 'Hotel Room';
+    } else if (propertyType[0] === "Entire" || propertyType[0] === "Home" || propertyType[1] === "home"){
+        category = 'Entire Home';
+    } else if ((propertyType[0] === "Private" && propertyType[1] === "room") || (propertyType[0] === "Room")){
+        category = 'Private Room';
+    } else if (propertyType[0] === "Shared" && propertyType[1] === "room"){
+        category = 'Shared Room';
+    } 
+    return category;
+}
 
 export const groupDataByReviewsPerMonth = (dataCleaned, priceRange) => {
     const counts = {};
@@ -66,9 +66,7 @@ export const groupDataByReviewsPerMonth = (dataCleaned, priceRange) => {
     }
 };
 
-
 export const groupDataByCategory = (cleaned, priceRange) => {
-
     const [min, max] = priceRange;
     const counts = {}
     for (const id in cleaned) {
@@ -81,4 +79,50 @@ export const groupDataByCategory = (cleaned, priceRange) => {
         labels: Object.keys(counts),
         data: Object.values(counts)
     };
+};
+
+
+import { parsePrice } from '@/utils/chartHelpers';
+
+export const groupAllCalendarsById = (calendarList, listings) => {
+    const monthMap = {
+        '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun',
+        '07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'
+    };
+    const finalStructure = {};
+    const propertyTypeByIdList = {};
+    for (const item of listings) {
+        const id = item.id;
+        propertyTypeByIdList[id] = propertyTypeGrouped(item.property_type);
+    }
+
+    for (const item of calendarList) {
+        const id = item.listing_id;
+        const dateParts = item.date.split('-');
+        const monthName = monthMap[dateParts[1]];
+        const price = parsePrice(item.price);
+
+        if (!finalStructure[id]) {
+            finalStructure[id] = { 
+                property_type: propertyTypeByIdList[id], 
+                calendar: {
+                    Jan: [], Feb: [], Mar: [], Apr: [], May: [], Jun: [],
+                    Jul: [], Aug: [], Sep: [], Oct: [], Nov: [], Dec: []
+                }
+            };
+        }
+        finalStructure[id].calendar[monthName].push([item.available, price]);
+    }
+
+    const cleanedStructure = {};
+    for (const id in finalStructure) {
+        const calendarArray = Object.entries(finalStructure[id].calendar).filter(([_, entries]) => entries.length > 0);
+        
+        cleanedStructure[id] = {
+            property_type: finalStructure[id].property_type,
+            calendar: calendarArray
+        };
+    }
+
+    return cleanedStructure;
 };
