@@ -5,28 +5,28 @@
             <img id="importFilters" type="submit" src="../assets/importFilters.png" />
         </header>
         <div class="filtros">
-            <DateRange />
+            <DateRange v-model="dateComputed"/>
             <div>
                 <p class="subtitle">Price per night:</p>
-                <RangeBar v-model="rangebar.priceRange" 
+                <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
-                        :max="1500"
+                        :max="props.maxPrice"
                         :gap="100"
                         :currency="true"/>
             </div>
-            <CircleButton text="No License"/>
-            <CircleButton text="Host is a SuperHost"/>
+            <CircleButton text="No License" v-model="noLicenseComputed"/>
+            <CircleButton text="Host is a SuperHost" v-model="isSuperHostComputed"/>
             <div>
                 <p class="subtitle">Property Type:</p>
-                <Dropdown />
+                <Dropdown v-model="propertyTypeComputed"/>
             </div>
             <div>
                 <p class="subtitle">Rating Score:</p>
-                <StarRating v-model="ratingNumber"/>
+                <StarRating v-model="ratingScoreComputed"/>
             </div>
             <div>
                 <p class="subtitle">Annual Occupancy:</p>
-                <RangeBar v-model="rangebar.annualOccupancy" 
+                <RangeBar v-model="annualOccupancyComputed" 
                         :min="0" 
                         :max="365"
                         :gap="1"
@@ -34,10 +34,10 @@
             </div>
             <div>
                 <p class="subtitle">Rooms and beds:</p>
-                <Add texto="Accomodates" v-model="roomsData.accomodates" :min="0" :max="10"/>
-                <Add texto="Rooms" v-model="roomsData.rooms" :min="0" :max="10"/>
-                <Add texto="Beds" v-model="roomsData.beds" :min="0" :max="10"/>
-                <Add texto="Bathrooms" v-model="roomsData.bathrooms" :min="0" :max="10"/>
+                <Add texto="Accomodates" v-model="accommodatesComputed" :min="0" :max="20"/>
+                <Add texto="Rooms" v-model="bedroomsComputed" :min="0" :max="20"/>
+                <Add texto="Beds" v-model="bedsComputed" :min="0" :max="20"/>
+                <Add texto="Bathrooms" v-model="bathroomsComputed" :min="0" :max="20"/>
             </div>
             <div>
                 <p class="subtitle">Amenities:</p>
@@ -62,7 +62,8 @@
             </div>
             <div>
                 <p class="subtitle">Show Results for:</p>
-                <SizeResults v-model:sizeRes="sizeResSelected"/>
+                <SizeResults v-model:sizeRes="sizeResComputed"/>
+
             </div>
         </div>
         <div class="buttons">
@@ -74,7 +75,7 @@
 </template>
 
 <script setup>
-import { ref, computed} from 'vue';
+import { ref, computed } from 'vue';
 import LabelMenu from './SideBar/LabelMenu.vue';
 import CircleButton from './SideBar/CircleButton.vue';
 import StarRating from './SideBar/StarRating.vue';
@@ -88,17 +89,92 @@ import SizeResults from './SideBar/SizeResults.vue';
 import resetIcon from '../assets/ResetFilters.png';
 import saveIcon from '../assets/SaveFilters.png';
 
-const ratingNumber = ref(0);
-const rangebar = ref({
-    priceRange: [0, 1500],
-    annualOccupancy: [0, 365]
+const props = defineProps({
+    dateRange: Array,
+    priceRange: { type: Array, default: [0, 1500] },
+    annualOccupancy: { type: Array, default: [0, 365] },
+    maxPrice: { type: Number, default: 1500 },
+    noLicense: { type: Boolean, default: false },
+    isSuperHost: { type: Boolean, default: false },
+    propertyType: { type: String, default: 'All' },
+    ratingScore: { type: Number, default: 0 },
+    roomsData: { 
+        type: Object, 
+        default: () => ({ accommodates: 0, bedrooms: 0, beds: 0, bathrooms: 0 })
+    },
+    sizeRes: { type: String, default: 'Entire City' },
 });
 
-const roomsData = ref({
-    accomodates: 0,
-    rooms: 0,
-    beds: 0,
-    bathrooms: 0
+const emit = defineEmits([
+    'update:dateRange',
+    'update:priceRange', 
+    'update:annualOccupancy',
+    'update:noLicense',
+    'update:isSuperHost',
+    'update:propertyType',
+    'update:ratingScore',
+    'update:roomsData',
+    'update:sizeRes',
+]);
+
+const dateComputed = computed({
+    get: () => props.dateRange || ['2023-01-01', '2023-12-31'],
+    set: (val) => emit('update:dateRange', val)
+});
+
+const priceRangeComputed = computed({
+    get: () => props.priceRange,
+    set: (val) => emit('update:priceRange', val)
+});
+
+const annualOccupancyComputed = computed({
+    get: () => props.annualOccupancy,
+    set: (val) => emit('update:annualOccupancy', val)
+});
+
+const noLicenseComputed = computed({
+    get: () => props.noLicense,
+    set: (val) => emit('update:noLicense', val)
+});
+
+const isSuperHostComputed = computed({
+    get: () => props.isSuperHost,
+    set: (val) => emit('update:isSuperHost', val)
+});
+
+const propertyTypeComputed = computed({
+    get: () => props.propertyType,
+    set: (val) => emit('update:propertyType', val)
+});
+
+const ratingScoreComputed = computed({
+    get: () => props.ratingScore,
+    set: (val) => emit('update:ratingScore', val)
+});
+
+const accommodatesComputed = computed({
+    get: () => props.roomsData.accommodates,
+    set: (val) => emit('update:roomsData', { ...props.roomsData, accommodates: val })
+});
+
+const bedroomsComputed = computed({
+    get: () => props.roomsData.bedrooms,
+    set: (val) => emit('update:roomsData', { ...props.roomsData, bedrooms: val })
+});
+
+const bedsComputed = computed({
+    get: () => props.roomsData.beds,
+    set: (val) => emit('update:roomsData', { ...props.roomsData, beds: val })
+});
+
+const bathroomsComputed = computed({
+    get: () => props.roomsData.bathrooms,
+    set: (val) => emit('update:roomsData', { ...props.roomsData, bathrooms: val })
+});
+
+const sizeResComputed = computed({
+    get: () => props.sizeRes,
+    set: (val) => emit('update:sizeRes', val)
 });
 
 const amenities = ref([
@@ -120,18 +196,20 @@ const displayedAmenities = computed(() => {
     return amenities.value.slice(0, 5);
 });
 
-const sizeResSelected = ref('Entire City');
 
 function resetFilters(){
-    ratingNumber.value = 0;
-    rangebar.value.priceRange = [0, 1500];
-    rangebar.value.annualOccupancy = [0, 365];
-    roomsData.value.accomodates = 0;
-    roomsData.value.rooms = 0;
-    roomsData.value.beds = 0;
-    roomsData.value.bathrooms = 0;
+    ratingScoreComputed.value = 0;
+    priceRangeComputed.value = [0, props.maxPrice];
+    annualOccupancyComputed.value = [0, 365];
+    noLicenseComputed.value = false;
+    isSuperHostComputed.value = false;
+    propertyTypeComputed.value = 'All';
+    accommodatesComputed.value = 0;
+    bedroomsComputed.value = 0;
+    bedsComputed.value = 0;
+    bathroomsComputed.value = 0;
     amenities.value.forEach(item => item.value = false);
-    sizeResSelected.value = 'Entire City';
+    sizeResComputed.value = 'Entire City';
 }
 
 </script>
