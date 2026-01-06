@@ -1,19 +1,27 @@
 <template>
     <main class="layout">
         <section class="left-menu">
-            <MenuFilters />
+            <MenuFilters 
+            :maxPrice="maxPrice" 
+            v-model:priceRange="priceRange" 
+            v-model:annualOccupancy="annualOccupancy"
+            v-model:noLicense="noLicense"
+            v-model:isSuperHost="isSuperHost"
+            v-model:propertyType="propertyType"
+            v-model:ratingScore="ratingScore"
+            v-model:roomsData="roomsData"
+            v-model:sizeRes="sizeRes"
+            />
         </section>
 
         <section class="alojamentos-wrapper">
             <div class="container">
                 <h1>{{ cityStore.currentCity }}</h1>
                 
-                <p style="align-self: flex-start;">Results ({{ alojamentos.length }})</p>
+                <p style="align-self: flex-start;">Results ({{ filteredListings.length }})</p>
                 
                 <div style="width: 100%;">
                     <p v-if="loading">A carregar dados...</p>
-                    <p v-else-if="alojamentos.length === 0">Não foram encontrados alojamentos nesta cidade.</p>
-
                     <CardAlojamento 
                         v-for="casa in paginatedAlojamentos" 
                         :key="casa.id"
@@ -26,11 +34,11 @@
                     v-model="currentPage"
                     :totalPages="totalPages"
                 />
-                <Button v-if="alojamentos.length > 0" buttonLabel="Export" :icon="SaveIcon" id="button-export" />
+                <Button buttonLabel="Export" :icon="SaveIcon" id="button-export" />
             </div>
         </section>
 
-        <section class="map" v-if="alojamentos.length > 0">
+        <section class="map">
             <MapAlojamentos  :markers="markers" />
         </section>
     </main>
@@ -42,12 +50,15 @@ import { storeToRefs } from 'pinia';
 import { useCityStore } from '@/stores/city';
 import { useRoute } from 'vue-router';
 import { useListingsStore } from '@/stores/listings';
+import { parsePrice } from '@/utils/chartHelpers';
 import CardAlojamento from '@/components/CardAlojamento.vue';
 import MenuFilters from '@/components/MenuFilters.vue';
 import MapAlojamentos from '@/components/MapAlojamentos.vue';
 import Button from '@/components/Button.vue';
 import Pagination from '@/components/Pagination.vue';
 import SaveIcon from '@/assets/Export.png';
+import { categorizePropertyType } from '@/utils/GroupByCategory';
+
 
 const cityStore = useCityStore();
 const route = useRoute();
@@ -62,29 +73,110 @@ function updateCityFromRoute() {
 }
 
 const listingsStore = useListingsStore();
-const { listings: alojamentos, loading } = storeToRefs(listingsStore);
+const { listings, loading } = storeToRefs(listingsStore);
 
+const maxPrice = ref(1500);
+const priceRange = ref([0, 1500]);
+const annualOccupancy = ref([0, 365]);
+const noLicense = ref(false);
+const isSuperHost = ref(false);
+const propertyType = ref('All');
+const ratingScore = ref(0);
+const roomsData = ref({ accommodates: 0, bedrooms: 0, beds: 0, bathrooms: 0 });
+const sizeRes = ref('Entire City');
 const currentPage = ref(1);
 const itemsPerPage = 13;
 
+const filteredListings = computed(() => {
+    return listings.value.filter(listing => {
+        const price = parsePrice(listing.price);
+        if (price < priceRange.value[0] || price > priceRange.value[1]) {
+            return false;
+        }
+
+        const occupancy = listing.estimated_occupancy_l365d;
+        if (occupancy < annualOccupancy.value[0] || occupancy > annualOccupancy.value[1]) {
+            return false;
+        }
+
+        if (noLicense.value) {
+            if (listing.license === 't') {
+                return false;
+            }
+        }
+
+        if (isSuperHost.value) {
+            if (listing.host_is_superhost !== 't') {
+                return false;
+            }
+        }
+
+        if (propertyType.value !== 'All') {
+            const category = categorizePropertyType(listing.property_type);
+            if (category !== propertyType.value) {
+                return false;
+            }
+        }
+
+        if (ratingScore.value > 0) {
+            const rating = Math.round(listing.review_scores_rating);
+            if (rating !== ratingScore.value) {
+                return false;
+            }
+        }
+
+        if (roomsData.value.accommodates > 0) {
+            if (listing.accommodates < roomsData.value.accommodates) {
+                return false;
+            }
+        }
+        if (roomsData.value.bedrooms > 0) {
+            if (listing.bedrooms < roomsData.value.bedrooms) {
+                return false;
+            }
+        }
+        if (roomsData.value.beds > 0) {
+            if (listing.beds < roomsData.value.beds) {
+                return false;
+            }
+        }
+        if (roomsData.value.bathrooms > 0) {
+            if (listing.bathrooms < roomsData.value.bathrooms) {
+                return false;
+            }
+        }
+        
+        return true;
+    });
+});
+
+
 const totalPages = computed(() => {
-    return Math.ceil(alojamentos.value.length / itemsPerPage);
+    return Math.ceil(filteredListings.value.length / itemsPerPage);
 });
 
 const paginatedAlojamentos = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return alojamentos.value.slice(start, end);
+    return filteredListings.value.slice(start, end);
 });
 
-onMounted(() => {
+onMounted(async () => {
     updateCityFromRoute();
-    listingsStore.fetchListings();
+
+    await listingsStore.fetchListings();
+    if (listings.value.length > 0) {
+        const prices = listings.value.map(item => parsePrice(item.price));
+        const cityMax = Math.max(...prices);
+        maxPrice.value = cityMax;
+        priceRange.value = [0, cityMax];
+    }
+
     currentPage.value = 1;
 });
 
 const markers = computed(() => {
-    return alojamentos.value.map(aloj => {
+    return filteredListings.value.map(aloj => {
         return {
             latitude: aloj.latitude,
             longitude: aloj.longitude,

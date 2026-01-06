@@ -1,3 +1,18 @@
+export const categorizePropertyType = (propertyTypeString) => {
+    const categoria_str = propertyTypeString.split(" ");
+    let category = 'Other';
+    if (categoria_str[0] === "Hotel" || categoria_str[2] === "hotel"){
+        category = 'Hotel Room';
+    } else if (categoria_str[0] === "Entire" || categoria_str[0] === "Home" || categoria_str[1] === "home"){
+        category = 'Entire Home';
+    } else if ((categoria_str[0] === "Private" && categoria_str[1] === "room") || (categoria_str[0] === "Room")){
+        category = 'Private Room';
+    } else if (categoria_str[0] === "Shared" && categoria_str[1] === "room"){
+        category = 'Shared Room';
+    }
+    return category;
+};
+
 export const groupDataByPopertyType = (dataCleaned, priceRange) => {
     const counts = {};
     const min = priceRange[0];
@@ -7,18 +22,7 @@ export const groupDataByPopertyType = (dataCleaned, priceRange) => {
         const price = dataCleaned[id][1];
         if (price <= max && price >= min) {
             const categoria = dataCleaned[id][0];
-            const categoria_str = categoria.split(" ");
-            let category = 'Other';
-            if (categoria_str[0] === "Hotel" || categoria_str[2] === "hotel"){
-                category = 'Hotel Room';
-            } else if (categoria_str[0] === "Entire" || categoria_str[0] === "Home" || categoria_str[1] === "home"){
-                category = 'Entire Home';
-            } else if ((categoria_str[0] === "Private" && categoria_str[1] === "room") || (categoria_str[0] === "Room")){
-                category = 'Private Room';
-            } else if (categoria_str[0] === "Shared" && categoria_str[1] === "room"){
-                category = 'Shared Room';
-            } 
-            
+            const category = categorizePropertyType(categoria);
             counts[category] = (counts[category] || 0) + 1;
         }
     };

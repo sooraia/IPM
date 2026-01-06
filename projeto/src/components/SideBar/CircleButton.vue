@@ -3,8 +3,7 @@
     
     <div 
     class="circle" 
-    :class="{ 'active': isSelected }"
-    @click="isSelected = !isSelected"
+    :class="{ 'active': modelValue }"
   >
     </div>
     
@@ -14,13 +13,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-    const isSelected = ref(false);
-    const props = defineProps({
-      text: {
-        type: String,
-      }
-    });
+const props = defineProps({
+  text: {
+    type: String,
+  },
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+function toggleSelection() {
+  emit('update:modelValue', !props.modelValue);
+}
 </script>
 
 <style scoped>
