@@ -1,6 +1,7 @@
 <template>
     <BaseCard :title="title" :subtitle="subtitle" :background-color="'rgba(0, 40, 55, 0.71)'">
         <template #content>
+            <form @submit.prevent="onSubmit">
             <div class="auth-form">
                 <div class="input-group">
                     <label for="auth-email">Email:</label>
@@ -34,14 +35,11 @@
                     <span v-if="forgotText" class="link">{{ forgotText }}</span>
                 </template>
             </div>
-        </template>
-
-        <template #actions>
-            <button @click="handleSubmit" class="auth-button">
+            <button type="submit" class="auth-button">
                 {{ buttonLabel }}
             </button>
+            </form>
         </template>
-
         <template #footer v-if="termsText">
             <p class="terms">{{ termsText }}</p>
         </template>
@@ -75,14 +73,14 @@ const password = ref('')
 const name = ref('')
 const receiveUpdates = ref(false)
 
-const handleSubmit = () => {
-    const payload = {
-        email: email.value,
-        password: password.value,
-        name: props.showName ? name.value : undefined,
-        receiveUpdates: props.isSignup ? receiveUpdates.value : undefined,
-    }
-    emit('submit', payload)
+function onSubmit() {
+  const payload = {
+    email: email.value,
+    password: password.value,
+    name: props.showName ? name.value : undefined,
+    receiveUpdates: props.isSignup ? receiveUpdates.value : undefined,
+  }
+  emit('submit', payload)
 }
 
 const handleSignUp = () => {

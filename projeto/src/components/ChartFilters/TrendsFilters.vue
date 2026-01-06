@@ -49,7 +49,7 @@ import CategoryMetrics from '../SideBar/CategoryMetrics.vue'
 import SizeResults from '../SideBar/SizeResults.vue'
 import Button from '../Button.vue'
 
-const metrics = ["Average Price Per Night", "Number of Reservations", "Occupancy Rate", "Average Review Score"]
+const metrics = ["Average Price Per Night", "Occupancy Rate"]
 const aggregation_types = ["Weekly", "Monthly", "Quarterly"]
 const property_type = ["All", "Entire Home", "Private Room", "Shared Room", "Hotel Room", "Other"]
 

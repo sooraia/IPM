@@ -79,9 +79,10 @@ const router = createRouter({
       component: DashboardCityView
     },
     {
-      path: '/dashboard/compare/cities',
+      path: '/dashboard/compare/:cityA/:cityB',
       name: 'compareCitiesData',
-      component: CompareCitiesDataView
+      component: CompareCitiesDataView,
+      props: true
     }
   ],
 })

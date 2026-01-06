@@ -111,6 +111,7 @@ import { useCityStore } from '@/stores/city';
 import { storeToRefs } from 'pinia';
 import { useListingsStore } from '@/stores/listings';
 import { useCalendarStore } from '@/stores/calendar';
+import { processListingsData, processCalendarData } from '@/utils/cityData.js';
 
 // overview data
 const route = useRoute();
@@ -172,69 +173,16 @@ onMounted(async () => {
   updateInfo();
 });
 
-// // Watcher para reagir quando listings são carregados
-// watch(listings, (newListings) => {
-//   if (newListings && newListings.length > 0) {
-//     console.log('Listings updated, recalculating...');
-//     updateInfo();
-//   }
-// }, { immediate: true }); // immediate: true para executar imediatamente com valor inicial
-
-// // Watcher para mudanças na cidade
-// watch(currentCity, async (newCity) => {
-//   if (newCity) {
-//     console.log('City changed to:', newCity);
-//     await listingsStore.fetchListings();
-//   }
-// });
-
-// // Watcher para mudanças na rota
-// watch(() => route.params.city ?? route.query.city, async (newCityParam) => {
-//   if (newCityParam) {
-//     await updateCityFromRoute();
-//   }
-// });
 function updateListingsValues(listingsData) {
-  numberListings.value = Object.keys(listingsData).length;
-  const hostSet = new Set();
-  const hostMap = new Map();
-  const updatedCurrency = false;
-  // use let for totals since we mutate them
-  let totalRating = 0, totalOccupancy = 0, totalPrice = 0, propert300 = 0, hostOver5 = 0, licensedCount = 0;
-  const neighborhoodMap = new Map();
-  for (let element of Object.values(listingsData)) {
-    const {host_id, host_name, host_listings_count, neighbourhood_cleansed: neighborhood, price, estimated_occupancy_l365d: occupancy, review_scores_rating: rating, license } = element;
-    if (!hostSet.has(host_id)) {
-      hostSet.add(host_id);
-      if (host_listings_count >= 5) hostOver5 += 1;
-    }
-    totalOccupancy += (occupancy * 100) / 365;
-    totalRating += (rating || 0);
-    if (!updatedCurrency) currency.value = price.substring(0,3);
-    totalPrice += (parseFloat(price.substring(3)) || 0);
-    if (occupancy >= 300) propert300 += 1;
-
-    if (neighborhoodMap.has(neighborhood)) {
-      neighborhoodMap.set(neighborhood, neighborhoodMap.get(neighborhood) + 1);
-    } else {
-      neighborhoodMap.set(neighborhood, 1);
-    }
-
-    if (hostMap.has(host_id)) {
-      hostMap.get(host_id).count += 1;
-    } else {
-      hostMap.set(host_id, { name: host_name, count: 1 });
-    }
-    if (license && license.trim()== "t") {
-      licensedCount += 1;
-    }
-
-  }
+  const {numberListings: nrlistings, numberHosts, hostOver5, occupancy: occ, avgRating, avgPrice,
+         currency: curr, propert300, licensedCount, neighborhoodMap, hostMap, propertyTypeMap } = processListingsData(listingsData);
   // overview
-  hosts.value = hostSet.size;
-  occupancy.value = numberListings.value ? (totalOccupancy / numberListings.value).toFixed(0) + '%' : '0%';
-  rating.value = numberListings.value ? (totalRating / numberListings.value).toFixed(1) : '0';
-  price.value = numberListings.value ? (totalPrice / numberListings.value).toFixed(0) : '0';
+  numberListings.value = nrlistings;
+  hosts.value = numberHosts;
+  occupancy.value = occ;
+  rating.value = avgRating;
+  price.value = avgPrice;
+  currency.value = curr;
   // top 10 neighborhoods
   const neighborhoodMapSorted = new Map([...neighborhoodMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10));
   labelsBC.value = [];
@@ -248,7 +196,7 @@ function updateListingsValues(listingsData) {
   dataLicensePC.value.push(licensedCount);
   dataLicensePC.value.push(numberListings.value - licensedCount);
   propertiesOver300Nights.value = propert300;
-  percentageFivePlusProperties.value = hostSet.size ? ((hostOver5 / hostSet.size) * 100).toFixed(2) : '0';
+  percentageFivePlusProperties.value = numberHosts ? ((hostOver5 / numberHosts) * 100).toFixed(2) : '0';
   // top 5 hosts
   labelsTopHosts.value = [];
   dataTopHosts.value = [];
@@ -260,19 +208,7 @@ function updateListingsValues(listingsData) {
 }
 
 function updateCalendarValues(calendarData) {
-  const priceMap = new Map();
-  for (let element of Object.values(calendarData)) {
-    const { listing_id, date, available, price, id } = element;
-    const month = parseInt(date.split('-')[1]);
-    const priceValue = (parseFloat(price.substring(3)) || 0);
-    if (priceMap.has(month)) {
-      const m = priceMap.get(month);
-      m.totalPrice += priceValue;
-      m.count += 1;
-    } else {
-      priceMap.set(month, { totalPrice: priceValue, count: 1 });
-    }
-  }
+  const {priceMap, monthlyOccupancy} = processCalendarData(calendarData);
   dataLC.value = [];
   for (let month = 1; month <= 12; month++) {
     if (priceMap.has(month)) {

@@ -35,6 +35,7 @@ function close() {
     transform: translate(-50%, -50%);
     display: flex;
     justify-content: center;
+    text-align: center;
     align-items: center;
     background-image: linear-gradient(0deg, rgba(38, 55, 42, 0.7) 0%, rgba(40, 64, 92, 0.8) 100%),url('../../assets/background.jpg');
     background-repeat: no-repeat;
@@ -43,7 +44,7 @@ function close() {
     width: 600px;
     height: 120px;
     color: var(--light-accent2);
-    font-size: 30px;
+    font-size: 26px;
     border-radius: 30px;
     border: 2px solid var(--light-accent2);
     filter: drop-shadow(10px 10px 10px var(--shadow));

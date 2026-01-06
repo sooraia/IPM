@@ -1,5 +1,6 @@
 <template>
   <div class="profile-page">
+  <Error v-if="errorMsg" :errorMessage="errorMsg" @close="closePopup"/>
     <router-link id="logout" :to="'/login'">
         <button @click="handleLogOut"  >
             <img src="../assets/logout-icon.png" alt="logout icon" />
@@ -10,22 +11,12 @@
         <h1 class ="container-title">Personal Info</h1>
         <div class="container-content">
             <img src="../assets/default-avatar.png" style="width:30%" alt="user icon" />
-            <div id="info-text">
-                <EditableField label="Name" :value="name" :editingMode="editing" :type="'text'" />
-                <EditableField label="Email" :value="email" :editingMode="editing" :type="'email'" />
-                <EditableField label="Password" :value="password" :editingMode="editing" :type="'password'" />
-                <EditableField label="Area of Interest" :value="areaInteresse" :editingMode="editing" :type="'text'" />
-                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
-                  <button v-if="editing===false" @click="toggleEdit">
-                      Edit
-                      <img src="../assets/edit.png" alt="edit icon" style="width: 15%;" />
-                  </button>
-                  <button id="save" v-else @click="save">
-                      Save
-                      <img src="../assets/save-icon.png" alt="save icon" style="width: 20%;" />
-                  </button>
-                </div>
-            </div>
+              <ToggableForm 
+                  :labels="[['Name', 'text'], ['Email', 'email'], ['Password', 'password'], ['Area of Interest', 'text']]"
+                  :oldvalues="[name, email, password, areaInteresse]" 
+                  v-model:editingMode="editing"
+                  @submit="save"
+              />
         </div>
     </div>
 
@@ -44,19 +35,36 @@
 
 <script setup>
 import { useAuthStore } from '@/stores/auth';
-import EditableField from '@/components/EditableField.vue';
+import ToggableForm from '@/components/ToggableForm.vue';
+import validateEmail from '@/utils/users.js';
+import Error from '@/components/Messages/Error.vue';
 import { ref } from 'vue';
-import {computed} from 'vue';
 
 const authStore = useAuthStore();
-const name = authStore.user.name;
-const email = authStore.user.email;
-const password = authStore.user.password;
-const areaInteresse = authStore.user.areaInteresse;
-const editing = ref(false);
+const name = ref(authStore.user.name);
+const email = ref(authStore.user.email);
+const password = ref(authStore.user.password);
+const areaInteresse = ref(authStore.user.areaInteresse);
 
-function validateEditedInfo() {
-  // to do
+const editing = ref(false);
+const errorMsg = ref(null);
+function closePopup() {
+  errorMsg.value = null;
+}
+
+async function validateEditedInfo(name, email, password) {
+ if (name.trim() === '' || email.trim() === '' || password.trim() === '') {
+    errorMsg.value = "Name, email and password cannot be empty.";
+   return false;
+ }
+ if(email!== authStore.user.email) {
+  const emailExists = await validateEmail(email);
+  if (emailExists === true) {
+    errorMsg.value = "Email is already in use.";
+     return false;
+   }
+ }
+  return true;
 }
 
 function handleLogOut() {
@@ -64,12 +72,44 @@ function handleLogOut() {
   authStore.logout();
 }
 
-function toggleEdit() {
-  editing.value = !editing.value;
-}
-function save() {
-  // Logic to save updated user info can be added here
-  toggleEdit();
+async function save(payload) {
+  const [newName, newEmail, newPassword, newAreaInteresse] = payload
+  if (await validateEditedInfo(newName, newEmail, newPassword)===false) {
+    return;
+  }
+    const data = {
+    email: newEmail,
+    password: newPassword,
+    name: newName,
+    area_interesse: newAreaInteresse,
+  };
+  try {
+        const response = await fetch(`http://localhost:3000/profiles.users/${authStore.user.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            name.value = newName;
+            password.value = newPassword;
+            areaInteresse.value = newAreaInteresse;
+            email.value = newEmail;
+            editing.value = false;
+            authStore.setUser({...authStore.user,
+              name: newName,
+              email: newEmail,
+              password: newPassword,
+              areaInteresse: newAreaInteresse,
+            }, authStore.user.id);
+        } else {
+          console.error(" Erro ao registar utilizador" , response.statusText );
+        }
+  }catch (error) {
+    console.error(" Erro a atualizar dados" , error );
+  } finally {
+    console.log("Atualização terminada");
+  }
 }
 
 </script>
@@ -152,33 +192,4 @@ function save() {
  gap: 150px;
  padding: 10px;
 }
-
-#info-text {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 40%;
-}
-
-#info-text button {
-  display: inline-flex;
-  width: 120px;
-  font-weight: 600;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  gap: 10px;
-  font-size: 20px;
-  color: var(--white);
-  background-color: var(--light-accent2);
-  border-radius: 30px;
-  cursor: pointer;
-  border: none;
-}
-
-#info-text button:hover {
-    background-color: var(--accent2);
-    filter: drop-shadow(4px 4px 6px var(--shadow));
-}
-
 </style>
