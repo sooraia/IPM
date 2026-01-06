@@ -54,7 +54,7 @@
       </div>
       <div class="content">
         <GroupedBarChart :style="{width: '100%', height: '450px'}"
-          :labels="['Entire home/apt', 'Private room', 'Shared room', 'Hotel room']"
+          :labels= "propertyTypes"
           :data="[propertyTypeA, propertyTypeB]"
           :label="[cityA, cityB]"
           :barcolors="['rgb(0, 40, 55)', 'rgba(242, 144, 47, 1)']"
@@ -67,32 +67,71 @@
 
 <script setup>
 import SearchBar from '@/components/SearchBar.vue';
-import BarChart from '@/components/Charts/BarChart.vue';
 import GroupedBarChart from '@/components/Charts/GroupedBarChart.vue';
 import { ref } from 'vue';
 import StatsCard from '@/components/Cards/StatsCard.vue';
 import IconInfo from '@/components/icons/IconInfo.vue';
 import Tooltip from '@/components/Tooltip.vue';
 import DoubleSidedBarChart from '@/components/Charts/DoubleSidedBarChart.vue';
+import { onMounted } from 'vue';
+import { fetchListingsForCity, fetchCalendarForCity, processListingsData, processCalendarData } from '@/utils/cityData.js';
+import { useRoute } from 'vue-router';
 
 const cityA = ref('Lisbon, Portugal');
 const cityB = ref('Porto, Portugal');
-const avgPriceA = ref(120);
-const avgPriceB = ref(100);
-const avgScoreA = ref(4.5);
-const avgScoreB = ref(4.2);
-const currencyA = ref('EUR');
-const currencyB = ref('EUR');
-const listingsA = ref(4000);
-const listingsB = ref(2500);
-const hostsA = ref(300);
-const hostsB = ref(200);
+const route = useRoute();
+const listings = ref(null);
+const calendarData = ref(null);
 
-const occupancyA = ref([65, 70, 75, 80, 85, 90, 95, 90, 85, 80, 75, 70]);
-const occupancyB = ref([60, 65, 70, 75, 80, 85, 90, 85, 80, 75, 70, 65]);
+async function updateCityFromRoute() {
+  const a = route.params.cityA;
+  const b = route.params.cityB;
+  if (a && b) {
+    cityA.value = a.replace(/-/g, ' ');
+    cityB.value = b.replace(/-/g, ' ');
+    const listingsA = await fetchListingsForCity(cityA.value);
+    const listingsB = await fetchListingsForCity(cityB.value);
+    const calendarA = await fetchCalendarForCity(cityA.value);
+    const calendarB = await fetchCalendarForCity(cityB.value);
+    listings.value = { A: listingsA, B: listingsB };
+    calendarData.value = { A: calendarA, B: calendarB };
+  }
+}
 
-const propertyTypeA = ref([3100, 300, 300, 200]);
-const propertyTypeB = ref([1900, 200, 150, 50]);
+function updateInfo() {
+  if (!listings.value || listings.value.length === 0) {
+    console.log("No listings data available.");
+    return;
+  }
+  if (!calendarData.value || calendarData.value.length === 0) {
+    console.log("No calendar data available.");
+    return;
+  }
+  updateListingsValues(listings.value);
+  updateCalendarValues(calendarData.value);
+}
+
+onMounted(async () => {
+  await updateCityFromRoute();
+  updateInfo();
+});
+
+const avgPriceA = ref(0);
+const avgPriceB = ref(0);
+const avgScoreA = ref(0);
+const avgScoreB = ref(0);
+const currencyA = ref('');
+const currencyB = ref('');
+const listingsA = ref(0);
+const listingsB = ref(0);
+const hostsA = ref(0);
+const hostsB = ref(0);
+
+const occupancyA = ref([]);
+const occupancyB = ref([]);
+const propertyTypes = ref(['Entire Home', 'Private Room', 'Shared Room', 'Hotel Room', 'Other']);
+const propertyTypeA = ref([]);
+const propertyTypeB = ref([]);
 
 function swapTwoValues(a, b) {
   const temp = a.value;
@@ -100,11 +139,57 @@ function swapTwoValues(a, b) {
   b.value = temp;
 }
 function swap() {
- swapTwoValues(cityA, cityB);
- swapTwoValues(avgPriceA, avgPriceB);
- swapTwoValues(avgScoreA, avgScoreB);
- swapTwoValues(avgScoreA, avgScoreB);
+  swapTwoValues(cityA, cityB);
+  swapTwoValues(avgPriceA, avgPriceB);
+  swapTwoValues(avgScoreA, avgScoreB);
+  swapTwoValues(currencyA, currencyB);
+  swapTwoValues(listingsA, listingsB);
+  swapTwoValues(hostsA, hostsB);
+  swapTwoValues(occupancyA, occupancyB);
+  swapTwoValues(propertyTypeA, propertyTypeB);
 }
+
+function updateListingsValues(listingsData) {
+  if (!listingsData.A || !listingsData.B) {
+    console.log("Listings data for one or both cities is missing.");
+    return;
+  }
+  const processedA = processListingsData(listingsData.A);
+  const processedB = processListingsData(listingsData.B);
+  avgPriceA.value = processedA.avgPrice;
+  avgPriceB.value = processedB.avgPrice;
+  avgScoreA.value = processedA.avgRating;
+  avgScoreB.value = processedB.avgRating;
+  listingsA.value = processedA.numberListings;
+  listingsB.value = processedB.numberListings;
+  hostsA.value = processedA.numberHosts;
+  hostsB.value = processedB.numberHosts;
+  propertyTypeA.value = [];
+  propertyTypeB.value = [];
+  currencyA.value = processedA.currency;
+  currencyB.value = processedB.currency;
+  for (let type of propertyTypes.value) {
+    let a = processedA.propertyTypeMap.get(type) || 0, b = processedB.propertyTypeMap.get(type) || 0;
+    propertyTypeA.value.push(a);
+    propertyTypeB.value.push(b);
+  }
+}
+
+function updateCalendarValues(calendarData) {
+  if (!calendarData.A || !calendarData.B) {
+    console.log("Calendar data for one or both cities is missing.");
+    return;
+  }
+  const processedA = processCalendarData(calendarData.A);
+  const processedB = processCalendarData(calendarData.B);
+  occupancyA.value = [];
+  occupancyB.value = [];
+  for(let i=1; i<13; i++) {
+    occupancyA.value.push(processedA.monthlyOccupancy.get(i) || 0);
+    occupancyB.value.push(processedB.monthlyOccupancy.get(i) || 0);
+  }
+}
+
 </script>
 
 <style scoped>

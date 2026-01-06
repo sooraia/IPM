@@ -6,7 +6,9 @@
 
 
 <script>
+import { computed } from 'vue';
 import {Bar} from 'vue-chartjs';
+
 export default {
   props: {
     labels: {
@@ -29,7 +31,7 @@ export default {
     legendcolor: {
         type: String,
         required: false,
-        default: 'rgba(180, 180, 180, 0.9)'
+        default: 'rgba(180, 180, 180, 1)'
     },
     gridcolor: {
         type: String,
@@ -40,66 +42,64 @@ export default {
         type: Number,
         required: false,
         default: 0
+    },
+    percentage: {
+        type: Boolean,
+        required: false,
+        default: false
     }
   },
   components: {
     Bar
   },
-  data() {
-    return {
-      barData: {
-        labels: this.labels,
+  setup(props) {
+    const barData = computed(()=>({
+        labels: props.labels,
         datasets: [
           {
-            label: this.label[0],
-            data: this.data[0],
-            backgroundColor: this.barcolors[0],
+            label: props.label[0],
+            data: props.data[0],
+            backgroundColor: props.barcolors[0],
             borderWidth: 1,
-            borderRadius: this.borderradius,
+            borderRadius: props.borderradius,
             borderSkipped: false,
           },
           {
-            label: this.label[1],
-            data: this.data[1],
-            backgroundColor: this.barcolors[1],
+            label: props.label[1],
+            data: props.data[1],
+            backgroundColor: props.barcolors[1],
             borderWidth: 0,
             borderRadius: 0,
             borderSkipped: false,
           }
-        ],
-      },
-      barOptions: {
+        ]
+      }
+    ));
+    const barOptions = computed(() => ({
         responsive: true,
         maintainAspectRatio: false,
         scales: {
             x: {
-                grid: {color: this.gridcolor},
-                ticks: {color: this.legendcolor}
+                grid: {color: props.gridcolor},
+                ticks: {color: props.legendcolor}
             },
             y: {
-                grid: {color: this.gridcolor},
-                ticks: {color: this.legendcolor}
+                grid: {color: props.gridcolor},
+                ticks: {color: props.legendcolor, 
+                  callback:function(v) {
+                    if (props.percentage) {
+                      return v + '%';
+                    } else {
+                      return v;
+                    }
+                  }}
             }
         },
         color: 'black',
-      }
-    }
-  },
-  watch: {
-    data(newdata) {
-      this.barData.datasets[0].data = newdata;
-    },
-    labels(newlabels) {
-      this.barData.labels = newlabels;
-    },
-    label(newlabel) {
-      this.barData.datasets[0].label = newlabel;
-
-    },
-    barcolors(newcolors) {
-      this.barData.datasets[0].backgroundColor = newcolors;
-      this.barData.datasets[0].borderColor = newcolors;
-    }
+        plugins: {
+          datalabels: {display: false}}
+    }));
+    return { barOptions, barData};
   }
 }
 </script>

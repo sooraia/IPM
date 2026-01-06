@@ -15,28 +15,12 @@
 import AuthCard from '@/components/Cards/AuthCard.vue';
 import Error from '@/components/Messages/Error.vue';
 import Success from '@/components/Messages/Success.vue';
+import validateEmail from '@/utils/users.js';
 import { ref } from 'vue';
 
 const emailExists =  ref(null);
 const fieldsFilled =  ref(null);
 const registerSuccess =  ref(null);
-
-async function validateEmail(email) {
-  try {
-    const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(email)}`);
-    const data = await response.json();
-    if (data.length > 0) {
-      console.log("Email já existe");
-      emailExists.value = true;
-      return;
-    }
-    console.log("Email disponível");
-  } catch (error) {
-    console.error(" Erro a verificar email" , error );
-  } finally {
-    console.log("Verificação de email terminada");
-  }
-}
 
 async function handleSignUp(payload) {
   const { email, password, name, receiveUpdates } = payload;
@@ -45,7 +29,7 @@ async function handleSignUp(payload) {
     return;
   }
 
-  await validateEmail(email);
+  emailExists.value = await validateEmail(email);
   if (emailExists.value === true) {
     return;
   }
