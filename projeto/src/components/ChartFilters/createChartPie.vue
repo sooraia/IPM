@@ -52,10 +52,8 @@ import { groupDataByCategory, getNeighborhoodsList } from '@/utils/groupByCatego
 import { fetchListingsForCity } from '@/utils/cityData'
 import { formatListings } from '@/utils/chartHelpers'
 import { filterListings } from '@/utils/chartFilters'
-import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
-const authStore = useAuthStore()
 const cityName = computed(() => route.params.city)
 const neighborhoods = ref([])
 const selectedNeighbourhood = ref('')
@@ -76,20 +74,6 @@ const chartColors = [
 const listings = ref([])
 const currencySymbol = ref('');
 
-
-function loadConfig(chartConfig) {
-    if(chartConfig && chartConfig.filters) {
-        const filters = chartConfig.filters;
-        if(filters.metricSelected) metricSelected.value = filters.metricSelected;
-        if(filters.sizeRes) sizeRes.value = filters.sizeRes;
-        if(filters.priceRange) { console.log("Setting price range from config:", filters.priceRange[0]);
-            priceRange.value[0] = filters.priceRange[0];
-            priceRange.value[1] = filters.priceRange[1];
-        }
-        if(filters.neighborhood) selectedNeighbourhood.value = filters.neighborhood;
-    }
-}
-
 async function loadListings() {
     const listingsData = await fetchListingsForCity(cityName.value)
     const formattedListings = formatListings(listingsData)
@@ -100,13 +84,6 @@ async function loadListings() {
 }
 
 onMounted(async () => {
-    if (authStore.user!== null ) {
-    const config =authStore.chartConfig
-    console.log("Loaded config:", config)
-    if(config && config.chartType === 'PieChart')
-        cityName.value = authStore.cityName
-        loadConfig(authStore.chartConfig)
-    }
     await loadListings()
 })
 

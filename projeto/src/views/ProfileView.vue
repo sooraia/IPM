@@ -30,7 +30,7 @@
           :image-src="imageFor(chart)"
           :trash-button="true"
           @delete="() => handleDeleteSavedChart(idx)"
-          @click="() => goToConfig(chart)"
+          @click="() => updateConfig(chart)"
           :dest="{ name: 'GraphView', params: { chartType: chart.chartType || chart.chart_type || chart.type, city: chart.city || chart.parameters?.city || chart.city_name } }"
         />
       </div>
@@ -145,6 +145,7 @@ async function save(payload) {
 }
 
 function updateConfig(chartConfig) {
+  console.log("Updating config to:", chartConfig)
   authStore.setChartConfig(chartConfig)
 }
 
