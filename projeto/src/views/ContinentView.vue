@@ -11,7 +11,7 @@
             :max-height="'55vh'" 
         />
       </div>
-      <ContinentMap id="ContinentMap" />
+      <ContinentMap id="ContinentMap" :continent="currentContinent"/>
     </div>
   </div>
 </template>
