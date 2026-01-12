@@ -15,6 +15,11 @@
             <option v-for="value in aggregation_types" :key="value" :value="value">{{ value }}</option>
         </select>
     </div>
+
+    <div class="category-container">  
+        <p class="subtitle">Show Results for:</p>
+        <SizeResults v-model:sizeRes="sizeResComputed"/>
+    </div>
     
     <div class="category-container"> 
         <p class="subtitle">Price (per night):</p>
@@ -42,6 +47,7 @@ import RangeBar from '../SideBar/RangeBar.vue'
 import LabelMenu from '../SideBar/LabelMenu.vue'
 import CategoryMetrics from '../SideBar/CategoryMetrics.vue'
 import Button from '../Button.vue'
+import SizeResults from '../SideBar/SizeResults.vue'
 
 const metrics = ["Average Price Per Night", "Occupancy Rate"]
 const aggregation_types = ["Weekly", "Monthly", "Quarterly"]
@@ -52,6 +58,7 @@ const props = defineProps({
     propertyTypeSelected: { type: String, default: 'Entire Home' },
     priceValue: { type: Array, default: () => [0, 1500] },
     aggregationValue: { type: String, default: 'Monthly' },
+    sizeRes: { type: String, default: 'Entire City' },
     maxLimit: { type: Number, default: 1500}
 })
 
@@ -59,7 +66,8 @@ const emit = defineEmits([
     'update:metricsValue', 
     'update:aggregationValue',
     'update:priceValue',
-    'update:propertyTypeSelected'
+    'update:propertyTypeSelected',
+    'update:sizeRes'
 ])
 
 const metricSelectedComputed = computed({
@@ -80,6 +88,11 @@ const aggregationTypeComputed = computed({
 const priceRangeComputed = computed({
     get: () => props.priceValue,
     set: (val) => emit('update:priceValue', val)
+})
+
+const sizeResComputed = computed({
+    get: () => props.sizeRes,
+    set: (val) => emit('update:sizeRes', val)
 })
 
 

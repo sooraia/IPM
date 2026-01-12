@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <span>{{ modelValue[0] }}{{ currency ? '€' : '' }}</span>
+    <span>{{ modelValue[0] }}{{ currencySymbol }}</span>
     <div style="width: 100%; position: relative;">
         <div class="barra" :style="{ background: trackBackground }"/> 
 
@@ -22,7 +22,7 @@
             @input="slideMax"
         >
     </div>
-    <span>{{ modelValue[1] }}{{ currency ? '€' : '' }}</span>
+    <span>{{ modelValue[1] }}{{ currencySymbol }}</span>
 
   </div>
 </template>
@@ -35,12 +35,11 @@ const props = defineProps({
   max: { type: Number },
   gap: { type: Number },
   modelValue: { type: Array, required: true },
-  currency: { type: Boolean, default: false }
+  currencySymbol: { type: String, default: '' }
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-// Lógica de deslizar o Mínimo
 function slideMin(e) {
   const newVal = parseInt(e.target.value);
   const maxVal = props.modelValue[1];
@@ -53,7 +52,6 @@ function slideMin(e) {
   }
 }
 
-// Lógica de deslizar o Máximo
 function slideMax(e) {
   const newVal = parseInt(e.target.value);
   const minVal = props.modelValue[0];
@@ -66,7 +64,6 @@ function slideMax(e) {
   }
 }
 
-// Lógica Visual: Calcula o gradiente para pintar a barra só no meio
 const trackBackground = computed(() => {
   const percent1 = ((props.modelValue[0] - props.min) / (props.max - props.min)) * 100;
   const percent2 = ((props.modelValue[1] - props.min) / (props.max - props.min)) * 100;

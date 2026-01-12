@@ -2,7 +2,8 @@
     <main class="layout">
         <section class="left-menu">
             <MenuFilters 
-            :maxPrice="maxPrice" 
+            :maxPrice="maxPrice"
+            :currencySymbol="currencySymbol"
             v-model:priceRange="priceRange" 
             v-model:annualOccupancy="annualOccupancy"
             v-model:noLicense="noLicense"
@@ -11,6 +12,8 @@
             v-model:ratingScore="ratingScore"
             v-model:roomsData="roomsData"
             v-model:sizeRes="sizeRes"
+            v-model:selectedAmenities="selectedAmenities"
+            :availableAmenities="availableAmenities"
             />
         </section>
 
@@ -34,12 +37,27 @@
                     v-model="currentPage"
                     :totalPages="totalPages"
                 />
-                <Button buttonLabel="Export" :icon="SaveIcon" id="button-export" />
+                <ExportData 
+                    :show="showExportModal"
+                    :filteredCount="filteredListings.length"
+                    :totalCount="listings.length"
+                    :filters="currentFilters"
+                    :maxPrice="maxPrice"
+                    @close="showExportModal = false"
+                    @download="handleDownload"
+                />
+                
+                <Button 
+                    buttonLabel="Export" 
+                    :icon="SaveIcon" 
+                    id="button-export"
+                    @click="showExportModal = true"
+                />
+                
             </div>
         </section>
-
         <section class="map">
-            <MapAlojamentos  :markers="markers" />
+            <MapAlojamentos :markers="markers" :cityName="cityStore.currentCity" :key="markers.length"/>
         </section>
     </main>
 </template>
@@ -57,7 +75,10 @@ import MapAlojamentos from '@/components/MapAlojamentos.vue';
 import Button from '@/components/Button.vue';
 import Pagination from '@/components/Pagination.vue';
 import SaveIcon from '@/assets/Export.png';
-//import { categorizePropertyType } from '@/utils/GroupByCategory';
+import { categorizePropertyType } from '@/utils/groupByCategory';
+import { groupAmenities } from '@/utils/amenitiesHelper';
+import ExportData from '@/components/Messages/exportData.vue';
+import { getCurrencySymbol } from '@/utils/currencySymbol';
 
 
 const cityStore = useCityStore();
@@ -84,6 +105,104 @@ const propertyType = ref('All');
 const ratingScore = ref(0);
 const roomsData = ref({ accommodates: 0, bedrooms: 0, beds: 0, bathrooms: 0 });
 const sizeRes = ref('Entire City');
+const selectedAmenities = ref([]);
+const showExportModal = ref(false);
+
+const currencySymbol = computed(() => getCurrencySymbol(listings.value));
+
+const currentFilters = computed(() => ({
+    priceRange: priceRange.value,
+    annualOccupancy: annualOccupancy.value,
+    noLicense: noLicense.value,
+    isSuperHost: isSuperHost.value,
+    propertyType: propertyType.value,
+    ratingScore: ratingScore.value,
+    roomsData: roomsData.value,
+    selectedAmenities: selectedAmenities.value,
+}));
+
+function handleDownload(options) {
+    const dataToExport = filteredListings.value;
+    
+    if (options.format === 'csv') {
+        exportToCSV(dataToExport, options.fields);
+    } else {
+        exportToJSON(dataToExport, options.fields);
+    }
+}
+function exportToCSV(data, fields) {
+    const rows = data.map(item => {
+        return fields.map(field => {
+            let value = item[field] !== undefined ? item[field] : '';
+            return `"${value}"`;
+        }).join(',');
+    }).join('\n');
+    
+    const csv = `${fields.join(',')}\n${rows}`;
+    downloadFile(csv, `listings_${cityStore.currentCity}_${Date.now()}.csv`, 'text/csv');
+}
+
+function exportToJSON(data, fields) {
+    const filteredData = data.map(item => {
+        const filtered = {};
+        fields.forEach(field => {
+            if (item[field] !== undefined) {
+                filtered[field] = item[field];
+            }
+        });
+        return filtered;
+    });
+    
+    const json = JSON.stringify(filteredData, null, 2);
+    downloadFile(json, `listings_${cityStore.currentCity}_${Date.now()}.json`, 'application/json');
+}
+
+function downloadFile(content, filename, mimeType) { // funcao pre definida para o browser entender
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function getListingGroupedAmenities(listing) {
+    if (!listing.amenities) return [];
+    
+    try {
+        let amenitiesList;
+        if (typeof listing.amenities === 'string') {
+            amenitiesList = JSON.parse(listing.amenities);
+        } else if (Array.isArray(listing.amenities)) {
+            amenitiesList = listing.amenities;
+        } else {
+            return [];
+        }
+        
+        return groupAmenities(amenitiesList);
+    } catch (e) {
+        console.error('Error parsing amenities for listing:', listing.id, e);
+        return [];
+    }
+}
+
+const availableAmenities = computed(() => {
+    const amenityCount = {}; // contar quantas tem depois de agrupar
+
+    listings.value.forEach(listing => {
+        const groupedAmenities = getListingGroupedAmenities(listing);
+        groupedAmenities.forEach(amenity => {
+            amenityCount[amenity] = (amenityCount[amenity] || 0) + 1;
+        });
+    });
+    return Object.keys(amenityCount) // ter apenas 40 no total para nao poluir
+        .sort((a, b) => amenityCount[b] - amenityCount[a])
+        .slice(0, 40);
+});
+
 const currentPage = ref(1);
 const itemsPerPage = 13;
 
@@ -145,11 +264,18 @@ const filteredListings = computed(() => {
                 return false;
             }
         }
-        
+        if (selectedAmenities.value.length > 0) {
+            const groupedListingAmenities = getListingGroupedAmenities(listing);
+            const hasAllAmenities = selectedAmenities.value.every(amenity => 
+                groupedListingAmenities.includes(amenity)
+            );
+            if (!hasAllAmenities) {
+                return false;
+            }
+        }
         return true;
     });
 });
-
 
 const totalPages = computed(() => {
     return Math.ceil(filteredListings.value.length / itemsPerPage);
@@ -176,7 +302,7 @@ onMounted(async () => {
 });
 
 const markers = computed(() => {
-    return filteredListings.value.map(aloj => {
+    const filtered = filteredListings.value.map(aloj => {
         return {
             latitude: aloj.latitude,
             longitude: aloj.longitude,
@@ -193,6 +319,7 @@ const markers = computed(() => {
         `
         };
     });
+    return filtered;
 });
 </script>
 

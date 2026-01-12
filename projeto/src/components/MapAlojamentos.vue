@@ -4,12 +4,22 @@ export default {
   props: {
     markers: {
       type: Array,
+    },
+    cityName: {
+      type: String,
+      default: '',
     }
   },
   data() {
     return {
       map: null,
       pins: [],
+      cityDefaults: {
+        'Porto': { lat: 41.1579, lng: -8.6291, zoom: 12 },
+        'Tokyo': { lat: 35.6762, lng: 139.6503, zoom: 11 },
+        'Hawaii': { lat: 21.3099, lng: -157.8581, zoom: 10 },
+        'CapeTown': { lat: -33.9249, lng: 18.4241, zoom: 11 },
+      }
     };
   },
   mounted() {
@@ -40,8 +50,16 @@ export default {
     }
   },
   methods: {
+    getCityDefaults() {
+      return this.cityDefaults[this.cityName] || { lat: 0, lng: 0, zoom: 2 };
+    },
+
     initMap() {
+      const defaults = this.getCityDefaults();
+      
       this.map = new window.google.maps.Map(this.$refs.mapContainer, {
+        center: { lat: defaults.lat, lng: defaults.lng },
+        zoom: defaults.zoom,
         mapTypeId: "roadmap",
       });
 
@@ -85,8 +103,12 @@ export default {
         }
       });
 
-      if (this.pins.length > 0) {
+      if (this.pins.length > 1) {
         this.fitMapToMarkers();
+      } else if (this.pins.length === 0) {
+          const defaults = this.getCityDefaults();
+          this.map.setCenter({ lat: defaults.lat, lng: defaults.lng });
+          this.map.setZoom(defaults.zoom);
       }
     },
 
@@ -103,6 +125,11 @@ export default {
         bounds.extend(marker.getPosition());
       });
       this.map.fitBounds(bounds);
+      const listener = window.google.maps.event.addListenerOnce(this.map, 'bounds_changed', () => {
+        if (this.map.getZoom() > 15) {
+          this.map.setZoom(15);
+        }
+      });
     }
   },
 };

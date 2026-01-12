@@ -7,6 +7,7 @@
                 v-model:aggregationValue="aggregation"
                 v-model:priceValue="priceRange"
                 :maxLimit="maxPrice"
+                v-model:sizeRes="sizeRes"
             />
         </template>
             
@@ -64,6 +65,7 @@ const aggregation = ref('Monthly')
 const priceRange = ref([0, 1500])
 const propertyType = ref('All')
 const maxPrice = ref(1500)
+const sizeRes = ref('Entire City')
 
 const listings = ref([])
 const calendar = ref({})

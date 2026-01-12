@@ -5,14 +5,14 @@
             <img id="importFilters" type="submit" src="../assets/importFilters.png" />
         </header>
         <div class="filtros">
-            <DateRange v-model="dateComputed"/>
             <div>
                 <p class="subtitle">Price per night:</p>
                 <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
                         :max="props.maxPrice"
                         :gap="100"
-                        :currency="true"/>
+                        :currencySymbol="props.currencySymbol"
+                />
             </div>
             <CircleButton text="No License" v-model="noLicenseComputed"/>
             <CircleButton text="Host is a SuperHost" v-model="isSuperHostComputed"/>
@@ -30,7 +30,7 @@
                         :min="0" 
                         :max="365"
                         :gap="1"
-                        :currency="false"/>
+                />
             </div>
             <div>
                 <p class="subtitle">Rooms and beds:</p>
@@ -46,7 +46,8 @@
                     <Checkbox 
                         v-for="(item, index) in displayedAmenities"
                         :key="index"
-                        v-model="item.value" 
+                        :modelValue="item.value"
+                        @update:modelValue="toggleAmenity(item.label)"
                         :texto="item.label"
                     />
 
@@ -81,7 +82,6 @@ import CircleButton from './SideBar/CircleButton.vue';
 import StarRating from './SideBar/StarRating.vue';
 import Dropdown from './SideBar/Dropdown.vue';
 import RangeBar from './SideBar/RangeBar.vue';
-import DateRange from './SideBar/DateRange.vue';
 import Add from './SideBar/Add.vue';
 import Checkbox from './SideBar/Checkbox.vue';
 import Button from './Button.vue';
@@ -90,8 +90,8 @@ import resetIcon from '../assets/ResetFilters.png';
 import saveIcon from '../assets/SaveFilters.png';
 
 const props = defineProps({
-    dateRange: Array,
     priceRange: { type: Array, default: [0, 1500] },
+    currencySymbol: { type: String, default: '' },
     annualOccupancy: { type: Array, default: [0, 365] },
     maxPrice: { type: Number, default: 1500 },
     noLicense: { type: Boolean, default: false },
@@ -103,10 +103,11 @@ const props = defineProps({
         default: () => ({ accommodates: 0, bedrooms: 0, beds: 0, bathrooms: 0 })
     },
     sizeRes: { type: String, default: 'Entire City' },
+    availableAmenities: { type: Array, default: () => [] },
+    selectedAmenities: { type: Array, default: () => [] },
 });
 
 const emit = defineEmits([
-    'update:dateRange',
     'update:priceRange', 
     'update:annualOccupancy',
     'update:noLicense',
@@ -115,12 +116,8 @@ const emit = defineEmits([
     'update:ratingScore',
     'update:roomsData',
     'update:sizeRes',
+    'update:selectedAmenities'
 ]);
-
-const dateComputed = computed({
-    get: () => props.dateRange || ['2023-01-01', '2023-12-31'],
-    set: (val) => emit('update:dateRange', val)
-});
 
 const priceRangeComputed = computed({
     get: () => props.priceRange,
@@ -177,15 +174,25 @@ const sizeResComputed = computed({
     set: (val) => emit('update:sizeRes', val)
 });
 
-const amenities = ref([
-    { label: 'Wifi', value: false },
-    { label: 'Washing machine', value: false },
-    { label: 'Air conditioning', value: false },
-    { label: 'TV', value: false },
-    { label: 'Hair dryer', value: false },
-    { label: 'Gym', value: false },             
-    { label: 'Hot tub', value: false }
-]);
+const amenities = computed(() => {
+    return props.availableAmenities.map(amenity => ({
+        label: amenity,
+        value: props.selectedAmenities.includes(amenity)
+    }));
+});
+
+function toggleAmenity(amenity) {
+    const current = [...props.selectedAmenities];
+    const index = current.indexOf(amenity);
+    
+    if (index > -1) {
+        current.splice(index, 1);
+    } else {
+        current.push(amenity);
+    }
+    
+    emit('update:selectedAmenities', current);
+}
 
 const showAllAmenities = ref(false);
 
@@ -204,12 +211,9 @@ function resetFilters(){
     noLicenseComputed.value = false;
     isSuperHostComputed.value = false;
     propertyTypeComputed.value = 'All';
-    accommodatesComputed.value = 0;
-    bedroomsComputed.value = 0;
-    bedsComputed.value = 0;
-    bathroomsComputed.value = 0;
-    amenities.value.forEach(item => item.value = false);
+    emit('update:roomsData', { accommodates: 0, bedrooms: 0, beds: 0, bathrooms: 0 });
     sizeResComputed.value = 'Entire City';
+    emit('update:selectedAmenities', []);
 }
 
 </script>
