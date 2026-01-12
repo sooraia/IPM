@@ -22,7 +22,7 @@ const props = defineProps({
 <style scoped>
 .card {
     background-color: var(--label-text-blue);
-    height: 40px;
+    min-height: 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
