@@ -27,7 +27,7 @@
                         :min="0" 
                         :max="props.maxLimit"
                         :gap="props.maxLimit/100"
-                        :currency="false"/>
+                        :currencySymbol="props.currencySymbol"/>
     </div>
 
 
@@ -60,7 +60,8 @@ const props = defineProps({
     aggregationValue: { type: String, default: 'Monthly' },
     sizeRes: { type: String, default: 'Entire City' },
     maxLimit: { type: Number, default: 1500},
-    neighborhoodsList: { type: Array, default: () => []}
+    neighborhoodsList: { type: Array, default: () => []},
+    currencySymbol: { type: String, default: ''}
 })
 
 const emit = defineEmits([

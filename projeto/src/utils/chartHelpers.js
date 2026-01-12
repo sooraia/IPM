@@ -1,4 +1,5 @@
 import {categorizePropertyType} from './groupByCategory.js';
+import {getCurrencySymbol} from './currencySymbol.js';
 
 export const parsePrice = (priceString) => {
     if (!priceString) return 0;
@@ -8,6 +9,7 @@ export const parsePrice = (priceString) => {
 export const formatListings = (listingsData) => {
     const dataCleaned = {};
     let maxPrice = 0;
+
     listingsData.forEach((listing) => {
         const id = listing.id;
         dataCleaned[id] = {};
@@ -22,7 +24,8 @@ export const formatListings = (listingsData) => {
         dataCleaned[id].number_of_reviews = listing.reviews_per_month;
         dataCleaned[id].reviews_score = listing.review_scores_rating;
     });
-    return {'data': dataCleaned, 'maxPrice': maxPrice};
+    const currencySymbol = getCurrencySymbol(listingsData);
+    return {'data': dataCleaned, 'maxPrice': maxPrice, 'currencySymbol': currencySymbol};
 };
 
 export const formatCalendar = (calendarList, listings) => {

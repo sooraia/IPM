@@ -20,7 +20,7 @@
                         :min="0" 
                         :max="props.maxLimit"
                         :gap="props.maxLimit / 100"
-                        :currency="false"/>
+                        :currencySymbol="props.currencySymbol"/>
     </div>
 
     <Button buttonLabel="Reset Filters" @click="resetFilters" class="button"/>
@@ -39,7 +39,8 @@ import Button from '../Button.vue';
         sizeRes: { type: String, default: 'Entire City'},
         priceRange: { type: Array, default: [0, 1500]},
         maxLimit: { type: Number, default: 1500},
-        neighborhoodsList: { type: Array, default: () => []}
+        neighborhoodsList: { type: Array, default: () => []},
+        currencySymbol: { type: String, default: ''}
     })
 
     const emit = defineEmits([

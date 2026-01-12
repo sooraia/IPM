@@ -24,7 +24,7 @@
                         :min="0" 
                         :max="props.maxPrice"
                         :gap="props.maxPrice / 100"
-                        :currency="false"/>
+                        :currencySymbol="props.currencySymbol"/>
     </div>
 
     <div class="category-container">  
@@ -53,7 +53,8 @@
         n_rowsValue: Number,
         priceValue: Array,
         propertyTypeSelected: String,
-        maxPrice: { type: Number, default: 1500}
+        maxPrice: { type: Number, default: 1500},
+        currencySymbol: { type: String, default: ''}
     })
 
     const source = computed(() => {
