@@ -5,7 +5,7 @@
       justifyContent: justifyContent || 'space-between'
     }">
       <span class="category-name" :style="{
-        fontWeight: fontWeight || defaultFontWeight,
+        fontWeight: fontWeight || 'normal',
         textAlign: textAlign || 'center'
       }">
         {{ item.category }}
@@ -13,43 +13,57 @@
       <img :src="arrowIcon" :style="{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }" class="arrow-icon"
         alt="Seta" />
     </div>
-
-    <transition name="slide">
-      <div v-if="isOpen" class="accordion-body" :style="{ backgroundColor: bodyBgColor }">
+    <div v-if="isOpen" class="accordion-body" :style="{ backgroundColor: bodyBgColor }">
+      <div class="subcategory-row" v-if="!links" :style="{ fontWeight: fontWeight || 'normal', textAlign: 'left'}">
+        {{ item.subcategories[0] }}
+      </div>
+      <template v-else>
         <div 
           v-for="(subcategory, index) in item.subcategories" 
           :key="index" 
-          >
-          <router-link v-if="item.available.includes(subcategory)"
-            class ="subcategory-row"
+        >
+          <router-link 
+            v-if="item.available && item.available.includes(subcategory)"
+            class="subcategory-row"
             :to="{ name: 'alojamentos', params: { city: subcategory.trim().replace(' ', '') } }"
             :style="{
-              fontWeight: fontWeight || defaultFontWeight,
+              fontWeight: fontWeight || 'normal',
               justifyContent: justifyContent || 'flex-start',
-            }" > 
+            }"
+          > 
             {{ subcategory }}
-            </router-link>
-          <div v-else
+          </router-link>
+          <div 
+            v-else-if="item.available"
             id="unavailable"
             class="subcategory-row"
             :style="{
-              fontWeight: fontWeight || defaultFontWeight,
+              fontWeight: fontWeight || 'normal',
               justifyContent: justifyContent || 'flex-start',
-            }" > 
+            }"
+          > 
             {{ subcategory }} (unavailable)
           </div>
+          <div 
+            v-else
+            class="subcategory-row"
+            :style="{
+              fontWeight: fontWeight || 'normal',
+              justifyContent: justifyContent || 'flex-start',
+            }"
+          > 
+            {{ subcategory }}
+          </div>
         </div>
-      </div>
-    </transition>
+      </template>
+    </div>
   </div>
 </template>
 
 <script setup>
 
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import arrowIcon from '../../assets/arrowVIcon.png';
-import { useCityStore } from "@/stores/city";
 
 const props = defineProps({
   item: {
@@ -61,22 +75,16 @@ const props = defineProps({
   fontWeight: String,
   textAlign: String,
   justifyContent: String,
+  links: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const isOpen = ref(false);
 const toggle = () => {
   isOpen.value = !isOpen.value;
 };
-
-// const router = useRouter();
-// const cityStore = useCityStore();
-
-// function selectCity(cityName) {
-//   cityStore.setCity(cityName);
-//   console.log("Selected city:", cityName);
-//   router.push({ name: 'alojamentos', params: { city: cityName } });
-// }
-
 </script>
 
 <style scoped>

@@ -3,7 +3,7 @@
     <div class="accordion-table">
       <AccordionItem v-for="(item, index) in data" :key="index" :item="item" :header-bg-color="headerBgColor"
         :body-bg-color="bodyBgColor" :font-weight="fontWeight" :text-align="textAlign"
-        :justify-content="justifyContent" />
+        :justify-content="justifyContent" :links="links" />
     </div>
   </div>
 </template>
@@ -24,6 +24,10 @@ defineProps({
   fontWeight: String,
   textAlign: String,
   justifyContent: String,
+  links : {
+    type: Boolean,
+    default: true
+  }
 });
 
 </script>

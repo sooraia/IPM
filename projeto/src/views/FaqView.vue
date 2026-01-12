@@ -2,14 +2,16 @@
     <div class="faqPage">
         <BaseCard title="Frequently Asked Questions" background-color="var(--accent)">
             <template #content>
-                <div class="search-bar">
-                    <form>
-                        <SearchInput :placeholder="'How can we help?'"/>
-                    </form>
+                <div id="content">
+                    <div class="search-bar">
+                        <form>
+                    <input ref="inputEl" id="myInput" v-model="searchContent" type="text"  placeholder="How can we help?"  name="search" :disabled="disabled" @input="handleInput" @keydown="handleKeyDown" @focus="showSuggestions = true"/>
+                        </form>
+                    </div>
+                    <AccordionTable id="table" :data="filteredFaqData" :header-bg-color="'var(--light-blue)'"
+                        :body-bg-color="'var(--light-blue2)'" :font-weight="'normal'" :justify-content="'flex-start'"
+                        :text-align="'left'" width="100%" :max-height="'40vh'" :links="false" />
                 </div>
-                <AccordionTable :data="faqData" :header-bg-color="'var(--light-blue)'"
-                    :body-bg-color="'var(--light-blue2)'" :font-weight="'normal'" :justify-content="'flex-start'"
-                    :text-align="'left'" width="100%" :max-height="'40vh'" />
             </template>
         </BaseCard>
     </div>
@@ -18,7 +20,9 @@
 <script setup>
 import AccordionTable from "@/components/AccordionTable/AccordionContainer.vue";
 import BaseCard from "@/components/Cards/BaseCard.vue";
-import SearchInput from "@/components/SearchInput.vue";
+import { ref, watch } from "vue";
+
+const searchContent = ref('');
 
 const faqData = [
     {
@@ -62,6 +66,19 @@ const faqData = [
         subcategories: ["You can reach us through the Contact page or by emailing our support team. We’ll respond as soon as possible."]
     },
 ];
+
+const filteredFaqData = ref([...faqData]);
+watch(searchContent, (newValue) => {
+    if (!newValue) {
+        filteredFaqData.value = [...faqData];
+    } else {
+        const searchTerm = newValue.toLowerCase();
+        filteredFaqData.value = faqData.filter(item =>
+            item.category.toLowerCase().includes(searchTerm) ||
+            item.subcategories.some(subcat => subcat.toLowerCase().includes(searchTerm))
+        );
+    }
+});
 </script>
 
 <style scoped>
@@ -72,12 +89,33 @@ const faqData = [
     justify-content: center;
 }
 
-.search-bar {
-    margin-bottom: 10px;
+
+#content {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 6fr;
 }
 
-#faq-content {
-    width: 85%;
+.search-bar {
+    margin-top: 10px;
+    grid-row: 1 / 2;
+}
+
+.search-bar input {
+    border: none;
+    padding: 0 20px;
+    font-size: 20px;
+    color: var(--bg);
+}
+
+.search-bar input:focus {
+    outline: var(--accent2) solid 2px;
+}
+
+#table {
+    grid-row: 2 / 6;
+    height: 100%;
+    margin-top: 30px;
 }
 
 input {
