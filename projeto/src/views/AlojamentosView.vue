@@ -14,6 +14,8 @@
             v-model:sizeRes="sizeRes"
             v-model:selectedAmenities="selectedAmenities"
             :availableAmenities="availableAmenities"
+            :neighborhoodsList="neighborhoods"
+            @neighbourhoodSelected="handleNeighbourhoodSelection"
             />
         </section>
 
@@ -75,7 +77,7 @@ import MapAlojamentos from '@/components/MapAlojamentos.vue';
 import Button from '@/components/Button.vue';
 import Pagination from '@/components/Pagination.vue';
 import SaveIcon from '@/assets/Export.png';
-import { categorizePropertyType } from '@/utils/groupByCategory';
+import { categorizePropertyType, getNeighborhoodsList } from '@/utils/groupByCategory';
 import { groupAmenities } from '@/utils/amenitiesHelper';
 import ExportData from '@/components/Messages/exportData.vue';
 import { getCurrencySymbol } from '@/utils/currencySymbol';
@@ -107,6 +109,10 @@ const selectedAmenities = ref([]);
 const showExportModal = ref(false);
 
 const currencySymbol = computed(() => getCurrencySymbol(listings.value));
+
+function handleNeighbourhoodSelection(neighbourhood) {
+    // TO DO
+}
 
 const currentFilters = computed(() => ({
     priceRange: priceRange.value,
@@ -166,6 +172,13 @@ function downloadFile(content, filename, mimeType) { // funcao pre definida para
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 }
+
+const neighborhoods = computed(() => {
+  console.log('Listings for neighborhoods computation:', listings.value);
+  const result = getNeighborhoodsList(listings.value);
+  console.log('getNeighborhoodsList result:', result);
+  return result;
+});
 
 function getListingGroupedAmenities(listing) {
     if (!listing.amenities) return [];

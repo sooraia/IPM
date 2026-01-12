@@ -77,7 +77,7 @@
             </div>
             <div>
                 <p class="subtitle">Show Results for:</p>
-                <SizeResults v-model:sizeRes="sizeResComputed"/>
+                <SizeResults v-model:sizeRes="sizeResComputed" :suggestionsList="props.neighborhoodsList" @neighbourhoodSelected="emit('neighbourhoodSelected', $event)"/>
 
             </div>
         </div>
@@ -110,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import LabelMenu from './SideBar/LabelMenu.vue';
 import CircleButton from './SideBar/CircleButton.vue';
 import StarRating from './SideBar/StarRating.vue';
@@ -145,6 +145,7 @@ const props = defineProps({
     sizeRes: { type: String, default: 'Entire City' },
     availableAmenities: { type: Array, default: () => [] },
     selectedAmenities: { type: Array, default: () => [] },
+    neighborhoodsList: { type: Array, default: () => [] }
 });
 
 const emit = defineEmits([
@@ -156,8 +157,13 @@ const emit = defineEmits([
     'update:ratingScore',
     'update:roomsData',
     'update:sizeRes',
-    'update:selectedAmenities'
+    'update:selectedAmenities',
+    'neighbourhoodSelected'
 ]);
+
+onMounted(() => {
+    console.log('Neighborhoods List:', props.neighborhoodsList);
+});
 
 const showInputModal = ref(false);
 const showSuccessModal = ref(false);

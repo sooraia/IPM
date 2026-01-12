@@ -81,10 +81,20 @@ export const groupByNeighborhoodsByNListings = (data) => {
 
 export const getNeighborhoodsList = (data) => {
     const neighborhoodsSet = new Set();
-    Object.entries(data).forEach(([listingId, listingData]) => {
-        const neighborhood = listingData.neighborhood;
-        neighborhoodsSet.add(neighborhood);
-    });
+    if (Array.isArray(data)) {
+        data.forEach((listing, index) => {
+            const neighborhood = listing.neighbourhood_cleansed;
+            if (neighborhood && typeof neighborhood === 'string') {
+                neighborhoodsSet.add(neighborhood.trim());
+            }
+        });
+    } 
+    else{
+        Object.entries(data).forEach(([listingId, listingData]) => {
+            const neighborhood = listingData.neighborhood;
+            neighborhoodsSet.add(neighborhood);
+        });
+    }
     return Array.from(neighborhoodsSet).sort();
 }
 
