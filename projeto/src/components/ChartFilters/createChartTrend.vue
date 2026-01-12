@@ -10,6 +10,7 @@
                 v-model:sizeRes="sizeRes"
                 :neighborhoodsList="neighborhoods"
                 @neighbourhoodSelected="handleNeighbourhoodSelected"
+                :currencySymbol="currencySymbol"
             />
         </template>
             
@@ -74,6 +75,7 @@ const selectedNeighbourhood = ref('')
 const listings = ref([])
 const calendar = ref({})
 const neighborhoods = ref([])
+const currencySymbol = ref('');
 
 async function loadData() {
     const listingsData = await fetchListingsForCity(cityName.value)
@@ -82,6 +84,8 @@ async function loadData() {
     calendar.value = formatCalendar(calendarData, listings.value).calendar_data
     maxPrice.value = formatCalendar(calendarData, listings.value).maxPrice
     priceRange.value = [0, maxPrice.value]
+    currencySymbol.value = formatListings(listingsData).currencySymbol
+
 }
 
 onMounted(async () => {
