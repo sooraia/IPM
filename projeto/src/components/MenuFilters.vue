@@ -69,8 +69,28 @@
         </div>
         <div class="buttons">
             <Button buttonLabel="Reset Filters" @click="resetFilters" id="button1" :icon="resetIcon"/>
-            <Button buttonLabel="Save Filters" id="button2" :icon="saveIcon"/>
+            <Button buttonLabel="Save Filters" id="button2" :icon="saveIcon" @click="saveFilters"/>
         </div>
+
+        <InputMessage 
+            v-if="showInputModal"
+            title="Save Filter Configuration"
+            placeholder="Enter configuration name..."
+            @confirm="handleSaveConfirm"
+            @close="showInputModal = false"
+        />
+
+        <Success 
+            v-if="showSuccessModal"
+            successMessage="Filters saved successfully!"
+            @close="showSuccessModal = false"
+        />
+
+        <Error 
+            v-if="showErrorModal"
+            :errorMessage="errorMessage"
+            @close="showErrorModal = false"
+        />
     </section>
     
 </template>
@@ -88,6 +108,12 @@ import Button from './Button.vue';
 import SizeResults from './SideBar/SizeResults.vue';
 import resetIcon from '../assets/ResetFilters.png';
 import saveIcon from '../assets/SaveFilters.png';
+import { useAuthStore } from '@/stores/auth';
+import { saveFiltersConfig } from '@/utils/users';
+import InputMessage from './Messages/inputMessage.vue';
+import Success from './Messages/Success.vue';
+import Error from './Messages/Error.vue';
+import Tooltip from './Tooltip.vue';
 
 const props = defineProps({
     priceRange: { type: Array, default: [0, 1500] },
@@ -118,6 +144,12 @@ const emit = defineEmits([
     'update:sizeRes',
     'update:selectedAmenities'
 ]);
+
+const showInputModal = ref(false);
+const showSuccessModal = ref(false);
+const showErrorModal = ref(false);
+const errorMessage = ref('');
+const showImportTooltip = ref(false);
 
 const priceRangeComputed = computed({
     get: () => props.priceRange,
@@ -203,7 +235,6 @@ const displayedAmenities = computed(() => {
     return amenities.value.slice(0, 5);
 });
 
-
 function resetFilters(){
     ratingScoreComputed.value = 0;
     priceRangeComputed.value = [0, props.maxPrice];
@@ -214,6 +245,54 @@ function resetFilters(){
     emit('update:roomsData', { accommodates: 0, bedrooms: 0, beds: 0, bathrooms: 0 });
     sizeResComputed.value = 'Entire City';
     emit('update:selectedAmenities', []);
+}
+
+function saveFilters() {
+    const authStore = useAuthStore();
+    const userEmail = authStore.user?.email;
+    
+    if (!userEmail) {
+        errorMessage.value = 'You need to be logged in to save filters!';
+        showErrorModal.value = true;
+        return;
+    }
+    
+    showInputModal.value = true;
+}
+
+async function handleSaveConfirm(configName) {
+    showInputModal.value = false;
+    
+    const authStore = useAuthStore();
+    const userEmail = authStore.user?.email;
+    
+    const filtersConfig = {
+        config_name: configName || 'Unnamed Filter',
+        timestamp: new Date().toISOString(),
+        filters: {
+            priceRange: props.priceRange,
+            annualOccupancy: props.annualOccupancy,
+            noLicense: props.noLicense,
+            isSuperHost: props.isSuperHost,
+            propertyType: props.propertyType,
+            ratingScore: props.ratingScore,
+            roomsData: props.roomsData,
+            sizeRes: props.sizeRes,
+            selectedAmenities: props.selectedAmenities
+        }
+    };
+    
+    console.log('💾 Filter Config to save:', filtersConfig);
+
+    const success = await saveFiltersConfig(userEmail, filtersConfig);
+    console.log('✅ Save result:', success);
+
+    if (success) {
+        showSuccessModal.value = true;
+    } else {
+        errorMessage.value = 'Failed to save filters. Please try again.';
+        showErrorModal.value = true;
+    }
 }
 
 </script>
@@ -243,6 +322,7 @@ function resetFilters(){
     background-color: var(--accent2);
     padding:5px;
     border-radius: 50%;
+    cursor: pointer;
 }
 
 .filtros {

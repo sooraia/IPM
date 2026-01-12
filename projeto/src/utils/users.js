@@ -68,3 +68,34 @@ export async function saveChartConfig(userEmail, chartConfig) {
     return false;
   }
 }
+
+export async function saveFiltersConfig(userEmail, filtersConfig) {
+  try {
+    const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(userEmail)}`);
+    const users = await response.json();
+    
+    if (users.length === 0) {
+      throw new Error("Utilizador não encontrado");
+    }
+    
+    const user = users[0];
+    const updatedFilters = user.saved_filters_configs || [];
+    updatedFilters.push(filtersConfig);
+    
+    const updateResponse = await fetch(`http://localhost:3000/profiles.users/${user.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ saved_filters_configs: updatedFilters })
+    });
+    
+    if (updateResponse.ok) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Erro ao salvar filtros:", error);
+    return false;
+  }
+}

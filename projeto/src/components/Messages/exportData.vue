@@ -76,9 +76,6 @@ function handleDownload() {
         alert('Please select at least one field to export');
         return;
     }
-    
-    console.log('Selected fields:', selectedFields.value);
-    
     emit('download', {
         format: selectedFormat.value,
         fields: selectedFields.value,
@@ -97,7 +94,7 @@ function handleDownload() {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2;
 }
 
 .export-data-container {

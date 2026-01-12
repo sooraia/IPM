@@ -3,7 +3,7 @@
         <div id="success-overlay" @click.stop>
             <img src="../../assets/tick.png" alt="Success"/>
             <div id="message" >{{ successMessage }}</div>
-            <router-link :to="dest">
+            <router-link v-if="goTo && dest" :to="dest">
                 <button id="continue-button">{{ goTo }} &#10140</button>
             </router-link>
         </div>
@@ -19,9 +19,11 @@ defineProps({
     },
     goTo: {
         type: String,
+        default: ''
     },
     dest: {
         type: String,
+        default: ''
     }
 })
 const emit = defineEmits(['close']);
@@ -43,6 +45,7 @@ function close() {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 3;
 }
 
 #success-overlay {
