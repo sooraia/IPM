@@ -21,7 +21,7 @@
                 :colors="chartColors"
             />
         </template>
-        
+
         <template #share-content>
             <p class = "share-title">City {{metricSelected}} Distribution</p>
             <p class = "share-text">Share of entire homes, private rooms, shared rooms, and hotel rooms in all areas.</p>
@@ -52,6 +52,9 @@ import { groupDataByCategory, getNeighborhoodsList } from '@/utils/groupByCatego
 import { fetchListingsForCity } from '@/utils/cityData'
 import { formatListings } from '@/utils/chartHelpers'
 import { filterListings } from '@/utils/chartFilters'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
 
 const route = useRoute()
 const cityName = computed(() => route.params.city)

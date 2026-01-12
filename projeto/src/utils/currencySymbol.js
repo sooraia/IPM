@@ -7,7 +7,7 @@ export function getCurrencySymbol(listings) {
     const currencyMap = {
         'EUR': '€',
         'USD': '$',
-        'GBP': '£',
+        'ZAR': 'R',
         'JPY': '¥'
     };
     

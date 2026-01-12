@@ -1,6 +1,4 @@
-export default
-
-async function validateEmail(email) {
+export default async function validateEmail(email) {
   try {
     const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(email)}`);
     const data = await response.json();
@@ -68,6 +66,58 @@ export async function saveChartConfig(userEmail, chartConfig) {
     return false;
   }
 }
+
+export async function getChartConfig(userEmail) {
+  try {
+    const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(userEmail)}`);
+    const users = await response.json();
+    if (users.length === 0) {
+      return [];
+    }
+    return users[0].saved_chart_configs || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+export async function deleteChartConfig(userIdentifier, chartIndex) {
+  try {
+    // tenta encontrar user por email
+    let response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(userIdentifier)}`);
+    let users = await response.json();
+    let user = Array.isArray(users) && users.length > 0 ? users[0] : null;
+
+    // se não encontrou por email, tenta por id
+    if (!user) {
+      const byIdResp = await fetch(`http://localhost:3000/profiles.users/${encodeURIComponent(userIdentifier)}`);
+      if (byIdResp.ok) user = await byIdResp.json();
+    }
+
+    if (!user) {
+      throw new Error('Utilizador não encontrado');
+    }
+
+    const updatedConfigs = user.saved_chart_configs || [];
+
+    if (chartIndex < 0 || chartIndex >= updatedConfigs.length) {
+      throw new Error('Índice inválido');
+    }
+
+    updatedConfigs.splice(chartIndex, 1);
+
+    const updateResponse = await fetch(`http://localhost:3000/profiles.users/${user.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ saved_chart_configs: updatedConfigs })
+    });
+
+    return updateResponse.ok;
+  } catch (error) {
+    console.error('Erro ao apagar configuração do gráfico:', error);
+    return false;
+  }
+}
+
 
 export async function saveFiltersConfig(userEmail, filtersConfig) {
   try {

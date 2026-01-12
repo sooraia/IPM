@@ -22,23 +22,32 @@
 
     <div id="saved-configs" class="container">
       <h1 class ="container-title">Saved Chart Configurations</h1>
-      <div class="container-content"></div>
+      <div class="container-content">
+        <ChartCard
+          v-for="(chart, idx) in chartConfigs"
+          :key="idx"
+          :title="chart.name || chart.config_name || 'Saved chart'"
+          :image-src="imageFor(chart)"
+          :trash-button="true"
+          @delete="() => handleDeleteSavedChart(idx)"
+          @click="() => goToConfig(chart)"
+          :dest="{ name: 'GraphView', params: { chartType: chart.chartType || chart.chart_type || chart.type, city: chart.city || chart.parameters?.city || chart.city_name } }"
+        />
+      </div>
     </div>
-
-    <div id="favorite-searches" class="container">
-      <h1 class ="container-title">Favorite Searches</h1>
-      <div class="container-content"></div>
-    </div>
-
   </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '@/stores/auth';
 import ToggableForm from '@/components/ToggableForm.vue';
-import validateEmail from '@/utils/users.js';
+import validateEmail, { getChartConfig, deleteChartConfig } from '@/utils/users.js';
 import Error from '@/components/Messages/Error.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import ChartCard from '@/components/Cards/ChartCard.vue';
+import lineImg from '@/assets/line-simplified.png';
+import barImg from '@/assets/bar-simplified.png';
+import pieImg from '@/assets/pie-simplified.png';
 
 const authStore = useAuthStore();
 const name = ref(authStore.user.name);
@@ -48,6 +57,22 @@ const areaInteresse = ref(authStore.user.areaInteresse);
 
 const editing = ref(false);
 const errorMsg = ref(null);
+
+const chartConfigs = ref([]);
+
+onMounted(async () => {
+  chartConfigs.value = await getChartConfig(authStore.user.email);
+  console.log('chartConfigs:', chartConfigs.value);
+
+});
+
+function imageFor(chart) {
+  const t = (chart?.chartType || chart?.chart_type || '').toString().toLowerCase();
+  if (t.includes('line')) return lineImg;
+  if (t.includes('pie')) return pieImg;
+  if (t.includes('bar')) return barImg;
+}
+
 function closePopup() {
   errorMsg.value = null;
 }
@@ -70,6 +95,13 @@ async function validateEditedInfo(name, email, password) {
 function handleLogOut() {
   const authStore = useAuthStore();
   authStore.logout();
+}
+
+async function handleDeleteSavedChart(idx) {
+  const ok = await deleteChartConfig(authStore.user?.email, idx);
+  if (ok) {
+    chartConfigs.value = await getChartConfig(authStore.user?.email);
+  }
 }
 
 async function save(payload) {
@@ -110,6 +142,10 @@ async function save(payload) {
   } finally {
     console.log("Atualização terminada");
   }
+}
+
+function updateConfig(chartConfig) {
+  authStore.setChartConfig(chartConfig)
 }
 
 </script>
@@ -192,4 +228,27 @@ async function save(payload) {
  gap: 150px;
  padding: 10px;
 }
+
+#saved-configs .container-content {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  padding: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  align-items: flex-start;
+  justify-content: flex-start;
+  /* opcional: esconder barra em browsers que suportam */
+  scrollbar-width: thin;
+}
+#saved-configs .container-content::-webkit-scrollbar {
+  height: 10px;
+}
+#saved-configs .container-content::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 6px;
+}
+
+
 </style>

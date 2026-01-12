@@ -22,13 +22,11 @@
         
     </div>
 
-    <Teleport to="body">
-        <Export 
-            v-if="showExportMenu"
-            @close="showExportMenu = false"
-            @download="downloadChartFunc"
-        />
-    </Teleport>
+    <Export 
+        v-if="showExportMenu"
+        @close="showExportMenu = false"
+        @download="downloadChartFunc"
+    />
 
     <Teleport to="body">
         <Success 
@@ -40,13 +38,11 @@
         />
     </Teleport>
 
-    <Teleport to="body">
-        <Share 
-            v-if="showShareMenu"
-            @close="showShareMenu = false"
-            @copyToClipboard="showMiniMessageFunc"
-        />
-    </Teleport>
+    <Share 
+        v-if="showShareMenu"
+        @close="showShareMenu = false"
+        @copyToClipboard="showMiniMessageFunc"
+    />
 
     <MiniMessage 
         v-if="showMiniMessageDownload" 
@@ -92,23 +88,29 @@ const props = defineProps({
 
 const chartName = ref('');
 const authStore = useAuthStore();
-const userEmail = authStore.user ? authStore.user.email : null;
 
 const saveChart = (name) => {
   chartName.value = name;
+  const userEmail = authStore.user ? authStore.user.email : null;
+  if (!userEmail) {
+    showErrorModal.value = true;
+    return;
+  }
+
   saveChartConfig(userEmail, {
-      chartType: props.chartType,
-      city: props.city,
-      filters: props.filters,
-      name: chartName.value
+    chartType: props.chartType,
+    city: props.city,
+    filters: props.filters,
+    name: chartName.value
   });
+
   console.log('Chart saved:', chartName.value, 'chartType:', props.chartType, 'city:', props.city, 'filters:', props.filters);
   showInputModal.value = false;
   showSuccessModal.value = true;
 };
 
 const showInputModalFunc = () => {
-    if(userEmail){
+    if (authStore.user?.email) {
         showInputModal.value = true;
     } else {
         showErrorModal.value = true;
