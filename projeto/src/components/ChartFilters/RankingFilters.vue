@@ -53,7 +53,6 @@
         n_rowsValue: Number,
         priceValue: Array,
         propertyTypeSelected: String,
-        sizeRes: String,
         maxPrice: { type: Number, default: 1500}
     })
 
@@ -66,7 +65,6 @@
         'update:n_rowsValue',
         'update:propertyTypeSelected',
         'update:priceValue',
-        'update:sizeRes',
         'update:maxPrice'
     ])
 
