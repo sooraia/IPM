@@ -81,6 +81,12 @@ watch(current, (v) => {
     emit('update:value', v);
 });
 
+watch(() => props.suggestionsList, (newSuggestions) => {
+    current.value = '';
+    suggestions.value = newSuggestions;
+});
+
+
 onMounted(async () => {
     if (props.value) current.value = props.value.match(/[A-Z][a-z]+|[0-9]+/g).join(" ");
     if (props.isValueCity) {
