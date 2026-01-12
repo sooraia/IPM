@@ -14,11 +14,11 @@ const props = defineProps({
 
 const componentToRender = computed(() => {
   switch(props.chartType) {
-    case 'Rank':
+    case 'BarChart':
       return CreateGraphRank
-    case 'Trend':
+    case 'LineChart':
       return CreateGraphTrend
-    case 'Pie':
+    case 'PieChart':
       return CreateGraphPie
     default:
       return CreateGraphRank

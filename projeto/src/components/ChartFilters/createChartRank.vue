@@ -28,7 +28,7 @@
             <p id = "share-title">Top Neighbour hoods by {{metricSelected}}</p>
             <p id = "share-text">Horizontal bar chart showing the number of listings in each neighborhood, sorted in descending order.</p>
             <ButtonsShare
-                chartType="Rank"
+                chartType="BarChart"
                 :city="cityName"
                 :filters="{
                     metric: metricSelected,

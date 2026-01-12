@@ -29,7 +29,7 @@
             <p class = "share-title">{{metricSelected}} Over Time</p>
             <p class = "share-text">Shows {{ aggregation }} changes in the average price per night for active listings.</p>
             <ButtonsShare
-                :chartType="'Trend'"
+                chartType="LineChart"
                 :city="cityName"
                 :filters="{
                     metricSelected: metricSelected,

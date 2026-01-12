@@ -23,7 +23,7 @@
             <p class = "share-title">City {{metricSelected}} Distribution</p>
             <p class = "share-text">Share of entire homes, private rooms, shared rooms, and hotel rooms in all areas.</p>
             <ButtonsShare
-                :chartType="'PieChart'"
+                chartType="PieChart"
                 :city="cityName"
                 :filters="{
                     metricSelected: metricSelected,
