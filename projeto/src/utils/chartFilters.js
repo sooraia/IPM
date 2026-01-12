@@ -3,7 +3,6 @@ export const filterListings = (data, filters) => {
     const property_type = filters.propertyType;
     const neighborhood = filters.neighborhood;
     const filteredData = {};
-    console.log(Object.entries(data));
 
     Object.entries(data).forEach(([listingId, listingData]) => {
         let keep = true;
@@ -16,8 +15,10 @@ export const filterListings = (data, filters) => {
         if (property_type && property_type !== "All" && listingData.property_type !== property_type) 
             keep = false;
         // Filtro de bairro
-        if (neighborhood && neighborhood !== "Entire City" && listingData.neighborhood !== neighborhood) 
-            keep = false;
+        if (neighborhood && neighborhood !== "Entire City") {
+            if (listingData.neighborhood !== neighborhood) 
+                keep = false;
+        }
 
         if (keep) {
             filteredData[listingId] = listingData;
@@ -26,12 +27,16 @@ export const filterListings = (data, filters) => {
     return filteredData;
 }
 
-export const filterCalendar = (groupedCalendar, rangePrice, propertyType) => {
+export const filterCalendar = (groupedCalendar, rangePrice, propertyType, neighborhood) => {
+    console.log(neighborhood);
     const [minPrice, maxPrice] = rangePrice;
     const filteredResult = {};
 
     Object.entries(groupedCalendar).forEach(([listingId, listingData]) => {
         if (propertyType && propertyType !== "All" && listingData.property_type !== propertyType) {
+            return;
+        }
+        if (neighborhood && neighborhood !== "Entire City" && listingData.neighborhood !== neighborhood) {
             return;
         }
 

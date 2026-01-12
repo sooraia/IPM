@@ -38,7 +38,8 @@
                     metricSelected: metricSelected,
                     aggregation: aggregation,
                     priceRange: priceRange,
-                    propertyType: propertyType
+                    propertyType: propertyType,
+                    neighborhood: selectedNeighbourhood
                 }"
             />
         </template>
@@ -101,14 +102,11 @@ const chartData = computed(() => {
     const filteredCalendar = filterCalendar(
         calendar.value, 
         priceRange.value, 
-        propertyType.value
+        propertyType.value,
+        sizeRes.value === 'Neighbourhood' ? selectedNeighbourhood.value : 'Entire City'
     );
     const weeklyData = groupedCalendarByWeek(filteredCalendar)
 
-    // lógica de filtrar por neighborhood não sei como fazer
-    // if(sizeRes.value === 'Neighbourhood' && selectedNeighbourhood.value && selectedNeighbourhood.value !== '') {
-
-    // }
     if (aggregation.value === 'Weekly') {
         Object.entries(weeklyData).forEach(([month, weeks]) => {
             weeks.forEach((week, index) => {
@@ -117,10 +115,8 @@ const chartData = computed(() => {
         });
     } else if (aggregation.value === 'Monthly') {
         aggregatedData = groupedCalendarByMonth(weeklyData)
-        console.log('Monthly Data:', aggregatedData);
     } else if (aggregation.value === 'Quarterly') {
         aggregatedData = groupedCalendarByQuart(weeklyData)
-        console.log('Quarterly Data:', aggregatedData);
     }
     return aggregatedData;
 })

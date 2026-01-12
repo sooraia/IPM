@@ -40,10 +40,10 @@ export const formatCalendar = (calendarList, listings) => {
         const price = parsePrice(item.price);
 
         if (price > maxPrice) maxPrice = price;
-
         if (!finalStructure[id]) {
             finalStructure[id] = { 
                 property_type: listings[id] ? listings[id].property_type : 'Other', 
+                neighborhood: listings[id] ? listings[id].neighborhood : 'Unknown',
                 calendar_data: {
                     Jan: [], Feb: [], Mar: [], Apr: [], May: [], Jun: [],
                     Jul: [], Aug: [], Sep: [], Oct: [], Nov: [], Dec: []
@@ -54,6 +54,19 @@ export const formatCalendar = (calendarList, listings) => {
             'available': item.available === 't' ? 1 : 0, 
             'price' : price
         });
+    
     }
     return {'calendar_data': finalStructure, 'maxPrice': maxPrice};
 };
+
+export function chartConfigsFormat(configData) {
+    if (!configData || !Array.isArray(configData)) return [];
+    return configData.map(config => {
+        return {
+            name: config.name,
+            chart_type: config.chartType,
+            city: config.city,
+            parameters: config.filters
+        };
+    });
+}

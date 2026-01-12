@@ -24,7 +24,16 @@
         <template #share-content>
             <p class = "share-title">City {{metricSelected}} Distribution</p>
             <p class = "share-text">Share of entire homes, private rooms, shared rooms, and hotel rooms in all areas.</p>
-            <ButtonsShare/>
+            <ButtonsShare
+                chartType="PieChart"
+                :city="cityName"
+                :filters="{
+                    metricSelected: metricSelected,
+                    priceRange: priceRange,
+                    sizeRes: sizeRes,
+                    neighborhood: selectedNeighbourhood
+                }"
+            />
         </template>
      </chartViewLayout>
 </template>
@@ -54,7 +63,7 @@ const priceRange = ref([0, 1500])
 const maxPrice = ref(1500)
 const chartColors = [
     'rgba(242, 144, 47, 0.8)',
-    'rgba(60, 195, 223, 0.8LineChart)',
+    'rgba(60, 195, 223, 0.8)',
     'rgba(91, 119, 218, 0.8)',
     'rgba(134, 224, 159, 0.8)',
     'rgb(2, 84, 69, 0.8)',
@@ -85,7 +94,7 @@ watch( () => cityName.value, async (newCity, oldCity) => {
 const chartData = computed(() => {
     const cleaned = filterListings(
         listings.value, 
-        { priceRange: priceRange.value, neighborhood: sizeRes.value }
+        { priceRange: priceRange.value, neighborhood: sizeRes.value === 'Neighbourhood' ? selectedNeighbourhood.value : "Entire City" }
     )
     
     if (!cleaned || Object.keys(cleaned).length === 0) {
@@ -94,7 +103,6 @@ const chartData = computed(() => {
 
     let metricData = groupDataByCategory(cleaned, metricSelected.value);
     neighborhoods.value = getNeighborhoodsList(listings.value)
-    console.log('Neighborhoods List:', neighborhoods.value);
     return metricData;
 });
 
