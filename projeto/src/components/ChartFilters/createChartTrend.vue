@@ -1,5 +1,5 @@
 <template>
-    <chartViewLayout>
+    <chartViewLayout :chartType="'LineChart'">
         <template #filters>
             <TrendsFilters 
                 v-model:metricsValue="metricSelected" 
@@ -46,6 +46,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { watch } from 'vue'
 import TrendsFilters from '@/components/ChartFilters/TrendsFilters.vue'
 import LineChart from '../Charts/LineChart.vue'
 import chartViewLayout from './chartViewLayout.vue'
@@ -67,14 +68,26 @@ const maxPrice = ref(1500)
 const listings = ref([])
 const calendar = ref({})
 
-onMounted(async () => {
+async function loadData() {
     const listingsData = await fetchListingsForCity(cityName.value)
     const calendarData = await fetchCalendarForCity(cityName.value)
     listings.value = formatListings(listingsData).data
     calendar.value = formatCalendar(calendarData, listings.value).calendar_data
     maxPrice.value = formatCalendar(calendarData, listings.value).maxPrice
     priceRange.value = [0, maxPrice.value]
+}
+
+onMounted(async () => {
+    await loadData()
 })
+
+watch( () => cityName.value, async (newCity, oldCity) => {
+    if (newCity !== oldCity) {
+        await loadData()
+    }
+  }
+)
+
 
 const chartData = computed(() => {
     let aggregatedData = {};
