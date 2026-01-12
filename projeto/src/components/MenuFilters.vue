@@ -2,8 +2,22 @@
     <section class="menu">
         <header class="title-menu">
             <LabelMenu title="Filters"/>
-            <img id="importFilters" type="submit" src="../assets/importFilters.png" />
+            <img 
+                id="importFilters" 
+                type="submit" 
+                src="../assets/importFilters.png"
+                @click="openImportModal"
+                title="Import from saved filters"
+            />
         </header>
+
+        <ImportFilters 
+            :show="showImportModal"
+            :userEmail="userEmail"
+            @close="showImportModal = false"
+            @load="loadFilter"
+        />
+
         <div class="filtros">
             <div>
                 <p class="subtitle">Price per night:</p>
@@ -113,7 +127,7 @@ import { saveFiltersConfig } from '@/utils/users';
 import InputMessage from './Messages/inputMessage.vue';
 import Success from './Messages/Success.vue';
 import Error from './Messages/Error.vue';
-import Tooltip from './Tooltip.vue';
+import ImportFilters from './SideBar/importFilters.vue';
 
 const props = defineProps({
     priceRange: { type: Array, default: [0, 1500] },
@@ -149,7 +163,12 @@ const showInputModal = ref(false);
 const showSuccessModal = ref(false);
 const showErrorModal = ref(false);
 const errorMessage = ref('');
-const showImportTooltip = ref(false);
+const showImportModal = ref(false);
+
+const userEmail = computed(() => {
+    const authStore = useAuthStore();
+    return authStore.user?.email || '';
+});
 
 const priceRangeComputed = computed({
     get: () => props.priceRange,
@@ -267,7 +286,7 @@ async function handleSaveConfirm(configName) {
     const userEmail = authStore.user?.email;
     
     const filtersConfig = {
-        config_name: configName || 'Unnamed Filter',
+        config_name: configName,
         timestamp: new Date().toISOString(),
         filters: {
             priceRange: props.priceRange,
@@ -282,10 +301,7 @@ async function handleSaveConfirm(configName) {
         }
     };
     
-    console.log('💾 Filter Config to save:', filtersConfig);
-
     const success = await saveFiltersConfig(userEmail, filtersConfig);
-    console.log('✅ Save result:', success);
 
     if (success) {
         showSuccessModal.value = true;
@@ -293,6 +309,33 @@ async function handleSaveConfirm(configName) {
         errorMessage.value = 'Failed to save filters. Please try again.';
         showErrorModal.value = true;
     }
+}
+
+
+function openImportModal() {
+    const authStore = useAuthStore();
+    const userEmail = authStore.user?.email;
+    
+    if (!userEmail) {
+        errorMessage.value = 'You need to be logged in to import filters!';
+        showErrorModal.value = true;
+        return;
+    }
+    showImportModal.value = true;
+}
+
+function loadFilter(filter) {
+    const f = filter.filters;
+    
+    priceRangeComputed.value = f.priceRange;
+    annualOccupancyComputed.value = f.annualOccupancy;
+    noLicenseComputed.value = f.noLicense;
+    isSuperHostComputed.value = f.isSuperHost;
+    propertyTypeComputed.value = f.propertyType;
+    ratingScoreComputed.value = f.ratingScore;
+    emit('update:roomsData', f.roomsData);
+    sizeResComputed.value = f.sizeRes;
+    emit('update:selectedAmenities', f.selectedAmenities);
 }
 
 </script>
