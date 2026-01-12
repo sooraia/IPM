@@ -1,49 +1,59 @@
+import {categorizePropertyType} from './groupByCategory.js';
+
 export const parsePrice = (priceString) => {
     if (!priceString) return 0;
     return parseFloat(priceString.replace(/[^\d.]/g, ''));
 };
 
-export const formatCityResource = (cityName) => {
-    if (!cityName) return '';
-    const formatted = cityName.charAt(0).toUpperCase() + cityName.slice(1).toLowerCase();
-    return `${cityName.toLowerCase()}.listings${formatted}`;
+export const formatListings = (listingsData) => {
+    const dataCleaned = {};
+    let maxPrice = 0;
+    listingsData.forEach((listing) => {
+        const id = listing.id;
+        dataCleaned[id] = {};
+        dataCleaned[id].property_type = categorizePropertyType(listing.property_type);
+        dataCleaned[id].price = parsePrice(listing.price);
+        if (dataCleaned[id].price > maxPrice) {
+            maxPrice = dataCleaned[id].price;
+        }
+        dataCleaned[id].license = listing.license === 't' ? 'Licensed' : 'Unlicensed';
+        dataCleaned[id].host_is_superhost = listing.host_is_superhost === 't' ? 'Superhost' : 'Not Superhost';
+        dataCleaned[id].neighborhood = listing.neighbourhood_cleansed;
+        dataCleaned[id].number_of_reviews = listing.reviews_per_month;
+        dataCleaned[id].reviews_score = listing.review_scores_rating;
+    });
+    return {'data': dataCleaned, 'maxPrice': maxPrice};
 };
 
-export const filterCalendar = (groupedCalendar, rangePrice, propertyType, metricSelected) => {
-    console.log(propertyType);
-    if (!groupedCalendar || !rangePrice || rangePrice.length !== 2) return {};
+export const formatCalendar = (calendarList, listings) => {
+    const monthMap = {
+        '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'Jun',
+        '07': 'Jul', '08': 'Aug', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'
+    };
+    const finalStructure = {};
+    let maxPrice = 0;
 
-    const [minPrice, maxPrice] = rangePrice;
-    const filteredResult = {};
+    for (const item of calendarList) {
+        const id = item.listing_id;
+        const dateParts = item.date.split('-');
+        const monthName = monthMap[dateParts[1]];
+        const price = parsePrice(item.price);
 
-    Object.entries(groupedCalendar).forEach(([listingId, values]) => {
-        if ((propertyType === values.property_type) || propertyType === "All"){    
-            const monthsArray = values.calendar;
-            const filteredMonths = monthsArray.map(([month, entries]) => {
-                const validEntries = entries.filter(entry => {
-                    const price = parseFloat(entry[1]);
-                    // Mesmo filtrando ocupação, geralmente mantemos o filtro de preço do RangeBar
-                    return !isNaN(price) && price >= minPrice && price <= maxPrice;
-                }).map(entry => {
-                    // 3. Retornar apenas o dado necessário para o gráfico
-                    if (metricSelected === 'Occupancy Rate') {
-                        // Se disponível (true/'t'), ocupação é 0. Se ocupado (false/'f'), ocupação é 1.
-                        const isAvailable = entry[0] === 't';
-                        return isAvailable ? 0 : 1; 
-                    }
-                    // Caso contrário, retorna o preço
-                    return parseFloat(entry[1]);
-                });
+        if (price > maxPrice) maxPrice = price;
 
-                return [month, validEntries];
-            }).filter(([month, entries]) => entries.length > 0); 
-            if (filteredMonths.length > 0) {
-                filteredResult[listingId] = filteredMonths;
-            }
+        if (!finalStructure[id]) {
+            finalStructure[id] = { 
+                property_type: listings[id] ? listings[id].property_type : 'Other', 
+                calendar_data: {
+                    Jan: [], Feb: [], Mar: [], Apr: [], May: [], Jun: [],
+                    Jul: [], Aug: [], Sep: [], Oct: [], Nov: [], Dec: []
+                }
+            };
         }
-    });
-
-    console.log(filteredResult);
-
-    return filteredResult;
-}
+        finalStructure[id].calendar_data[monthName].push({
+            'available': item.available === 't' ? 1 : 0, 
+            'price' : price
+        });
+    }
+    return {'calendar_data': finalStructure, 'maxPrice': maxPrice};
+};

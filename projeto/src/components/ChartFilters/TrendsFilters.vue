@@ -21,13 +21,8 @@
         <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
                         :max="props.maxLimit"
-                        :gap="100"
+                        :gap="props.maxLimit/100"
                         :currency="true"/>
-    </div>
-
-    <div class="category-container">
-        <p class="subtitle">Show Results for:</p>
-            <SizeResults v-model:sizeRes="sizeResComputed"/>
     </div>
 
 
@@ -46,7 +41,6 @@ import { computed } from 'vue'
 import RangeBar from '../SideBar/RangeBar.vue'
 import LabelMenu from '../SideBar/LabelMenu.vue'
 import CategoryMetrics from '../SideBar/CategoryMetrics.vue'
-import SizeResults from '../SideBar/SizeResults.vue'
 import Button from '../Button.vue'
 
 const metrics = ["Average Price Per Night", "Occupancy Rate"]
@@ -55,7 +49,6 @@ const property_type = ["All", "Entire Home", "Private Room", "Shared Room", "Hot
 
 const props = defineProps({ 
     metricsValue: { type: String, default: 'Average Price Per Night' },
-    sizeRes: { type: String, default: 'Entire City'},
     propertyTypeSelected: { type: String, default: 'Entire Home' },
     priceValue: { type: Array, default: () => [0, 1500] },
     aggregationValue: { type: String, default: 'Monthly' },
@@ -65,7 +58,6 @@ const props = defineProps({
 const emit = defineEmits([
     'update:metricsValue', 
     'update:aggregationValue',
-    'update:sizeRes',
     'update:priceValue',
     'update:propertyTypeSelected'
 ])
@@ -73,11 +65,6 @@ const emit = defineEmits([
 const metricSelectedComputed = computed({
     get: () => props.metricsValue,
     set: (val) => emit('update:metricsValue', val)
-})
-
-const sizeResComputed = computed({
-    get: () => props.sizeRes,
-    set: (val) => emit('update:sizeRes', val)
 })
 
 const propertyTypeComputed = computed({
@@ -98,7 +85,6 @@ const priceRangeComputed = computed({
 
 function resetFilters() {
     metricSelectedComputed.value = metrics[0]
-    sizeResComputed.value = 'Entire City'
     propertyTypeComputed.value = 'Entire Home'
     aggregationTypeComputed.value = 'Monthly'
     priceRangeComputed.value = [0, 1500]

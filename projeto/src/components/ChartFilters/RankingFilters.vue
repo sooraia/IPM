@@ -4,7 +4,7 @@
         <p class="subtitle">Show Metrics:</p>
         <CategoryMetrics 
             :metrics="metrics" 
-            v-model="metricSelectedComputed" />
+            v-model:metricSelected="metricSelectedComputed" />
     </div>
     
     <LabelMenu title="Advanced Filters" id="labelMenu"/>
@@ -22,7 +22,7 @@
         <p class="subtitle">Price (per night):</p>
         <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
-                        :max="1500"
+                        :max="props.maxPrice"
                         :gap="100"
                         :currency="true"/>
     </div>
@@ -34,25 +34,19 @@
         </select>
     </div>
 
-    <div class="category-container">
-        <DateRange v-model="dateComputed"/>
-    </div>
-
     <Button buttonLabel="Reset Filters" @click="resetFilters" class="button"/>
 </template>
 
 <script setup>
     import { computed } from 'vue';
-    import DateRange from '../SideBar/DateRange.vue';
     import RangeBar from '../SideBar/RangeBar.vue';
     import LabelMenu from '../SideBar/LabelMenu.vue';
     import CategoryMetrics from '../SideBar/CategoryMetrics.vue';
     import Button from '../Button.vue';
 
-    const source = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-    const metrics = ["Number of Listings", "Average Price per Night", "Occupancy Rate", 
+    const metrics = ["Number of Listings", "Average Price per Night", 
                      "Average Review Score", "License Status"];
-    const property_type = ["Entire Home", "Private Room", "Shared Room", "Hotel Room"];
+    const property_type = ["All", "Entire Home", "Private Room", "Shared Room", "Hotel Room"];
 
     const props = defineProps({ 
         metricsValue: String,
@@ -60,7 +54,11 @@
         priceValue: Array,
         propertyTypeSelected: String,
         sizeRes: String,
-        dateRange: Array
+        maxPrice: { type: Number, default: 1500}
+    })
+
+    const source = computed(() => {
+        return Array.from({ length: props.n_rowsValue }, (_, i) => i + 1)
     })
 
     const emit = defineEmits([
@@ -68,7 +66,8 @@
         'update:n_rowsValue',
         'update:propertyTypeSelected',
         'update:priceValue',
-        'update:dateRange'
+        'update:sizeRes',
+        'update:maxPrice'
     ])
 
     const metricSelectedComputed = computed({
@@ -91,16 +90,11 @@
         set: (val) => emit('update:priceValue', val)
     })
 
-    const dateComputed = computed({
-        get: () => props.dateRange || ['2023-01-01', '2023-12-31'],
-        set: (val) => emit('update:dateRange', val)
-    })
-
     function resetFilters() {
-        metricSelectedR.value = 'Number of Listings'
+        metricSelectedComputed.value = 'Number of Listings'
         propertyTypeComputed.value = 'Entire Home'
-        nRowsSelected.value = 10
-        priceRangeComputed.value = [0, 1500]
+        RowsSelectedComputed.value = 10
+        priceRangeComputed.value = [0, props.maxPrice]
     }
 </script>
 

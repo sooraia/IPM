@@ -1,32 +1,37 @@
 <template>
-  <div class="grid-container">
-    <div class="filter-column">
-        <slot name="filters"></slot> 
-    </div>
+    <div class="grid-container">
+        <div class="filter-column">
+            <slot name="filters"></slot> 
+        </div>
 
-    <div class="main-column">
-        <div class="charts-container">
-            <slot name="chart"></slot> 
+        <div class="main-column">
+            <div class="charts-container">
+                <slot name="chart"></slot> 
+            </div>
+        </div>
+        
+        <div class="share-column">
+            <p class = "subtitle" style="font-weight: bold;">City:</p>
+            <SearchBar class = "searchbar" :value="cityName"></SearchBar>
+            <slot name="share-content"></slot> 
         </div>
     </div>
-    
-    <div class="share-column">
-        <p class = "subtitle" style="font-weight: bold;">City:</p>
-        <SearchBar class = "searchbar"></SearchBar>
-        <slot name="share-content"></slot> 
-    </div>
-  </div>
 </template>
 
 <script setup>
+    import { computed } from 'vue'
+    import { useRoute } from 'vue-router'
     import SearchBar from '@/components/SearchBar.vue'
+    
+    const route = useRoute()
+    const cityName = computed(() => route.params.city || '')
 </script>
 
 <style scoped>
     .grid-container{
         display: flex;
         width: 100%;
-        max-height: calc(100vh - 190px);
+        height: calc(100vh - 245px);
     }
 
     .searchbar{
@@ -48,7 +53,7 @@
         width: 20%;
         padding: 25px 7px;
         overflow-y: auto;
-        max-height: calc(100vh - 190px);
+        height: calc(100%);
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -57,7 +62,7 @@
 
     .main-column{
         width: 60%;
-        max-height: calc(100vh - 190px);
+        height: 100%;
         padding: 30px 15px;
     }
 
@@ -68,7 +73,7 @@
     }
 
     .charts-container{
-        height: 95%;
+        height:95%;
         background-color: white;
         border-radius: 25px;
         padding: 15px;

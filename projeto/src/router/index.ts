@@ -10,7 +10,7 @@ import FaqView from '@/views/FaqView.vue'
 import AlojamentosView from '@/views/AlojamentosView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import DashboardCityView from '@/views/DashboardCityView.vue'
-import CreateGraphView from '@/views/CreateGraphView.vue'
+import CreateGraphView from '@/views/CreateChartView.vue'
 import CompareCitiesDataView from '@/views/CompareCitiesDataView.vue'
 
 
@@ -68,7 +68,7 @@ const router = createRouter({
       component: AlojamentosView
     },
     {
-      path: '/createGraph/:chartType',
+      path: '/createChart/:chartType/:city',
       name: 'GraphView',
       component: CreateGraphView,
       props: true 
