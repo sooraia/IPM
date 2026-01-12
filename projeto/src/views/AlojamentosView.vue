@@ -110,8 +110,14 @@ const showExportModal = ref(false);
 
 const currencySymbol = computed(() => getCurrencySymbol(listings.value));
 
-function handleNeighbourhoodSelection(neighbourhood) {
-    // TO DO
+const neighborhood = ref("");
+function handleNeighbourhoodSelection(newNeighbourhood) {
+   if (neighborhoods.value.includes(newNeighbourhood)) {
+       neighborhood.value = newNeighbourhood;
+       sizeRes.value = "Neighbourhood";
+   } else {
+       sizeRes.value = 'Entire City';
+   }
 }
 
 const currentFilters = computed(() => ({
@@ -281,6 +287,11 @@ const filteredListings = computed(() => {
                 groupedListingAmenities.includes(amenity)
             );
             if (!hasAllAmenities) {
+                return false;
+            }
+        }
+        if (sizeRes.value === 'Neighbourhood' && neighborhood.value) {
+            if (listing.neighbourhood_cleansed !== neighborhood.value) {
                 return false;
             }
         }

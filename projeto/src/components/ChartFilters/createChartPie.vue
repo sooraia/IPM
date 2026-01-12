@@ -8,6 +8,7 @@
                 :maxLimit="maxPrice"
                 :neighborhoodsList="neighborhoods"
                 @neighbourhoodSelected="handleNeighbourhoodSelected"
+                :currencySymbol="currencySymbol"
             />
         </template>
 
@@ -62,6 +63,7 @@ const chartColors = [
 ]
 
 const listings = ref([])
+const currencySymbol = ref('');
 
 async function loadListings() {
     const listingsData = await fetchListingsForCity(cityName.value)
@@ -69,6 +71,7 @@ async function loadListings() {
     listings.value = formattedListings.data
     maxPrice.value = formattedListings.maxPrice
     priceRange.value = [0, maxPrice.value]
+    currencySymbol.value = formattedListings.currencySymbol
 }
 
 onMounted(async () => {
