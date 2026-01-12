@@ -144,3 +144,19 @@ export async function deleteFiltersConfig(userEmail, filterIndex) {
     return false;
   }
 }
+
+
+export async function getSavedChartConfigs(userEmail) {
+  try {
+    const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(userEmail)}`);
+    const users = await response.json();
+    if (users.length === 0) {
+      throw new Error("Utilizador não encontrado");
+    }
+    const user = users[0];
+    console.log(user.saved_chart_configs);
+    return user.saved_chart_configs || [];
+  } catch (error) {
+    return [];
+  }
+}
