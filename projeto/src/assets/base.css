@@ -4,6 +4,7 @@
   --bg: rgb(225, 232, 234);
   --bg-secondary: rgba(0, 40, 55, 0.1);
   --accent: rgb(0, 40, 55);
+  --accent-opacity: rgb(0, 40, 55, 0.3);
   --accent2: rgb(255, 118, 40);
   --accent2-hover: rgba(225, 118, 40, 0.87);
   --accent2-t: rgba(225, 118, 40, 0.60);
