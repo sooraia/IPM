@@ -6,7 +6,6 @@
                 v-model:n_rowsValue="n_rows"
                 v-model:propertyTypeSelected="propertyType"
                 v-model:priceValue="priceRange"
-                :maxListings="maxListingsCount"
                 :maxPrice="maxPrice"
             />
         </template>

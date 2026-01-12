@@ -7,14 +7,8 @@
 
 <script setup>
 defineProps({
-    buttonLabel: {
-        type: String,
-        required: true
-    },
-    icon: {
-        type: String,
-        required: false
-    }
+    buttonLabel: { type: String, required: true },
+    icon: { type: String, required: false }
 })
 </script>
 

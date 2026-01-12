@@ -24,7 +24,7 @@
                         :min="0" 
                         :max="props.maxPrice"
                         :gap="100"
-                        :currency="true"/>
+                        :currency="false"/>
     </div>
 
     <div class="category-container">  
@@ -92,7 +92,7 @@
 
     function resetFilters() {
         metricSelectedComputed.value = 'Number of Listings'
-        propertyTypeComputed.value = 'Entire Home'
+        propertyTypeComputed.value = 'All'
         RowsSelectedComputed.value = 10
         priceRangeComputed.value = [0, props.maxPrice]
     }

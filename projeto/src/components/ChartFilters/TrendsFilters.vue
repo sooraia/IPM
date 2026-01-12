@@ -22,7 +22,7 @@
                         :min="0" 
                         :max="props.maxLimit"
                         :gap="props.maxLimit/100"
-                        :currency="true"/>
+                        :currency="false"/>
     </div>
 
 

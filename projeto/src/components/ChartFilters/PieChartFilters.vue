@@ -20,7 +20,7 @@
                         :min="0" 
                         :max="props.maxLimit"
                         :gap="100"
-                        :currency="true"/>
+                        :currency="false"/>
     </div>
 
     <Button buttonLabel="Reset Filters" @click="resetFilters" class="button"/>
