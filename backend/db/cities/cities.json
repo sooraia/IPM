@@ -37,7 +37,7 @@
             { "name": "Turkey", "cities": ["Istanbul"] ,"available": []},
             { "name": "United Kingdom", "cities": ["Bristol", "Edinburgh", "Greater Manchester", "London"] , "available": []}
         ],
-        "available": [ {"country": "Portugal", "city": "Lisbon"} ]
+        "available": [ {"country": "Portugal", "city": "Porto"} ]
     },
     {
         "continent": "America",

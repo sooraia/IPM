@@ -79,6 +79,15 @@ export const groupByNeighborhoodsByNListings = (data) => {
     return res;
 };
 
+export const getNeighborhoodsList = (data) => {
+    const neighborhoodsSet = new Set();
+    Object.entries(data).forEach(([listingId, listingData]) => {
+        const neighborhood = listingData.neighborhood;
+        neighborhoodsSet.add(neighborhood);
+    });
+    return Array.from(neighborhoodsSet).sort();
+}
+
 export const groupByNeighborhoodsByAvgPrice = (data) => {
     const dataGrouped = {};
     const counts = {};

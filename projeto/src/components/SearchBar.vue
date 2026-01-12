@@ -1,35 +1,66 @@
 <template>
   <div class="search-container">
-    <form action="/action_page.php">
-      <SearchInput :value="current" :placeholderText="'Search City or Country..'" />
-      <img id="glass" type="submit" src="../assets/glass.png" />
+    <form @submit.prevent="handleSubmit">
+      <SearchInput 
+        :value="current"
+        :placeholderText="'Search City or Country..'" 
+        @keydown.enter="handleSubmit"
+        @update:value="current = $event"
+        :suggestionsList="suggestionsList"
+        :isValueCity="isValueCity"
+      />
+      <img 
+        id="glass" 
+        type="submit" 
+        src="../assets/glass.png" 
+        @click="handleSubmit"
+        alt="Search"
+      />
     </form>
   </div>
 </template>
 
 <script setup>
-  import SearchInput from './SearchInput.vue';
-  import { ref } from 'vue';
-  const props = defineProps({
-    value: {
-      type: String,
-      required: false,
-      default: ''
-    }
-  });
+import SearchInput from './SearchInput.vue';
+import { ref} from 'vue';
+import { validateCity, cleanCityName } from '@/utils/cityData';
 
-  const current = ref(props.value);
-  
-//const emit = defineEmits(['update:value', 'search'])
+const props = defineProps({
+  value: {
+    type: String,
+    required: false,
+    default: ''
+  },
+  suggestionsList: {
+    type: Array,
+    required: false,
+    default: () => []
+  },
+  isValueCity: {
+    type: Boolean,
+    required: false,
+    default: true
+  }
+});
 
-// // keep local value in sync with parent prop
-// watch(() => props.value, v => current.value = v)
-// // propagate changes to parent (v-model compatibility)
-// watch(current, v => emit('update:value', v))
+const emit = defineEmits(['search']);
 
-// function onSubmit() {
-//   emit('search', current.value)
-// }
+const current = ref(props.value);
+
+async function handleSubmit() {
+  if (!props.isValueCity) {
+    console.log('Searching for:', current.value);
+    emit('search', current.value)
+    return;
+  }
+  else {
+  if (await validateCity(current.value)) {
+    current.value = cleanCityName(current.value);
+    console.log('Searching for:', current.value);
+    emit('search', current.value)
+  }
+  }
+}
 </script>
 
 <style scoped>
@@ -43,6 +74,7 @@
   align-items: center;
   padding: 0 12px;
   filter: drop-shadow(4px 4px 4px var(--shadow));
+  position: relative; 
 }
 
 .search-container form {
@@ -61,4 +93,8 @@
   cursor: pointer;
 }
 
+#glass:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
 </style>

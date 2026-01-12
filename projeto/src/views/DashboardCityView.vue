@@ -2,11 +2,12 @@
   <body id="dashboard-city-view">
     <div id="overview">
       <div id="overview-top">
+        <router-link to='/dashboard' id="main-button" class="top-button"> &#8592 Back to Dashboard</router-link>
         <div id="overview-current-city">
           <h1 id="city-caption">Showing results for...</h1>
-          <SearchBar :value="currentCity" style="width: 80%;"/>
+          <SearchBar :value="currentCity" style="width: 80%;" @search="updateCity" />
         </div>
-        <button id="compare-button">Compare to other city</button>
+        <router-link to="/dashboard/compare" class="top-button">Compare to other city</router-link>
       </div>
 
       <h1 class="title" style="color:#D9D9D9;font-size: 65px;">OVERVIEW</h1>
@@ -72,7 +73,7 @@
           <div class="overview-card"><span class='bigger'>{{ percentageFivePlusProperties }}%</span> of hosts hold more than <span class='medium'>5</span> properties</div>
           <div id="executive-statistics-bottom">
             <div class="overview-card"><span class='bigger'>{{ propertiesOver300Nights }}</span> Properties with <span class='medium'>300</span> nights booked in the last 12 months</div>
-              <router-link id="executive-statistics-button" to="/">See on map &#10140</router-link>
+              <router-link id="executive-statistics-button" :to="{ name: 'alojamentos', params: { city: currentCity.value } }">See on map &#10140</router-link>
           </div>
         </div>
       </div>
@@ -81,15 +82,15 @@
     <div id="trends">
       <h1 class="title">TRENDS AND INSIGHTS</h1>
       <div id="trends-options">
-        <ChartCard style="width: 550px;" :title="'Neighbourhood Rankings'"
+        <ChartCard style="width: 550px;" :title="'Neighbourhood Rankings'" :dest="{ name: 'GraphView', params: { chartType: 'BarChart', city: currentCity.value } }"
             :description ="'Use different metrics to compare neighborhoods, side by side using ranked bars.'">
             <img src="@/assets/bar-simplified.png" alt="Neighborhood Rankings Chart Example" style="max-width:80%;"/>
         </ChartCard>
-        <ChartCard style="width: 550px;" :title="'Market Trends Over Time'" 
+        <ChartCard style="width: 550px;" :title="'Market Trends Over Time'" :dest="{ name: 'GraphView', params: { chartType: 'LineChart', city: currentCity.value } }"
             :description ="'Track how prices, availability, number of listings and other metrics change over time.'">
             <img src="@/assets/line-simplified.png" alt="Line Chart Simplified Example" style="max-width:88%;"/>
         </ChartCard>
-        <ChartCard style="width: 550px;" :title="'Listing Proportion by Category'" 
+        <ChartCard style="width: 550px;" :title="'Listing Proportion by Category'" :dest="{ name: 'GraphView', params: { chartType: 'PieChart', city: currentCity.value } }"
             :description ="'Visualize the proportion and distribution of listings across categories.'">
             <img src="@/assets/pie-simplified.png" alt="Pie Chart Simplified Example" style="max-width:58%;"/>
         </ChartCard>
@@ -107,14 +108,15 @@ import { onMounted, ref } from 'vue';
 import ChartCard from '@/components/Cards/ChartCard.vue';
 import StatsCard from '@/components/Cards/StatsCard.vue';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useCityStore } from '@/stores/city';
 import { storeToRefs } from 'pinia';
 import { useListingsStore } from '@/stores/listings';
 import { useCalendarStore } from '@/stores/calendar';
 import { processListingsData, processCalendarData } from '@/utils/cityData.js';
+import { watch } from 'vue';
 
 // overview data
-const route = useRoute();
 const cityStore = useCityStore();
 const numberListings = ref(12000);
 const hosts = ref(1800);
@@ -132,46 +134,48 @@ const dataLicensePC = ref([]);
 const labelsTopHosts = ref([]);
 const dataTopHosts = ref([]);
 
-const currentCity = storeToRefs(cityStore).currentCity;
+const route = useRoute();
+const router = useRouter();
+const currentCity = ref('');
+
 const listingsStore = useListingsStore();
 const { listings, loading } = storeToRefs(listingsStore);
 const calendarStore = useCalendarStore();
 const { calendarData } = storeToRefs(calendarStore);
 
-async function updateCityFromRoute() {
-  const p = route.params.city ?? route.query.city;
-  if (p) {
-    const city = Array.isArray(p) ? p[0] : p;
-    if (city !== cityStore.currentCity) {
-      cityStore.setCity(city);
-      await listingsStore.fetchListings();
-      await calendarStore.fetchCalendar();
 
-    } else if (!listings.value || listings.value.length === 0) {
-      await listingsStore.fetchListings();
-      await calendarStore.fetchCalendar();
+async function loadCityData(cityName) {
+  if (!cityName) return;
+  currentCity.value = cityName;
+  try {
+    await listingsStore.fetchListings();
+    await calendarStore.fetchCalendar();
+    if (listings.value && calendarData.value) {
+      updateListingsValues(listings.value);
+      updateCalendarValues(calendarData.value);
     }
+  } catch (error) {
+    console.error('Error loading city data:', error);
   }
 }
 
-function updateInfo() {
-  if (!listings.value || listings.value.length === 0) {
-    console.log("No listings data available.");
-    return;
-  }
-  if (!calendarData.value || calendarData.value.length === 0) {
-    console.log("No calendar data available.");
-    return;
-  }
-  updateListingsValues(listings.value);
-  updateCalendarValues(calendarData.value);
-}
+watch(() => route.params.city,
+  (newCity) => {
+    if (newCity) {
+      console.log('Route city changed to:', newCity);
+      cityStore.setCity(newCity);
+      loadCityData(newCity);
+    }
+  },
+  { immediate: true } 
+);
 
-onMounted(async () => {
-  console.log('Current City in View:', currentCity.value);
-  await updateCityFromRoute();
-  updateInfo();
-});
+function updateCity(event) {
+  router.push({
+    name: 'dashboardCity',
+    params: { city: event }
+  });
+}
 
 function updateListingsValues(listingsData) {
   const {numberListings: nrlistings, numberHosts, hostOver5, occupancy: occ, avgRating, avgPrice,
@@ -273,14 +277,17 @@ function updateCalendarValues(calendarData) {
 
 #overview-top {
   width: 98%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 50px;
+  box-sizing: border-box;
 }
 
 #overview-current-city {
   display: flex;
-  grid-column: 2;
+  width: 40%;
   flex-direction: column;
   align-items: center;
   gap: 7px;
@@ -295,9 +302,14 @@ function updateCalendarValues(calendarData) {
   user-select: none;
 }
 
-#compare-button{
-  grid-column: 3;
-  justify-self: end;
+#main-button {
+  background-color: var(--accent);
+}
+#main-button:hover {
+  background-color: var(--accent-hover);
+}
+
+.top-button{
   background: var(--light-accent2);
   width: 240px;
   height: 50px;
@@ -306,8 +318,13 @@ function updateCalendarValues(calendarData) {
   font-size: 18px;
   color: white;
   filter: drop-shadow(4px 4px 6px var(--shadow));
+  text-align: center;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
 }
-#compare-button:hover {
+.top-button:hover {
   background: var(--accent2);
 }
 

@@ -8,6 +8,8 @@
                 v-model:priceValue="priceRange"
                 :maxLimit="maxPrice"
                 v-model:sizeRes="sizeRes"
+                :neighborhoodsList="neighborhoods"
+                @neighbourhoodSelected="handleNeighbourhoodSelected"
             />
         </template>
             
@@ -55,7 +57,7 @@ import ButtonsShare from '../SideBar/3ButtonsShare.vue'
 import { filterCalendar } from '@/utils/chartFilters'
 import { fetchListingsForCity, fetchCalendarForCity } from '@/utils/cityData'
 import { formatCalendar, formatListings } from '@/utils/chartHelpers'
-import { groupedCalendarByWeek, groupedCalendarByMonth, groupedCalendarByQuart } from '@/utils/groupByCategory'
+import { groupedCalendarByWeek, groupedCalendarByMonth, groupedCalendarByQuart, getNeighborhoodsList } from '@/utils/groupByCategory'
 
 const route = useRoute()
 const cityName = computed(() => route.params.city)
@@ -66,9 +68,11 @@ const priceRange = ref([0, 1500])
 const propertyType = ref('All')
 const maxPrice = ref(1500)
 const sizeRes = ref('Entire City')
+const selectedNeighbourhood = ref('')
 
 const listings = ref([])
 const calendar = ref({})
+const neighborhoods = ref([])
 
 async function loadData() {
     const listingsData = await fetchListingsForCity(cityName.value)
@@ -90,15 +94,21 @@ watch( () => cityName.value, async (newCity, oldCity) => {
   }
 )
 
-
 const chartData = computed(() => {
+    neighborhoods.value = getNeighborhoodsList(listings.value)
     let aggregatedData = {};
+
     const filteredCalendar = filterCalendar(
         calendar.value, 
         priceRange.value, 
         propertyType.value
     );
     const weeklyData = groupedCalendarByWeek(filteredCalendar)
+
+    // lógica de filtrar por neighborhood não sei como fazer
+    // if(sizeRes.value === 'Neighbourhood' && selectedNeighbourhood.value && selectedNeighbourhood.value !== '') {
+
+    // }
     if (aggregation.value === 'Weekly') {
         Object.entries(weeklyData).forEach(([month, weeks]) => {
             weeks.forEach((week, index) => {
@@ -115,6 +125,7 @@ const chartData = computed(() => {
     return aggregatedData;
 })
 
+
 const labels = computed(() => {
     return Object.keys(chartData.value);
 })
@@ -129,6 +140,15 @@ const dataBC = computed(() => {
         }
     });
 })
+
+function handleNeighbourhoodSelected(neighbourhood) {
+    let cleanNeighbourhood = neighbourhood.trim();
+    if(neighborhoods.value.includes(cleanNeighbourhood)) {
+        selectedNeighbourhood.value = neighbourhood;
+    } else {
+        selectedNeighbourhood.value = '';
+    }
+}
 </script>
 
 <style scoped>

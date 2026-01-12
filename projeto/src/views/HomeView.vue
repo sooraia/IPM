@@ -1,6 +1,6 @@
 <template>
   <div class="body">
-    <SearchBar />
+    <SearchBar @search="handleSearch"/>
     <h1>OR</h1>
     <div id="continent-selection">
       <h2>SELECT CONTINENT</h2>
@@ -37,11 +37,14 @@ import { useCityStore } from '@/stores/city';
 const router = useRouter();
 const cityStore = useCityStore();
 
-// function selectContinent(continentName) {
-//   cityStore.setContinent(continentName);
-//   cityStore.setCity(null);
-//   router.push({ name: 'exploreContinent', params: { continent: continentName } });
-// }
+function onMounted() {
+  cityStore.setCity(null);
+}
+
+function handleSearch(cityName) {
+  cityStore.setCity(cityName);
+  router.push({ name: 'alojamentos', params: { city: cityName } });
+};
 </script>
 
 <style scoped>

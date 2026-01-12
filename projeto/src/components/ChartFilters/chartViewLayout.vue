@@ -12,7 +12,7 @@
         
         <div class="share-column">
             <p class = "subtitle" style="font-weight: bold;">City:</p>
-            <SearchBar class = "searchbar" :value="cityName"></SearchBar>
+            <SearchBar class = "searchbar" :value="cityName" @search="handleSearch"/>
             <slot name="share-content"></slot> 
         </div>
     </div>
@@ -20,11 +20,23 @@
 
 <script setup>
     import { computed } from 'vue'
-    import { useRoute } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import SearchBar from '@/components/SearchBar.vue'
-    
+
+    const props = defineProps({
+        chartType: {
+            type: String
+        }
+    })
+    const router = useRouter()
     const route = useRoute()
     const cityName = computed(() => route.params.city || '')
+
+    function handleSearch(cityName) {
+        router.push({name: 'GraphView', params: { chartType: props.chartType, city: cityName }})
+    }
+
+    
 </script>
 
 <style scoped>

@@ -1,5 +1,44 @@
 import { categorizePropertyType } from '@/utils/groupByCategory.js';
 
+export async function fetchAvailableCities() {
+    try {
+        const response = await fetch(`http://localhost:3000/cities.cities`);
+        const data = await response.json();
+        
+        const cityCountry = [];
+        
+        data.forEach(item => { 
+            item.available.forEach(obj => {
+                if (obj.city && obj.country) {
+                    cityCountry.push(`${obj.city}, ${obj.country}`);
+                }
+            });
+        });
+        return cityCountry;
+    } catch (error) {
+        console.error("Erro ao obter cidades", error);
+        return [];
+    }
+}
+
+export function cleanCityName(cityName) {
+  if (!cityName || typeof cityName !== 'string') return null;
+  return cityName.split(',')[0].trim().replace(' ', '');
+}
+
+export async function validateCity(cityName) {
+  if (!cityName) return false
+  const cityKey = cleanCityName(cityName)
+  const availableCities = await fetchAvailableCities()
+  for (let city of availableCities) {
+    const cityFormatted = cleanCityName(city)
+    if (cityFormatted.toLowerCase() === cityKey.toLowerCase()) {
+      return true
+    }
+  }
+  return false
+}
+
 export async function fetchListingsForCity(cityName) {
   if (!cityName) return []
   const cityKey = cityName.trim().replace('-', '')
@@ -54,7 +93,7 @@ export function processListingsData(listingsData) {
     totalOccupancy += (occupancy * 100) / 365;
     totalRating += (rating || 0);
     if (!currency) currency= price.substring(0,3);
-    totalPrice += (parseFloat(price.substring(3)) || 0);
+    totalPrice += parseFloat(price.replace(/[^0-9.]/g, '')) || 0;
     if (occupancy >= 300) propert300 += 1;
 
     if (neighborhoodMap.has(neighborhood)) {

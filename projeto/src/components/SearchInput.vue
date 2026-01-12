@@ -1,10 +1,41 @@
 <template>
-    <input id="myInput" type="text" v-model="current" :placeholder="placeholderText" name="search" :disabled="disabled" />
+  <div class="container" ref="containerRef">
+    <input ref="inputEl" id="myInput" type="text" v-model="current" 
+      :placeholder="placeholderText"  name="search" :disabled="disabled"
+      autocomplete="off"
+      @input="handleInput"
+      @keydown="handleKeyDown"
+      @focus="showSuggestions = true"
+    />
+    <div 
+      v-if="showSuggestions && filteredSuggestions.length > 0"
+      class="autocomplete-items"
+    >
+      <div
+        v-for="(suggestion, index) in filteredSuggestions"
+        :key="suggestion"
+        :class="['suggestion-item', { 'autocomplete-active': activeIndex === index }]"
+        @click="selectSuggestion(suggestion)"
+        @mouseenter="activeIndex = index"
+        @mouseleave="activeIndex = -1"
+      >
+        <span v-html="boldMatch(suggestion, current)"></span>
+      </div>
+    </div>
+    <div 
+      v-if="showSuggestions && current && filteredSuggestions.length === 0"
+      class="autocomplete-items no-results"
+    >
+      <div class="no-suggestions">
+        No suggestions found
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { fetchAvailableCities } from '@/utils/cityData';
 
 const props = defineProps({
     placeholderText: {
@@ -20,130 +51,201 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: false
+    },
+    suggestionsList: {
+        type: Array,
+        required: false,
+        default: () => []
+    },
+    isValueCity: {
+        type: Boolean,
+        required: false,
+        default: true
     }
 });
 
-const current = ref(props.value);
+const emit = defineEmits(['update:value']);
 
-const suggestions = fetchAvailableCities();
+const current = ref('');
+const inputEl = ref(null);
+const containerRef = ref(null);
+const suggestions = ref([]);
+const showSuggestions = ref(false);
+const activeIndex = ref(-1);
+
+watch(() => props.value, (v) => {
+    current.value = v;
+});
+
+watch(current, (v) => {
+    emit('update:value', v);
+});
+
 onMounted(async () => {
-  const suggestions = await fetchAvailableCities()
-  if (inputEl.value) autocomplete(inputEl.value, suggestions)
-})
+    if (props.value) current.value = props.value.match(/[A-Z][a-z]+|[0-9]+/g).join(" ");
+    if (props.isValueCity) {
+        suggestions.value = await fetchAvailableCities();
+    } else suggestions.value = props.suggestionsList;
+    document.addEventListener('click', handleClickOutside);
+    window.addEventListener('scroll', closeSuggestions);
+});
 
-// watch(() => props.value, v => (current.value = v))
-// watch(current, v => emit('update:value', v))
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+    window.removeEventListener('scroll', closeSuggestions);
+});
 
-const inputEl = ref(null)
+const filteredSuggestions = computed(() => {
+    if (!current.value || !suggestions.value.length) return [];
+    
+    const searchTerm = current.value.toLowerCase();
+    return suggestions.value.filter(suggestion => suggestion.toLowerCase().includes(searchTerm));
+});
 
-async function fetchAvailableCities() {
-  const dataaux = {};
-    try {
-        const response = await fetch(`http://localhost:3000/cities.cities`);
-        const data = await response.json();
-        Object.assign(dataaux, data);
-    } catch (error) {
-        console.error("Erro a obter cidades", error);
-        return [];
-    }
-  const cityCountry = [];
-  for(let i=0; i<dataaux.length; i++){
-    const {continent, countries} = dataaux;
-    const { name, cities, available} = countries;
-
-    for(let j=0; j<available.length; j++){
-      const { country, city } = available[j];
-      const pair = city + ", " + country;
-      cityCountry.push(pair);
-      }
-  }
-  return cityCountry;
+function handleInput() {
+    showSuggestions.value = true;
+    activeIndex.value = -1;
 }
 
-function autocomplete(inp, arr) {
-  var currentFocus;
-  inp.addEventListener("input", function(e) {
-      var a, b, i, val = this.value;
-      closeAllLists();
-      if (!val) { return false;}
-      currentFocus = -1;
-      a = document.createElement("DIV");
-      a.setAttribute("id", this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
-      this.parentNode.appendChild(a);
-      for (i = 0; i < arr.length; i++) {
-        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-          b = document.createElement("DIV");
-          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-          b.innerHTML += arr[i].substr(val.length);
-          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-              b.addEventListener("click", function(e) {
-              inp.value = this.getElementsByTagName("input")[0].value;
-              closeAllLists();
-          });
-          a.appendChild(b);
-        }
-      }
-  });
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "autocomplete-list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        currentFocus++;
-        addActive(x);
-      } else if (e.keyCode == 38) {
-        currentFocus--;
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        e.preventDefault();
-        if (currentFocus > -1) {
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-  function addActive(x) {
-    if (!x) return false;
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
+function handleKeyDown(e) {
+    if (!showSuggestions.value || filteredSuggestions.value.length === 0) return;
+    
+    switch (e.key) {
+        case 'ArrowDown':
+            e.preventDefault();
+            activeIndex.value = (activeIndex.value + 1) % filteredSuggestions.value.length;
+            scrollToActive();
+            break;
+            
+        case 'ArrowUp':
+            e.preventDefault();
+            activeIndex.value = activeIndex.value <= 0 
+                ? filteredSuggestions.value.length - 1 
+                : activeIndex.value - 1;
+            scrollToActive();
+            break;
+            
+        case 'Enter':
+            e.preventDefault();
+            if (activeIndex.value >= 0 && activeIndex.value < filteredSuggestions.value.length) {
+                selectSuggestion(filteredSuggestions.value[activeIndex.value]);
+            }
+            break;
+            
+        case 'Escape':
+            closeSuggestions();
+            break;
     }
-  }
-  function closeAllLists(elmnt) {
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (let i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-      x[i].parentNode.removeChild(x[i]);
-    }
-  }
 }
-document.addEventListener("click", function (e) {
-    closeAllLists(e.target);
-})
-} 
+
+function selectSuggestion(suggestion) {
+    current.value = suggestion;
+    showSuggestions.value = false;
+    activeIndex.value = -1;
+    inputEl.value?.focus();
+}
+
+function boldMatch(txt, search) {
+    if (!search) return txt;
+    const matchIndex = txt.toLowerCase().indexOf(search.toLowerCase());
+    
+    if (matchIndex >= 0) {
+        return txt.substring(0, matchIndex) + `<strong>${txt.substring(matchIndex, matchIndex + search.length)}</strong>` +
+               txt.substring(matchIndex + search.length);
+    }
+    
+    return txt;
+}
+
+function handleClickOutside(e) {
+    if (containerRef.value && !containerRef.value.contains(e.target)) {
+        closeSuggestions();
+    }
+}
+
+function closeSuggestions() {
+    showSuggestions.value = false;
+    activeIndex.value = -1;
+}
 </script>
 
 <style scoped>
+.container {
+    position: relative;
+    width: 100%;
+}
 input {
-  flex: 1 1 auto;
-  height: 75%;
-  width: 90%;
-  box-sizing: border-box;
-  border: 0;
-  border-radius: 30px;
-  background-color: var(--bg);
-  padding: 6px 12px;
-  font-size: 15px;
-  color: var(--gray-color);
-  outline: none;
+    flex: 1 1 auto;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 30px;
+    background-color: var(--bg);
+    padding: 6px 12px;
+    font-size: 15px;
+    color: var(--gray-color);
+    outline: none;
 }
 
+input:disabled {
+    color: #acacac;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 input:focus {
-  outline: 2px solid var(--accent2);
+    outline: 2px solid var(--accent2);
+    width: 100%;
+}
+
+.autocomplete-items {
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 99;
+}
+
+.autocomplete-items.no-results {
+    border-color: #ffcccc;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover,
+.suggestion-item.autocomplete-active {
+    background-color: var(--accent2);
+    color: white;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item strong {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.suggestion-item:hover strong,
+.suggestion-item.autocomplete-active strong {
+    color: white;
+}
+
+.no-suggestions {
+    padding: 10px;
+    color: #999;
+    text-align: center;
+    font-style: italic;
 }
 </style>

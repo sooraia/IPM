@@ -1,10 +1,11 @@
 <template>
+  <router-link to='/dashboard' id="top-button"> &#8592 Back to Dashboard</router-link>
   <body id="compare-cities">
     <div id="overview">
       <div id="overview-top">
-          <SearchBar :value="cityA" style="width: 80%;"/>
+          <SearchBar :value="cityA" style="width: 80%;" @search="updateCity($event, 'A')"/>
           <img @click="swap" src="../assets/swap-icon.png" alt="swap"/>
-          <SearchBar id="right-bar" :value="cityB" style="width: 80%;"/>
+          <SearchBar id="right-bar" :value="cityB" style="width: 80%;" @search="updateCity($event, 'B')"/>
       </div>
       <div id="overview-grid">
         <StatsCard id="cards-left-1" :title="'Average Price Per night'" :stat="avgPriceA" :currency="currencyA" />
@@ -75,26 +76,58 @@ import Tooltip from '@/components/Tooltip.vue';
 import DoubleSidedBarChart from '@/components/Charts/DoubleSidedBarChart.vue';
 import { onMounted } from 'vue';
 import { fetchListingsForCity, fetchCalendarForCity, processListingsData, processCalendarData } from '@/utils/cityData.js';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { watch } from 'vue';
+import { useCityStore } from '@/stores/city';
 
-const cityA = ref('Lisbon, Portugal');
-const cityB = ref('Porto, Portugal');
+const cityA = ref('');
+const cityB = ref('');
 const route = useRoute();
 const listings = ref(null);
 const calendarData = ref(null);
+const loading = ref(false);
+const cityStore = useCityStore();
+const router = useRouter();
 
-async function updateCityFromRoute() {
-  const a = route.params.cityA;
-  const b = route.params.cityB;
-  if (a && b) {
-    cityA.value = a.replace(/-/g, ' ');
-    cityB.value = b.replace(/-/g, ' ');
+function updateCity(newCityName, cityLabel) {
+  if (cityLabel === 'A') {
+    cityA.value = newCityName;
+  } else if (cityLabel === 'B') {
+    cityB.value = newCityName;
+  }
+  router.push({ 
+    name: 'compareCitiesData', 
+    params: { 
+      cityA: cityA.value,
+      cityB: cityB.value
+    } 
+  });
+}
+
+watch(() => route.params, async (newParams) => {
+  if (newParams.cityA && newParams.cityB) {
+    await updateCitiesRoute(newParams.cityA, newParams.cityB);
+  }
+}, { immediate: true });
+
+async function updateCitiesRoute(paramA, paramB) {
+  loading.value = true;
+  try {
+    cityA.value = paramA.replace(/-/g, ' ');
+    cityB.value = paramB.replace(/-/g, ' ');
+    
     const listingsA = await fetchListingsForCity(cityA.value);
     const listingsB = await fetchListingsForCity(cityB.value);
     const calendarA = await fetchCalendarForCity(cityA.value);
     const calendarB = await fetchCalendarForCity(cityB.value);
-    listings.value = { A: listingsA, B: listingsB };
-    calendarData.value = { A: calendarA, B: calendarB };
+    
+    listings.value = {A:listingsA, B:listingsB};
+    calendarData.value = {A:calendarA, B:calendarB};
+    updateInfo();
+  } catch (error) {
+    console.error('Error fetching city data:', error);
+  } finally {
+    loading.value = false;
   }
 }
 
@@ -112,8 +145,8 @@ function updateInfo() {
 }
 
 onMounted(async () => {
-  await updateCityFromRoute();
   updateInfo();
+  cityStore.setCity(null);
 });
 
 const avgPriceA = ref(0);
@@ -193,6 +226,25 @@ function updateCalendarValues(calendarData) {
 </script>
 
 <style scoped>
+
+#top-button{
+  align-self: flex-start;
+  width: 200px;
+  position: absolute;
+  top: 120px;
+  left: 30px;
+  font-size: 17px;
+  text-align: center;
+  background: var(--accent);
+  font-weight: bold;
+  color: white;
+  padding: 10px 40px;
+  cursor: pointer;
+  border-radius: 25px;
+}
+#top-button:hover{
+  background: var(--accent-hover);
+}
 
 #compare-cities {
   gap: 120px;

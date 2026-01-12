@@ -1,11 +1,13 @@
 <template>
-     <chartViewLayout>
+     <chartViewLayout :chartType="'PieChart'">
         <template #filters>
             <PieChartFilters 
                 v-model:metricsValue = "metricSelected" 
                 v-model:sizeRes = "sizeRes"
                 v-model:priceRange = "priceRange"
                 :maxLimit="maxPrice"
+                :neighborhoodsList="neighborhoods"
+                @neighbourhoodSelected="handleNeighbourhoodSelected"
             />
         </template>
 
@@ -22,15 +24,7 @@
         <template #share-content>
             <p class = "share-title">City {{metricSelected}} Distribution</p>
             <p class = "share-text">Share of entire homes, private rooms, shared rooms, and hotel rooms in all areas.</p>
-            <ButtonsShare
-                chartType="PieChart"
-                :city="cityName"
-                :filters="{
-                    metricSelected: metricSelected,
-                    sizeRes: sizeRes,
-                    priceRange: priceRange
-                }"
-            />
+            <ButtonsShare/>
         </template>
      </chartViewLayout>
 </template>
@@ -39,17 +33,20 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { watch } from 'vue'
 import PieChartFilters from '@/components/ChartFilters/PieChartFilters.vue'
 import PieChart from '@/components/Charts/PieChart.vue'
 import ButtonsShare from '../SideBar/3ButtonsShare.vue'
 import chartViewLayout from './chartViewLayout.vue'
-import { groupDataByCategory } from '@/utils/groupByCategory'
+import { groupDataByCategory, getNeighborhoodsList } from '@/utils/groupByCategory'
 import { fetchListingsForCity } from '@/utils/cityData'
 import { formatListings } from '@/utils/chartHelpers'
 import { filterListings } from '@/utils/chartFilters'
 
 const route = useRoute()
 const cityName = computed(() => route.params.city)
+const neighborhoods = ref([])
+const selectedNeighbourhood = ref('')
 
 const metricSelected = ref('Property Type')
 const sizeRes = ref('Entire City')
@@ -57,7 +54,7 @@ const priceRange = ref([0, 1500])
 const maxPrice = ref(1500)
 const chartColors = [
     'rgba(242, 144, 47, 0.8)',
-    'rgba(60, 195, 223, 0.8)',
+    'rgba(60, 195, 223, 0.8LineChart)',
     'rgba(91, 119, 218, 0.8)',
     'rgba(134, 224, 159, 0.8)',
     'rgb(2, 84, 69, 0.8)',
@@ -66,13 +63,24 @@ const chartColors = [
 
 const listings = ref([])
 
-onMounted(async () => {
+async function loadListings() {
     const listingsData = await fetchListingsForCity(cityName.value)
     const formattedListings = formatListings(listingsData)
     listings.value = formattedListings.data
     maxPrice.value = formattedListings.maxPrice
     priceRange.value = [0, maxPrice.value]
+}
+
+onMounted(async () => {
+    await loadListings()
 })
+
+watch( () => cityName.value, async (newCity, oldCity) => {
+    if (newCity !== oldCity) {
+        await loadListings()
+    }
+  }
+)
 
 const chartData = computed(() => {
     const cleaned = filterListings(
@@ -85,9 +93,19 @@ const chartData = computed(() => {
     }
 
     let metricData = groupDataByCategory(cleaned, metricSelected.value);
-    
+    neighborhoods.value = getNeighborhoodsList(listings.value)
+    console.log('Neighborhoods List:', neighborhoods.value);
     return metricData;
 });
+
+function handleNeighbourhoodSelected(neighbourhood) {
+    let cleanNeighbourhood = neighbourhood.trim();
+    if(neighborhoods.value.includes(cleanNeighbourhood)) {
+        selectedNeighbourhood.value = neighbourhood;
+    } else {
+        selectedNeighbourhood.value = '';
+    }
+}
 
 </script>
 

@@ -1,12 +1,13 @@
 <template>
   <div class="main-container">
+    <router-link to='/dashboard' id="top" class="button"> &#8592 Back to Dashboard</router-link>
     <h1> COMPARE CITIES </h1>
     <div class="compare-cards">
-        <CompareCitiesCard :CityNumber="1"/>
+        <CompareCitiesCard :CityNumber="1" :value="firstCity" @update:value="firstCity = $event" />
         <h2>AND</h2>
-        <CompareCitiesCard :CityNumber="2"/>
+        <CompareCitiesCard :CityNumber="2" :value="secondCity" @update:value="secondCity = $event" />
     </div>
-    <Button buttonLabel="Compare" id="button"/>
+    <Button buttonLabel="Compare" class="button" @click="handleSearch"/>
   </div>
 </template>
 
@@ -18,8 +19,26 @@ import { useRouter } from 'vue-router';
 import SearchBar from '@/components/SearchBar.vue';
 import Button from '@/components/Button.vue';
 import CompareCitiesCard from '@/components/Cards/CompareCard.vue';
-</script>
+import { ref } from 'vue';
+import { useCityStore } from '@/stores/city';
+import { cleanCityName } from '@/utils/cityData';
 
+const cityStore = useCityStore();
+
+const firstCity = ref(cityStore.currentCity || '');
+const secondCity = ref('');
+const router = useRouter();
+function handleSearch() {
+    if (firstCity.value && secondCity.value) {
+        const cityClean = cleanCityName(firstCity.value)
+        const city2Clean = cleanCityName(secondCity.value)
+        router.push({ name: 'compareCitiesData', params: { cityA: cityClean, cityB: city2Clean } });
+    } else {
+      console.log('Please enter both cities to compare.');
+    }
+}
+
+</script>
 
 
 <style scoped>
@@ -58,11 +77,26 @@ h2{
   font-size: 1.2rem;
 }
 
-#button{
+#top{
+  align-self: flex-start;
+  width: 200px;
+  position: absolute;
+  top: 120px;
+  left: 30px;
+  font-size: 17px;
+  text-align: center;
+}
+
+.button{
   background: var(--accent);
   font-weight: bold;
   color: white;
   padding: 10px 40px;
   cursor: pointer;
+  border-radius: 25px;
+  font-size: 20px;
+}
+.button:hover{
+  background: var(--accent-hover);
 }
 </style>

@@ -9,25 +9,44 @@
             Neighbourhood
         </label>
         <div @click="selectNeighbourhood" class="search-wrapper">
-            <SearchInput 
+            <SearchInput v-if="suggestionsList.length > 0"
                 :placeholderText="'Search Neighbourhood'" 
                 :disabled="sizeResSelected !== 'Neighbourhood'"
-                class="input-neighbourhood"
+                :style="{
+                    '--bg': 'rgba(217, 217, 217, 1)',
+                    'margin-top': '10px',
+                    'align-self': 'center',
+                    'border': '2px solid gray',
+                    'border-radius': '15px'
+                    }"
+                :isValueCity="false"
+                :suggestionsList="suggestionsList"
+                @keydown.enter="handleSearchNeighbourhood"
             />
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import SearchInput from '../SearchInput.vue';
+onMounted(() => {
+    if(props.suggestionsList.length > 0){
+        console.log('Suggestions List:', props.suggestionsList);
+    }
+    else {
+        console.log('No suggestions provided.');
+    }
+});
 
 const props = defineProps({
-        sizeRes: { type: String, default: 'Entire City'}
+        sizeRes: { type: String, default: 'Entire City'},
+        suggestionsList: { type: Array, required: false, default: () => []}
     })
     
 const emit = defineEmits([
-        'update:sizeRes'
+        'update:sizeRes',
+        'neighbourhoodSelected'
     ])
 
 const sizeResSelected = computed({
@@ -37,6 +56,13 @@ const sizeResSelected = computed({
 
 const selectNeighbourhood = () => {
     sizeResSelected.value = 'Neighbourhood'
+}
+
+
+function handleSearchNeighbourhood(event) {
+    const neighbourhood = event.target.value;
+    console.log('Selected Neighbourhood:', neighbourhood);
+    emit('neighbourhoodSelected', neighbourhood);
 }
 </script>
 
@@ -53,16 +79,6 @@ const selectNeighbourhood = () => {
     justify-content: center;
     cursor: pointer;
     margin-left: 35px;
-}
-
-.input-neighbourhood:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-.input-neighbourhood{
-    background-color: rgba(217, 217, 217, 1);
-    margin-top: 10px;
-    align-self: center;
 }
 
 .select-metric{

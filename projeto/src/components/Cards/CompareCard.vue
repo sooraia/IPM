@@ -2,7 +2,7 @@
     <div class="card">
         <div class = "main-container">
             <h2>City #{{ CityNumber }}</h2>
-            <SearchInput :placeholderText="'Search City or Country..'" />
+            <SearchInput :placeholderText="'Search City or Country..'" :value="value" @update:value="$emit('update:value', $event)"/>
         </div>
     </div>
 
@@ -14,8 +14,15 @@ const props = defineProps({
     CityNumber: {
         type: Number,
         required: true
+    },
+    value: {
+        type: String,
+        required: false,
+        default: ''
     }
 });
+
+const emit = defineEmits(['update:value']);
 </script>
 
 <style scoped>
@@ -32,6 +39,7 @@ const props = defineProps({
 }
 
 .main-container {
+    padding: 0 20px 0 20px;
     width: 100%;
     text-align: center;
     color: var(--light-blue);

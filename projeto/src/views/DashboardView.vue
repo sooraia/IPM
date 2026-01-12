@@ -2,7 +2,7 @@
   <div class="card">
     <div class = "main-container">
       <h1>SELECT CITY</h1>
-      <SearchBar></SearchBar>
+      <SearchBar @search="handleSearch"/>
       <h2>OR</h2>
       <router-link to="/dashboard/compare">
         <Button buttonLabel="Compare 2 Cities" id="button"/>
@@ -18,6 +18,18 @@
 import { useRouter } from 'vue-router';
 import SearchBar from '@/components/SearchBar.vue';
 import Button from '@/components/Button.vue';
+import { useCityStore } from '@/stores/city';
+import { onMounted } from 'vue';
+const cityStore = useCityStore();
+onMounted(() => {
+  cityStore.setCity(null);
+});
+const router = useRouter();
+
+function handleSearch(cityName) {
+  cityStore.setCity(cityName);
+  router.push({ name: 'dashboardCity', params: { city: cityName } });
+};
 </script>
 
 

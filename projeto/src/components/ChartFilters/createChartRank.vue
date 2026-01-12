@@ -1,5 +1,5 @@
 <template>
-    <chartViewLayout>
+    <chartViewLayout :chartType="'BarChart'">
         <template #filters>
             <RankingFilters 
                 v-model:metricsValue="metricSelected" 
@@ -45,6 +45,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { watch } from 'vue'
 import RankingFilters from '@/components/ChartFilters/RankingFilters.vue'
 import BarChart from '@/components/Charts/BarChart.vue'
 import ButtonsShare from '../SideBar/3ButtonsShare.vue'
@@ -69,13 +70,24 @@ const maxPrice = ref(1500)
 const priceRange = ref([0, maxPrice.value])
 const listings = ref({})
 
-onMounted(async () => {
+async function loadListings() {
     const listingsData = await fetchListingsForCity(cityName.value)
     const formattedListings = formatListings(listingsData)
     listings.value = formattedListings.data
     maxPrice.value = formattedListings.maxPrice
     priceRange.value = [0, maxPrice.value]
+}
+
+onMounted(async () => {
+    await loadListings()
 })
+
+watch( () => cityName.value, async (newCity, oldCity) => {
+    if (newCity !== oldCity) {
+        await loadListings()
+    }
+  }
+)
 
 const chartData = computed(() => {
     const cleaned = filterListings(

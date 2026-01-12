@@ -11,7 +11,7 @@
     <LabelMenu title="Advanced Filters" id="labelMenu"/>
     <div class="category-container">  
         <p class="subtitle">Show Results for:</p>
-        <SizeResults v-model:sizeRes="sizeResComputed"/>
+        <SizeResults v-model:sizeRes="sizeResComputed" :suggestionsList="props.neighborhoodsList" @neighbourhoodSelected="handleSearchNeighbourhood"/>
     </div>
 
     <div class="category-container">  
@@ -27,26 +27,26 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import RangeBar from '../SideBar/RangeBar.vue';
 import CategoryMetrics from '@/components/SideBar/CategoryMetrics.vue'
 import LabelMenu from '@/components/SideBar/LabelMenu.vue'
 import SizeResults from '../SideBar/SizeResults.vue';
 import Button from '../Button.vue';
 
-    //forma como um componente pai envia dados para um componente filho
     const props = defineProps({ 
         metricsValue: { type: String, default: 'Property Type' },
         sizeRes: { type: String, default: 'Entire City'},
         priceRange: { type: Array, default: [0, 1500]},
-        maxLimit: { type: Number, default: 1500}
+        maxLimit: { type: Number, default: 1500},
+        neighborhoodsList: { type: Array, default: () => []}
     })
 
-    //forma do filho responder ao pai ou pedir que ele mude alguma coisa
     const emit = defineEmits([
         'update:metricsValue', 
         'update:sizeRes',
         'update:priceRange',
+        'neighbourhoodSelected'
     ])
 
     const metricsList = ["Property Type", "Reviews", "Host Type", "License Status"]
@@ -71,7 +71,10 @@ import Button from '../Button.vue';
         sizeResComputed.value = 'Entire City'
         priceRangeComputed.value = [0, props.maxLimit]
     }
-    
+
+    function handleSearchNeighbourhood(neighbourhood) {
+        emit('neighbourhoodSelected', neighbourhood);
+    }
 </script>
 
 <style scoped>

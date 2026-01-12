@@ -18,7 +18,7 @@
 
     <div class="category-container">  
         <p class="subtitle">Show Results for:</p>
-        <SizeResults v-model:sizeRes="sizeResComputed"/>
+        <SizeResults v-model:sizeRes="sizeResComputed" :suggestionsList="props.neighborhoodsList" @neighbourhoodSelected="handleSearchNeighbourhood"/>
     </div>
     
     <div class="category-container"> 
@@ -59,7 +59,8 @@ const props = defineProps({
     priceValue: { type: Array, default: () => [0, 1500] },
     aggregationValue: { type: String, default: 'Monthly' },
     sizeRes: { type: String, default: 'Entire City' },
-    maxLimit: { type: Number, default: 1500}
+    maxLimit: { type: Number, default: 1500},
+    neighborhoodsList: { type: Array, default: () => []}
 })
 
 const emit = defineEmits([
@@ -67,7 +68,8 @@ const emit = defineEmits([
     'update:aggregationValue',
     'update:priceValue',
     'update:propertyTypeSelected',
-    'update:sizeRes'
+    'update:sizeRes',
+    'neighbourhoodSelected'
 ])
 
 const metricSelectedComputed = computed({
@@ -102,6 +104,10 @@ function resetFilters() {
     aggregationTypeComputed.value = 'Monthly'
     priceRangeComputed.value = [0, 1500]
     priceRangeComputed.value = [0, props.maxLimit]
+}
+
+function handleSearchNeighbourhood(neighbourhood) {
+    emit('neighbourhoodSelected', neighbourhood);
 }
 </script>
 

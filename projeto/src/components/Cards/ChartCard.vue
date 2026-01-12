@@ -1,8 +1,8 @@
 <template>
-    <router-link id="card" to="dest">
+    <router-link id="card" :to="props.dest">
         <div id="content">
             <slot>
-                <!-- chart ou imagem do chart -->
+                <!-- chart-->
             </slot>
         </div>
         <div id="info">
@@ -31,7 +31,7 @@
             default: false
         },
         dest: {
-            type: String,
+            type: Object,
             required: false,
             default: '#'
         }
