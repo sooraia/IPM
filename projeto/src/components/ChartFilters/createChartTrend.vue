@@ -28,7 +28,16 @@
         <template #share-content>
             <p class = "share-title">{{metricSelected}} Over Time</p>
             <p class = "share-text">Shows {{ aggregation }} changes in the average price per night for active listings.</p>
-            <ButtonsShare/>
+            <ButtonsShare
+                :chartType="'Trend'"
+                :city="cityName"
+                :filters="{
+                    metricSelected: metricSelected,
+                    aggregation: aggregation,
+                    priceRange: priceRange,
+                    propertyType: propertyType
+                }"
+            />
         </template>
     </chartViewLayout>
 </template>

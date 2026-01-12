@@ -43,7 +43,7 @@ async function validateEmail(email) {
     ]
 
 */
-async function saveChartConfig(userEmail, chartConfig) {
+export async function saveChartConfig(userEmail, chartConfig) {
   try {
     const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(userEmail)}`);
     const users = await response.json();

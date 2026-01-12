@@ -22,7 +22,15 @@
         <template #share-content>
             <p class = "share-title">City {{metricSelected}} Distribution</p>
             <p class = "share-text">Share of entire homes, private rooms, shared rooms, and hotel rooms in all areas.</p>
-            <ButtonsShare/>
+            <ButtonsShare
+                :chartType="'PieChart'"
+                :city="cityName"
+                :filters="{
+                    metricSelected: metricSelected,
+                    sizeRes: sizeRes,
+                    priceRange: priceRange
+                }"
+            />
         </template>
      </chartViewLayout>
 </template>

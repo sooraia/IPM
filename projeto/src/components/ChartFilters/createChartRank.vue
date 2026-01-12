@@ -27,7 +27,16 @@
         <template #share-content>
             <p id = "share-title">Top Neighbour hoods by {{metricSelected}}</p>
             <p id = "share-text">Horizontal bar chart showing the number of listings in each neighborhood, sorted in descending order.</p>
-            <ButtonsShare/>
+            <ButtonsShare
+                chartType="Rank"
+                :city="cityName"
+                :filters="{
+                    metric: metricSelected,
+                    n_rows: n_rows,
+                    propertyType: propertyType,
+                    priceRange: priceRange
+                }"
+            />
         </template>
     </chartViewLayout>
 </template>

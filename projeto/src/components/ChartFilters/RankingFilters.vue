@@ -23,7 +23,7 @@
         <RangeBar v-model="priceRangeComputed" 
                         :min="0" 
                         :max="props.maxPrice"
-                        :gap="100"
+                        :gap="props.maxPrice / 100"
                         :currency="false"/>
     </div>
 

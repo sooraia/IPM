@@ -81,19 +81,34 @@ const showShareMenu = ref(false);
 const showMiniMessageClipboard = ref(false);
 const showMiniMessageDownload = ref(false);
 
+/* Chart */
+import { saveChartConfig } from '@/utils/users.js';
+import { EmitFlags } from 'typescript';
+const props = defineProps({
+    chartType: { type: String, required: true },
+    city: { type: String, required: true },
+    filters: { type: Object, required: true }
+});
+
 const chartName = ref('');
 const authStore = useAuthStore();
+const userEmail = authStore.user ? authStore.user.email : null;
 
 const saveChart = (name) => {
   chartName.value = name;
-  console.log('Saving chart:', name);
-  
+  saveChartConfig(userEmail, {
+      chartType: props.chartType,
+      city: props.city,
+      filters: props.filters,
+      name: chartName.value
+  });
+  console.log('Chart saved:', chartName.value, 'chartType:', props.chartType, 'city:', props.city, 'filters:', props.filters);
   showInputModal.value = false;
   showSuccessModal.value = true;
 };
 
 const showInputModalFunc = () => {
-    if(authStore.user){
+    if(userEmail){
         showInputModal.value = true;
     } else {
         showErrorModal.value = true;
