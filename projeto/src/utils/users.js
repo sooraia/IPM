@@ -48,7 +48,7 @@ async function saveChartConfig(userEmail, chartConfig) {
     const response = await fetch(`http://localhost:3000/profiles.users?email=${encodeURIComponent(userEmail)}`);
     const users = await response.json();
     if (users.length === 0) {
-      throw new Error("Usuário não encontrado");
+      throw new Error("Utilizador não encontrado");
     }
     const user = users[0];
     const updatedConfigs = user.saved_chart_configs || [];
