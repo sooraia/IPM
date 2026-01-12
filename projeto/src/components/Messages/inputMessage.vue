@@ -51,6 +51,7 @@ const close = () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 3;
 }
 
 #input-overlay {

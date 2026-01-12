@@ -80,7 +80,6 @@ import { groupAmenities } from '@/utils/amenitiesHelper';
 import ExportData from '@/components/Messages/exportData.vue';
 import { getCurrencySymbol } from '@/utils/currencySymbol';
 
-
 const cityStore = useCityStore();
 const route = useRoute();
 
@@ -89,7 +88,6 @@ function updateCityFromRoute() {
   if (p) {
     const city = Array.isArray(p) ? p[0] : p;
     cityStore.setCity(city);
-    console.log('Route city:', city);
   }
 }
 
@@ -334,6 +332,7 @@ const markers = computed(() => {
 .left-menu {
     width: 16%;
     overflow-y: auto;
+    overflow-x: visible;
     scroll-behavior: smooth;
 }
 
