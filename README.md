@@ -1,6 +1,6 @@
 # AirbnbStats
 
-**AirbnbStats** provides an intuitive web interface to explore [InsideAitbnb](https://insideairbnb.com/) data on property listings, pricing, and occupancy, allowing investigators, public managers, activists and other potential users to view and analyse the information needed to analyze the impact of Airbnb across different cities. 
+**AirbnbStats** provides an intuitive web interface to explore [InsideAitbnb](https://insideairbnb.com/) data on property listings, pricing, and occupancy, allowing investigators, public managers, activists and other potential users to view the information needed to analyze the impact of Airbnb across different cities. 
 
 This project was developed for the Human-Computer Interaction course in the 3rd year of Uminho's Software Engineering bachelors. In the first phase of the project we designed a [prototype of the application using Figma](https://www.figma.com/proto/n7wOA0VAQSEzCumZla0rty/Airbnb?node-id=239-67&t=80WCPfCYtXJluZC1-1&starting-point-node-id=52%3A2) based on user stories provided in the [`assignment`](assignemnt.pdf) and in the second phase we implemented the application using Vue.js. You can check the [`first phase's report`](report.pdf) (PT) for a heuristic analysis of the designed interface.
 
