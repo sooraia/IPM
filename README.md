@@ -10,7 +10,7 @@ This project was developed for the Human-Computer Interaction course in the 3rd 
 
 ## Key features
 
-AirbnbStats includes a main explore page that allows users to filter and view listings by city and a dashboard page that provides an overview of general statistics for the selected city and lets users view and compare the evolution of different metrics over time through configurable charts. It's also possible to directly compare data from two different cities and save different configurations of filters and charts in the user's profile for laters use. For more details on the app's features, check the [`first phase's report`](report.pdf) (PT).
+AirbnbStats includes a main explore page that allows users to filter and view listings by city and a dashboard page that provides an overview of general statistics for the selected city and lets users view and compare the evolution of different metrics over time through configurable charts. It's also possible to directly compare data from two different cities and save different configurations of filters and charts in the user's profile for later use. For more details on the app's features, check the [`first phase's report`](report.pdf) (PT).
 
 <p align="center">
   <img src="figuras/explore_city.png" alt="Explore city page">
